@@ -8,7 +8,7 @@ let isDragging = false;
 let draggedObject = null;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Plano XZ al nivel del piso
+const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
@@ -32,13 +32,13 @@ function initScene() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
 
-    // Controles de Rotación de Cámara
+    // Controles de Cámara
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
     // Luces
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
     sunLight = new THREE.DirectionalLight(0xfffbde, 1.2);
@@ -47,11 +47,11 @@ function initScene() {
     sunLight.shadow.mapSize.height = 2048;
     scene.add(sunLight);
 
-    // Renderizar Suelo e Iluminación Inicial
+    // Habitación e Iluminación
     updateRoomDimensions(4.0, 3.5);
     updateSunPosition(15.5);
 
-    // Event Listeners para Mouse y Drag
+    // Eventos
     const dom = renderer.domElement;
     dom.addEventListener("pointerdown", onPointerDown);
     dom.addEventListener("pointermove", onPointerMove);
@@ -90,20 +90,177 @@ function updateSunPosition(hour) {
     sunLight.position.z = 5;
 }
 
+// Generador de Muebles Detallados Estilizados
+function createDetailedFurniture(item) {
+    const group = new THREE.Group();
+
+    const mainMat = new THREE.MeshStandardMaterial({ color: item.color, roughness: 0.4 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.6 });
+    const darkMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2 });
+    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.9 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8, roughness: 0.3 });
+    const screenMat = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.1 });
+
+    const w = item.w, h = item.h, l = item.l;
+
+    if (item.id.includes("cama")) {
+        // Base / Bastidor de madera
+        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.3, l), woodMat);
+        base.position.y = h * 0.15;
+        group.add(base);
+
+        // Cabecera
+        const headboard = new THREE.Mesh(new THREE.BoxGeometry(w, h * 1.1, 0.1), woodMat);
+        headboard.position.set(0, h * 0.55, -l / 2 + 0.05);
+        group.add(headboard);
+
+        // Colchón
+        const mattress = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.45, l * 0.9), whiteMat);
+        mattress.position.set(0, h * 0.5, 0.05);
+        group.add(mattress);
+
+        // Cobija / Sábana
+        const blanket = new THREE.Mesh(new THREE.BoxGeometry(w * 0.97, h * 0.47, l * 0.6), mainMat);
+        blanket.position.set(0, h * 0.51, l * 0.18);
+        group.add(blanket);
+
+        // Almohadas (1 o 2 según el tamaño)
+        const pillowCount = w >= 1.5 ? 2 : 1;
+        const pillowW = (w * 0.8) / pillowCount;
+        for (let i = 0; i < pillowCount; i++) {
+            const pillow = new THREE.Mesh(new THREE.BoxGeometry(pillowW * 0.9, h * 0.12, l * 0.22), whiteMat);
+            const posX = pillowCount === 2 ? (-w * 0.22 + i * (w * 0.44)) : 0;
+            pillow.position.set(posX, h * 0.78, -l * 0.28);
+            group.add(pillow);
+        }
+
+    } else if (item.id.includes("mueble_tv")) {
+        // Mueble Base
+        const tvStand = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.6, l), woodMat);
+        tvStand.position.y = h * 0.3;
+        group.add(tvStand);
+
+        // Pantalla TV
+        const tvScreen = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, h * 0.9, 0.06), screenMat);
+        tvScreen.position.set(0, h * 0.3 + h * 0.45 + 0.05, 0);
+        group.add(tvScreen);
+
+        // Marco / Bisel
+        const tvBorder = new THREE.Mesh(new THREE.BoxGeometry(w * 0.87, h * 0.93, 0.04), darkMat);
+        tvBorder.position.set(0, h * 0.3 + h * 0.45 + 0.05, -0.01);
+        group.add(tvBorder);
+
+        // Base / Soporte TV
+        const tvBase = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, h * 0.05, l * 0.4), darkMat);
+        tvBase.position.set(0, h * 0.6 + 0.025, 0);
+        group.add(tvBase);
+
+    } else if (item.id.includes("rack_mancuernas")) {
+        // Estructura Metálica del Rack
+        const rackFrame = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.7, l * 0.6), darkMat);
+        rackFrame.position.y = h * 0.35;
+        group.add(rackFrame);
+
+        // Mancuernas en las baldas
+        const dumbbellCount = 4;
+        const spacing = w / dumbbellCount;
+        for (let i = 0; i < dumbbellCount; i++) {
+            const dbGroup = new THREE.Group();
+            // Barra
+            const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, l * 0.4), metalMat);
+            bar.rotation.x = Math.PI / 2;
+            dbGroup.add(bar);
+            // Discos
+            const plateLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.04), darkMat);
+            plateLeft.rotation.x = Math.PI / 2;
+            plateLeft.position.z = -l * 0.12;
+            dbGroup.add(plateLeft);
+
+            const plateRight = plateLeft.clone();
+            plateRight.position.z = l * 0.12;
+            dbGroup.add(plateRight);
+
+            dbGroup.position.set(-w / 2 + spacing * i + spacing / 2, h * 0.72, 0);
+            group.add(dbGroup);
+        }
+
+    } else if (item.id.includes("escritorio")) {
+        // Tablero Superior
+        const top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, l), mainMat);
+        top.position.y = h - 0.025;
+        group.add(top);
+
+        // Patas
+        const legGeo = new THREE.BoxGeometry(0.06, h - 0.05, 0.06);
+        const legOffsets = [
+            [-w / 2 + 0.05, -l / 2 + 0.05],
+            [w / 2 - 0.05, -l / 2 + 0.05],
+            [-w / 2 + 0.05, l / 2 - 0.05],
+            [w / 2 - 0.05, l / 2 - 0.05]
+        ];
+        legOffsets.forEach(([x, z]) => {
+            const leg = new THREE.Mesh(legGeo, metalMat);
+            leg.position.set(x, (h - 0.05) / 2, z);
+            group.add(leg);
+        });
+
+        // Laptop / Monitor decorativo
+        const laptopBase = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.015, 0.25), metalMat);
+        laptopBase.position.set(0, h + 0.007, 0);
+        group.add(laptopBase);
+
+        const laptopScreen = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.22, 0.015), darkMat);
+        laptopScreen.position.set(0, h + 0.11, -0.1);
+        laptopScreen.rotation.x = -0.2;
+        group.add(laptopScreen);
+
+    } else if (item.id.includes("silla") || item.id.includes("puf")) {
+        // Asiento
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, h * 0.15, l * 0.9), mainMat);
+        seat.position.y = h * 0.45;
+        group.add(seat);
+
+        // Respaldo
+        const back = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, h * 0.5, l * 0.15), mainMat);
+        back.position.set(0, h * 0.72, -l * 0.38);
+        group.add(back);
+
+        // Pata central o ruedas
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, h * 0.45), metalMat);
+        base.position.y = h * 0.225;
+        group.add(base);
+
+    } else {
+        // Elemento Genérico (Caja con borde superior redondeado estilizado)
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.9, l), mainMat);
+        body.position.y = h * 0.45;
+        group.add(body);
+
+        const topDetail = new THREE.Mesh(new THREE.BoxGeometry(w * 0.95, h * 0.1, l * 0.95), whiteMat);
+        topDetail.position.y = h * 0.95;
+        group.add(topDetail);
+    }
+
+    // Aplicar sombras a todos los componentes hijos
+    group.traverse(child => {
+        if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+        }
+    });
+
+    return group;
+}
+
 window.addFurnitureToScene = function(item) {
-    const geo = new THREE.BoxGeometry(item.w, item.h, item.l);
-    const mat = new THREE.MeshStandardMaterial({ color: item.color });
-    const mesh = new THREE.Mesh(geo, mat);
+    const furnitureGroup = createDetailedFurniture(item);
 
-    mesh.position.set(0, item.h / 2, 0);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    furnitureGroup.position.set(0, 0, 0);
+    furnitureGroup.userData = { ...item, rotationY: 0 };
 
-    mesh.userData = { ...item, rotationY: 0 };
-
-    scene.add(mesh);
-    activeItems.push(mesh);
-    selectFurniture(mesh);
+    scene.add(furnitureGroup);
+    activeItems.push(furnitureGroup);
+    selectFurniture(furnitureGroup);
     window.updateMetrics();
 };
 
@@ -117,79 +274,3 @@ function updateMousePosition(event) {
 function onPointerDown(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
-
-    const intersects = raycaster.intersectObjects(activeItems, false);
-
-    if (intersects.length > 0) {
-        isDragging = true;
-        draggedObject = intersects[0].object;
-        controls.enabled = false; // Desactivar cámara mientras se arrastra
-
-        selectFurniture(draggedObject);
-
-        if (raycaster.ray.intersectPlane(dragPlane, planeIntersection)) {
-            dragOffset.copy(draggedObject.position).sub(planeIntersection);
-        }
-    } else {
-        selectFurniture(null);
-    }
-}
-
-function onPointerMove(event) {
-    updateMousePosition(event);
-    raycaster.setFromCamera(mouse, camera);
-
-    // Actualizar coordenadas en UI
-    if (raycaster.ray.intersectPlane(dragPlane, planeIntersection)) {
-        const posX = document.getElementById("cursor-pos");
-        if (posX) posX.innerText = `X: ${planeIntersection.x.toFixed(2)}m | Z: ${planeIntersection.z.toFixed(2)}m`;
-    }
-
-    if (isDragging && draggedObject) {
-        if (raycaster.ray.intersectPlane(dragPlane, planeIntersection)) {
-            const targetPos = planeIntersection.clone().add(dragOffset);
-
-            // Snap a Cuadrícula de 0.05m
-            const gridSize = 0.05;
-            let snapX = Math.round(targetPos.x / gridSize) * gridSize;
-            let snapZ = Math.round(targetPos.z / gridSize) * gridSize;
-
-            // Restricción dentro de límites de habitación
-            const rw = (parseFloat(document.getElementById("room-width").value) || 4) / 2;
-            const rl = (parseFloat(document.getElementById("room-length").value) || 3.5) / 2;
-
-            const halfW = draggedObject.userData.w / 2;
-            const halfL = draggedObject.userData.l / 2;
-
-            snapX = Math.max(-rw + halfW, Math.min(rw - halfW, snapX));
-            snapZ = Math.max(-rl + halfL, Math.min(rl - halfL, snapZ));
-
-            draggedObject.position.x = snapX;
-            draggedObject.position.z = snapZ;
-
-            selectFurniture(draggedObject);
-            window.updateMetrics();
-        }
-    }
-}
-
-function onPointerUp() {
-    if (isDragging) {
-        isDragging = false;
-        draggedObject = null;
-        controls.enabled = true; // Reactivar cámara
-    }
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-}
-
-function onWindowResize() {
-    const container = document.getElementById("canvas-container");
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
-}

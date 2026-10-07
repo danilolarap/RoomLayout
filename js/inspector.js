@@ -1,29 +1,37 @@
-function selectFurniture(mesh) {
-    // Quitar contorno anterior
-    if (selectedMesh && selectedMesh.material) {
-        selectedMesh.material.emissive.setHex(0x000000);
+function selectFurniture(group) {
+    // Quitar iluminación de emisión previa
+    if (selectedMesh) {
+        selectedMesh.traverse(child => {
+            if (child.isMesh && child.material && child.material.emissive) {
+                child.material.emissive.setHex(0x000000);
+            }
+        });
     }
 
-    selectedMesh = mesh;
+    selectedMesh = group;
     const container = document.getElementById("inspector-content");
 
-    if (!mesh) {
+    if (!group) {
         container.innerHTML = `<p class="text-slate-400 italic">Haz clic en un objeto para seleccionarlo o arrastrarlo.</p>`;
         return;
     }
 
-    // Resaltar elemento seleccionado
-    mesh.material.emissive.setHex(0x334155);
+    // Resaltar suavemente las piezas del mueble seleccionado
+    group.traverse(child => {
+        if (child.isMesh && child.material && child.material.emissive) {
+            child.material.emissive.setHex(0x1e293b);
+        }
+    });
 
-    const data = mesh.userData;
-    const posX = mesh.position.x.toFixed(2);
-    const posZ = mesh.position.z.toFixed(2);
+    const data = group.userData;
+    const posX = group.position.x.toFixed(2);
+    const posZ = group.position.z.toFixed(2);
 
     container.innerHTML = `
         <div class="space-y-2 text-xs">
             <div class="font-bold text-amber-400 flex justify-between items-center">
                 <span>${data.name}</span>
-                <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-300">SELECCIONADO</span>
+                <span class="text-[10px] bg-blue-600/30 border border-blue-500/40 px-2 py-0.5 rounded text-blue-300">SELECCIONADO</span>
             </div>
             <div class="bg-slate-900/60 p-2 rounded border border-slate-700/50 space-y-1">
                 <div class="flex justify-between text-slate-400">
@@ -59,7 +67,6 @@ window.rotateSelected = function(deg) {
     selectedMesh.rotation.y += (deg * Math.PI) / 180;
     selectedMesh.userData.rotationY = (selectedMesh.userData.rotationY + deg) % 360;
 
-    // Intercambiar ancho y largo para el bounding box
     const temp = selectedMesh.userData.w;
     selectedMesh.userData.w = selectedMesh.userData.l;
     selectedMesh.userData.l = temp;
@@ -98,7 +105,6 @@ function checkCollisions() {
     const list = document.getElementById("diagnostics-list");
     let collisions = [];
 
-    // Verificación simple de superposición
     for (let i = 0; i < activeItems.length; i++) {
         for (let j = i + 1; j < activeItems.length; j++) {
             const a = activeItems[i];
