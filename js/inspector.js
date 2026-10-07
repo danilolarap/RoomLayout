@@ -1,5 +1,4 @@
 function selectFurniture(group) {
-    // Quitar iluminación de emisión previa
     if (selectedMesh) {
         selectedMesh.traverse(child => {
             if (child.isMesh && child.material && child.material.emissive) {
@@ -16,7 +15,6 @@ function selectFurniture(group) {
         return;
     }
 
-    // Resaltar suavemente las piezas del mueble seleccionado
     group.traverse(child => {
         if (child.isMesh && child.material && child.material.emissive) {
             child.material.emissive.setHex(0x1e293b);
@@ -103,6 +101,8 @@ window.updateMetrics = function() {
 
 function checkCollisions() {
     const list = document.getElementById("diagnostics-list");
+    if (!list) return;
+
     let collisions = [];
 
     for (let i = 0; i < activeItems.length; i++) {

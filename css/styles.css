@@ -1,4 +1,4 @@
-/* Animaciones y utilidades de scrollbar */
+/* Scrollbar personalizado */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -14,10 +14,11 @@
     background: #475569;
 }
 
+/* Efectos para tarjetas del catálogo */
 .item-card {
     transition: all 0.2s ease-in-out;
 }
 .item-card:hover {
     border-color: #3b82f6;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }

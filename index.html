@@ -59,13 +59,13 @@
         <aside class="w-72 bg-slate-800/95 border-r border-slate-700 flex flex-col z-10">
             <div class="p-3 border-b border-slate-700 flex justify-between items-center">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-300"><i class="fa-solid fa-shapes mr-1.5 text-blue-400"></i> Catálogo Mobiliario</span>
-                <span id="catalog-count" class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">6 items</span>
+                <span id="catalog-count" class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">0 items</span>
             </div>
             <div class="p-2">
                 <input type="text" id="catalog-search" placeholder="Buscar elementos..." class="w-full bg-slate-900 border border-slate-700 text-xs rounded px-2 py-1 text-slate-200 focus:outline-none focus:border-blue-500">
             </div>
             <div id="catalog-container" class="flex-1 overflow-y-auto p-2 space-y-4 text-xs">
-                <!-- Se llena desde catalog.js -->
+                <!-- Se genera desde catalog.js -->
             </div>
         </aside>
 
@@ -79,23 +79,23 @@
                 <button id="btn-view-top" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded text-xs shadow">TOP</button>
             </div>
 
-            <!-- Leyenda de colores -->
+            <!-- Leyenda -->
             <div class="absolute bottom-4 left-4 bg-slate-900/80 border border-slate-700 p-2 rounded text-[11px] flex gap-4 backdrop-blur-sm z-10">
                 <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Flujo Libre</div>
                 <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> Colisión / Bloqueo</div>
                 <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-400"></span> Luz Solar Directa</div>
             </div>
 
-            <!-- Info de Estado de Cuadrícula -->
+            <!-- Coordenadas -->
             <div class="absolute bottom-4 right-4 bg-slate-900/80 border border-slate-700 px-3 py-1.5 rounded text-[10px] text-slate-400 backdrop-blur-sm z-10 flex gap-3">
-                <span>Cursor: <strong id="cursor-pos" class="text-slate-200">X: 0.00m | Y: 0.00m</strong></span>
+                <span>Cursor: <strong id="cursor-pos" class="text-slate-200">X: 0.00m | Z: 0.00m</strong></span>
                 <span>Grid Snap: <strong class="text-emerald-400">0.05m (Activo)</strong></span>
             </div>
         </main>
 
         <!-- Sidebar Derecha: Inspector & Métricas -->
         <aside class="w-80 bg-slate-800/95 border-l border-slate-700 flex flex-col z-10 text-xs">
-            <!-- Inspector de Elemento Seleccionado -->
+            <!-- Inspector -->
             <div class="p-3 border-b border-slate-700">
                 <h3 class="font-bold text-slate-300 uppercase tracking-wider mb-2"><i class="fa-solid fa-sliders mr-1 text-amber-400"></i> Inspector</h3>
                 <div id="inspector-content" class="space-y-2">
@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <!-- Métricas de Espacio -->
+            <!-- Métricas -->
             <div class="p-3 border-b border-slate-700">
                 <h3 class="font-bold text-slate-300 uppercase tracking-wider mb-2"><i class="fa-solid fa-chart-pie mr-1 text-emerald-400"></i> Métricas de Espacio</h3>
                 <div class="grid grid-cols-2 gap-2 text-center">
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <!-- Diagnóstico de Errores -->
+            <!-- Diagnóstico -->
             <div class="p-3 flex-1 overflow-y-auto">
                 <h3 class="font-bold text-slate-300 uppercase tracking-wider mb-2"><i class="fa-solid fa-triangle-exclamation mr-1 text-red-400"></i> Diagnóstico</h3>
                 <div id="diagnostics-list" class="space-y-2">
@@ -130,11 +130,11 @@
         </aside>
     </div>
 
-    <!-- Scripts de Three.js via CDN -->
+    <!-- Carga en Orden Estricto de Librerías -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-    <!-- Módulos JavaScript -->
+    <!-- Módulos Locales del Proyecto -->
     <script src="js/catalog.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/inspector.js"></script>
