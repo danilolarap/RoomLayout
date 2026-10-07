@@ -1,0 +1,23 @@
+/* Animaciones y utilidades de scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+.item-card {
+    transition: all 0.2s ease-in-out;
+}
+.item-card:hover {
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+}
