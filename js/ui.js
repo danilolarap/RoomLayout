@@ -45,6 +45,31 @@ const i18n = {
     }
 };
 
+window.stepRoomDimension = function(inputId, step) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    let val = (parseFloat(input.value) || 0) + step;
+    const min = parseFloat(input.min) || 2.0;
+    const max = parseFloat(input.max) || 15.0;
+
+    val = Math.max(min, Math.min(max, val));
+    input.value = val.toFixed(1);
+
+    const inputW = document.getElementById("room-width");
+    const inputL = document.getElementById("room-length");
+
+    const w = parseFloat(inputW.value) || 4.0;
+    const l = parseFloat(inputL.value) || 3.5;
+
+    if (typeof updateRoomDimensions === "function") {
+        updateRoomDimensions(w, l);
+    }
+    if (typeof window.updateMetrics === "function") {
+        window.updateMetrics();
+    }
+};
+
 function initUI() {
     // Cambio de Idioma
     const langBtn = document.getElementById("lang-toggle");
@@ -72,7 +97,35 @@ function initUI() {
         });
     }
 
-    // Actualización de dimensiones del cuarto
+    // Botones de Vistas de Cámara (ISO 3D / PLANTA TOP)
+    const btnIso = document.getElementById("view-iso");
+    const btnTop = document.getElementById("view-top");
+
+    if (btnIso && btnTop) {
+        btnIso.addEventListener("click", () => {
+            btnIso.className = "bg-amber-500 text-white font-bold px-3 py-1 rounded-lg text-xs shadow-md hover:bg-amber-600 transition";
+            btnTop.className = "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-300 dark:border-slate-700 font-bold px-3 py-1 rounded-lg text-xs shadow-xs hover:bg-amber-100 dark:hover:bg-slate-700 transition";
+            if (typeof window.setCameraView === "function") window.setCameraView("iso");
+        });
+
+        btnTop.addEventListener("click", () => {
+            btnTop.className = "bg-amber-500 text-white font-bold px-3 py-1 rounded-lg text-xs shadow-md hover:bg-amber-600 transition";
+            btnIso.className = "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-300 dark:border-slate-700 font-bold px-3 py-1 rounded-lg text-xs shadow-xs hover:bg-amber-100 dark:hover:bg-slate-700 transition";
+            if (typeof window.setCameraView === "function") window.setCameraView("top");
+        });
+    }
+
+    // Botón de Simulación Solar Cinematográfica
+    const btnSimulate = document.getElementById("btn-simulate");
+    if (btnSimulate) {
+        btnSimulate.addEventListener("click", () => {
+            if (typeof window.startSunSimulation === "function") {
+                window.startSunSimulation();
+            }
+        });
+    }
+
+    // Actualización manual directa en los inputs
     const inputW = document.getElementById("room-width");
     const inputL = document.getElementById("room-length");
 
@@ -90,14 +143,16 @@ function initUI() {
     if (inputW) inputW.addEventListener("change", updateRoom);
     if (inputL) inputL.addEventListener("change", updateRoom);
 
-    // Control solar
+    // Control solar manual
     const sunSlider = document.getElementById("sun-time");
     if (sunSlider) {
         sunSlider.addEventListener("input", (e) => {
             const val = parseFloat(e.target.value);
             const hours = Math.floor(val);
-            const mins = (val % 1) === 0 ? "00" : "30";
-            document.getElementById("time-display").innerText = `${hours}:${mins}`;
+            const mins = Math.round((val % 1) * 60);
+            const formattedMins = mins < 10 ? `0${mins}` : mins;
+            const formattedHours = hours < 10 ? `0${hours}` : hours;
+            document.getElementById("time-display").innerText = `${formattedHours}:${formattedMins}`;
             if (typeof updateSunPosition === "function") {
                 updateSunPosition(val);
             }

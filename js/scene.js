@@ -11,6 +11,9 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
+// Control de simulación solar
+let isSimulating = false;
+
 function initScene() {
     const container = document.getElementById("canvas-container");
     if (!container) return;
@@ -139,6 +142,56 @@ function updateSunPosition(hour) {
     sunLight.position.y = Math.sin(angle) * radius;
     sunLight.position.z = 5;
 }
+
+// Cambiar entre Vista Isométrica 3D y Planta (TOP)
+window.setCameraView = function(viewType) {
+    if (!camera || !controls) return;
+
+    if (viewType === "top") {
+        camera.position.set(0, 10, 0.001);
+        controls.target.set(0, 0, 0);
+    } else {
+        camera.position.set(6, 6, 8);
+        controls.target.set(0, 0, 0);
+    }
+    controls.update();
+};
+
+// Simulación Cinematográfica del paso del sol (06:00 a 18:00)
+window.startSunSimulation = function() {
+    if (isSimulating) return;
+    isSimulating = true;
+
+    const sunSlider = document.getElementById("sun-time");
+    const timeDisplay = document.getElementById("time-display");
+    const btnSimulate = document.getElementById("btn-simulate");
+
+    let currentHour = 6.0;
+    btnSimulate.disabled = true;
+    btnSimulate.classList.add("opacity-50", "cursor-not-allowed");
+
+    const interval = setInterval(() => {
+        currentHour += 0.1;
+        if (currentHour > 18.0) {
+            currentHour = 18.0;
+            clearInterval(interval);
+            isSimulating = false;
+            btnSimulate.disabled = false;
+            btnSimulate.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        if (sunSlider) sunSlider.value = currentHour;
+        
+        const hours = Math.floor(currentHour);
+        const mins = Math.round((currentHour % 1) * 60);
+        const formattedMins = mins < 10 ? `0${mins}` : mins;
+        const formattedHours = hours < 10 ? `0${hours}` : hours;
+
+        if (timeDisplay) timeDisplay.innerText = `${formattedHours}:${formattedMins}`;
+
+        updateSunPosition(currentHour);
+    }, 40);
+};
 
 window.addFurnitureToScene = function(item) {
     const furnitureGroup = createDetailedFurniture(item);
