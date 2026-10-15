@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoomLayout LIGHT 3D - Simulator</title>
+    <title>RoomLayout LIGHT 3D - Simulador de Circulación e Incidencia Solar</title>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,170 +13,207 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#fffbe1',
+                        amber: {
+                            50: '#fffbeb',
                             100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
                             400: '#fbbf24',
                             500: '#f59e0b',
                             600: '#d97706',
                             700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
+
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
+
+    <!-- Three.js & OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-amber-50/50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col h-screen overflow-hidden font-sans select-none transition-colors duration-300">
+<body class="bg-amber-50/50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col h-screen overflow-hidden select-none transition-colors duration-300">
 
-    <!-- Header principal -->
-    <header class="h-14 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-amber-200/60 dark:border-slate-700/80 px-4 flex items-center justify-between z-20 transition-colors duration-300">
-        <div class="flex items-center gap-3">
-            <div class="bg-gradient-to-br from-amber-500 to-orange-500 p-2 rounded-xl shadow-md text-white"><i class="fa-solid fa-cube"></i></div>
-            <div>
-                <h1 class="font-bold text-sm tracking-wide text-slate-900 dark:text-white flex items-center gap-2">
-                    RoomLayout <span class="bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs px-2 py-0.5 rounded-md border border-amber-500/30 font-semibold">LIGHT 3D</span>
-                </h1>
-                <p id="lbl-subtitle" class="text-[10px] text-slate-500 dark:text-slate-400">Simulador de Circulación e Incidencia Solar</p>
-            </div>
-        </div>
-
-        <!-- Controles de sala y hora -->
-        <div class="flex items-center gap-4 text-xs">
-            <div class="flex items-center gap-2 bg-amber-100/50 dark:bg-slate-900/60 p-1.5 rounded-lg border border-amber-200/80 dark:border-slate-700/50">
-                <span id="lbl-room" class="text-amber-800 dark:text-amber-400 font-bold">SALA:</span>
-                <label class="text-slate-600 dark:text-slate-300"><span id="lbl-width">Ancho</span> <input id="room-width" type="number" value="4.0" step="0.5" min="2" max="10" class="w-12 bg-white dark:bg-slate-800 text-center rounded-md text-slate-900 dark:text-white border border-amber-300 dark:border-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500"> m</label>
-                <label class="text-slate-600 dark:text-slate-300"><span id="lbl-length">Largo</span> <input id="room-length" type="number" value="3.5" step="0.5" min="2" max="10" class="w-12 bg-white dark:bg-slate-800 text-center rounded-md text-slate-900 dark:text-white border border-amber-300 dark:border-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500"> m</label>
-            </div>
-
-            <div class="flex items-center gap-3 bg-amber-100/50 dark:bg-slate-900/60 p-1.5 px-3 rounded-lg border border-amber-200/80 dark:border-slate-700/50">
-                <i class="fa-solid fa-sun text-amber-500"></i>
-                <span class="text-slate-700 dark:text-slate-300"><span id="lbl-time">HORA</span>: <strong id="time-display" class="text-amber-600 dark:text-amber-400 font-bold">15:30</strong></span>
-                <input id="time-slider" type="range" min="6" max="18" step="0.5" value="15.5" class="accent-amber-500 cursor-pointer w-20">
-            </div>
-
-            <div class="flex items-center gap-1">
-                <span id="lbl-window" class="text-slate-600 dark:text-slate-400 mr-1 font-bold">VENTANA:</span>
-                <button class="win-btn px-2 py-1 bg-amber-100 dark:bg-slate-700 rounded-md hover:bg-amber-200 dark:hover:bg-slate-600 font-bold text-amber-800 dark:text-slate-300 transition" data-dir="N">N</button>
-                <button class="win-btn px-2 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md font-bold shadow-sm" data-dir="S">S</button>
-                <button class="win-btn px-2 py-1 bg-amber-100 dark:bg-slate-700 rounded-md hover:bg-amber-200 dark:hover:bg-slate-600 font-bold text-amber-800 dark:text-slate-300 transition" data-dir="E">E</button>
-                <button class="win-btn px-2 py-1 bg-amber-100 dark:bg-slate-700 rounded-md hover:bg-amber-200 dark:hover:bg-slate-600 font-bold text-amber-800 dark:text-slate-300 transition" data-dir="O">O</button>
-            </div>
-        </div>
-
+    <!-- HEADER / BARRA SUPERIOR -->
+    <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-amber-200/60 dark:border-slate-800 px-4 py-2 flex items-center justify-between gap-4 z-10 shadow-xs">
         <div class="flex items-center gap-2">
-            <!-- Selector de Idioma (ES / EN) -->
-            <button id="lang-toggle" class="flex items-center gap-1.5 bg-amber-100/80 dark:bg-slate-700 hover:bg-amber-200 dark:hover:bg-slate-600 text-amber-900 dark:text-amber-300 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all border border-amber-300/80 dark:border-slate-600 shadow-sm">
-                <i class="fa-solid fa-globe text-amber-600 dark:text-amber-400"></i>
-                <span id="lang-text">ES</span>
+            <div class="bg-amber-500 text-white p-1.5 rounded-lg shadow-xs flex items-center justify-center">
+                <i class="fa-solid fa-cubes text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-amber-900 dark:text-amber-400 text-sm leading-none flex items-center gap-2">
+                    RoomLayout <span class="text-[10px] bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 px-1.5 py-0.5 rounded-md font-semibold tracking-wide">LIGHT 3D</span>
+                </h1>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium" id="txt-subtitle">Simulador de Circulación e Incidencia Solar</p>
+            </div>
+        </div>
+
+        <!-- Panel de Controles Superiores (Controles de Sala y Sol) -->
+        <div class="flex items-center gap-3 bg-amber-100/50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-amber-200/50 dark:border-slate-700/50 text-xs">
+            
+            <!-- Dimensiones Sala -->
+            <div class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+                <span id="lbl-room">SALA:</span>
+                <label class="text-[11px] text-slate-500 dark:text-slate-400 font-normal">Ancho</label>
+                <input id="room-width" type="number" min="2" max="15" step="0.5" value="4.0" class="w-12 bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-600 rounded px-1 py-0.5 text-center font-bold text-amber-800 dark:text-amber-400">
+                <span>m</span>
+                <label class="text-[11px] text-slate-500 dark:text-slate-400 font-normal ml-1">Largo</label>
+                <input id="room-length" type="number" min="2" max="15" step="0.5" value="3.5" class="w-12 bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-600 rounded px-1 py-0.5 text-center font-bold text-amber-800 dark:text-amber-400">
+                <span>m</span>
+            </div>
+
+            <div class="h-4 w-px bg-amber-300/60 dark:bg-slate-700"></div>
+
+            <!-- Incidencia Solar / Hora del día -->
+            <div class="flex items-center gap-2 font-medium">
+                <i class="fa-solid fa-sun text-amber-500 text-sm"></i>
+                <span id="lbl-hour" class="text-[11px]">HORA:</span>
+                <strong id="time-display" class="w-10 text-amber-800 dark:text-amber-400 font-bold">15:30</strong>
+                <input id="sun-time" type="range" min="6" max="18" step="0.5" value="15.5" class="w-20 accent-amber-500 cursor-pointer">
+            </div>
+
+            <div class="h-4 w-px bg-amber-300/60 dark:bg-slate-700"></div>
+
+            <!-- Orientación de Ventana -->
+            <div class="flex items-center gap-1">
+                <span id="lbl-window" class="text-[11px] font-bold text-slate-600 dark:text-slate-400 mr-1">VENTANA:</span>
+                <button class="win-btn bg-amber-500 text-white font-bold px-1.5 py-0.5 rounded text-[10px]" data-dir="N">N</button>
+                <button class="win-btn bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-600 px-1.5 py-0.5 rounded text-[10px]" data-dir="S">S</button>
+                <button class="win-btn bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-600 px-1.5 py-0.5 rounded text-[10px]" data-dir="E">E</button>
+                <button class="win-btn bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-600 px-1.5 py-0.5 rounded text-[10px]" data-dir="O">O</button>
+            </div>
+        </div>
+
+        <!-- Selector Idioma, Tema y Simulación -->
+        <div class="flex items-center gap-2">
+            <button id="lang-toggle" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 border border-amber-300/60 dark:border-slate-700">
+                <i class="fa-solid fa-globe"></i> <span id="lang-label">ES</span>
             </button>
 
-            <!-- Conmutador de Tema (Claro / Oscuro) -->
-            <button id="theme-toggle" class="flex items-center gap-2 bg-amber-100/80 dark:bg-slate-700 hover:bg-amber-200 dark:hover:bg-slate-600 text-amber-900 dark:text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border border-amber-300/80 dark:border-slate-600 shadow-sm">
-                <i id="theme-icon" class="fa-solid fa-sun text-amber-500"></i>
-                <span id="theme-text">Modo Claro</span>
+            <button id="theme-toggle" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 border border-amber-300/60 dark:border-slate-700">
+                <i class="fa-solid fa-sun" id="theme-icon"></i> <span id="theme-label">Modo Claro</span>
             </button>
 
-            <button id="btn-simulate" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-md transition transform active:scale-95">
-                <span id="lbl-simulate">SIMULAR</span> <i class="fa-solid fa-play ml-1"></i>
+            <button id="btn-simulate" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1 rounded-lg text-xs transition shadow-xs flex items-center gap-1.5">
+                <span id="txt-simulate">SIMULAR</span> <i class="fa-solid fa-play"></i>
             </button>
         </div>
     </header>
 
-    <!-- Layout Central -->
-    <div class="flex flex-1 relative overflow-hidden h-full">
-        <!-- Sidebar Izquierda: Catálogo -->
-        <aside class="w-72 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-r border-amber-200/60 dark:border-slate-700/80 flex flex-col z-10 transition-colors duration-300">
-            <div class="p-3 border-b border-amber-200/60 dark:border-slate-700/80 flex justify-between items-center">
-                <span id="lbl-catalog-title" class="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-slate-200 flex items-center gap-1.5">
-                    <i class="fa-solid fa-shapes text-amber-500"></i> Catálogo Mobiliario
-                </span>
-                <span id="catalog-count" class="text-[10px] bg-amber-500/20 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full font-bold border border-amber-500/30">0 items</span>
+    <!-- MAIN APP CONTENT -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- LATERAL IZQUIERDA: CATÁLOGO DE MOBILIARIO -->
+        <aside class="w-64 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-r border-amber-200/60 dark:border-slate-800 p-3 flex flex-col gap-3 z-10">
+            <div class="flex items-center justify-between border-b border-amber-200 dark:border-slate-800 pb-2">
+                <h2 id="title-catalog" class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus-circle"></i> CATÁLOGO MOBILIARIO
+                </h2>
+                <span id="catalog-count" class="text-[10px] bg-amber-100 dark:bg-slate-800 text-amber-800 dark:text-amber-300 font-bold px-1.5 py-0.5 rounded-full">18 items</span>
             </div>
-            <div class="p-2.5">
-                <input type="text" id="catalog-search" placeholder="Buscar muebles..." class="w-full bg-amber-50/60 dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs rounded-lg px-3 py-1.5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+
+            <!-- Buscador -->
+            <div class="relative">
+                <input id="search-catalog" type="text" placeholder="Buscar muebles..." class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs pl-8 focus:outline-none focus:border-amber-500">
+                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
             </div>
-            <div id="catalog-container" class="flex-1 overflow-y-auto p-2.5 space-y-4 text-xs"></div>
+
+            <!-- Contenedor dinámico del catálogo -->
+            <div id="catalog-container" class="flex-1 overflow-y-auto pr-1 space-y-3 custom-scrollbar">
+                <!-- Se genera mediante js/catalog.js -->
+            </div>
         </aside>
 
-        <!-- Viewport Central 3D -->
-        <main class="flex-1 relative bg-amber-100/30 dark:bg-slate-950 transition-colors duration-300 min-h-[500px]">
-            <div id="canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing absolute inset-0"></div>
-
-            <!-- Overlay de Vistas -->
-            <div class="absolute top-4 right-4 flex gap-2 z-10">
-                <button id="btn-view-iso" class="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-md transition transform active:scale-95">ISO 3D</button>
-                <button id="btn-view-top" class="bg-white/90 dark:bg-slate-800/90 hover:bg-amber-50 dark:hover:bg-slate-700 text-amber-900 dark:text-slate-200 border border-amber-200 dark:border-slate-700 px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm backdrop-blur-md"><span id="lbl-top-view">PLANTA (TOP)</span></button>
+        <!-- AREA CENTRAL: LIENZO Y VISOR 3D THREE.JS -->
+        <main class="flex-1 relative bg-amber-50/30 dark:bg-slate-950/60 flex flex-col">
+            
+            <!-- Selector de Vistas Cambiables -->
+            <div class="absolute top-3 right-3 z-10 flex gap-2">
+                <button id="view-iso" class="bg-amber-500 text-white font-bold px-3 py-1 rounded-lg text-xs shadow-md hover:bg-amber-600 transition">ISO 3D</button>
+                <button id="view-top" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-300 dark:border-slate-700 font-bold px-3 py-1 rounded-lg text-xs shadow-xs hover:bg-amber-100 dark:hover:bg-slate-700 transition">PLANTA (TOP)</button>
             </div>
 
-            <!-- Leyenda -->
-            <div class="absolute bottom-4 left-4 bg-white/90 dark:bg-slate-900/80 border border-amber-200/80 dark:border-slate-700 p-2.5 rounded-xl text-[11px] flex gap-4 backdrop-blur-md z-10 text-slate-700 dark:text-slate-300 shadow-md">
-                <div class="flex items-center gap-1.5 font-medium"><span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm"></span> <span id="lbl-free-flow">Flujo Libre</span></div>
-                <div class="flex items-center gap-1.5 font-medium"><span class="w-3 h-3 rounded-full bg-red-500 shadow-sm"></span> <span id="lbl-collision">Colisión / Bloqueo</span></div>
-                <div class="flex items-center gap-1.5 font-medium"><span class="w-3 h-3 rounded-full bg-amber-400 shadow-sm"></span> <span id="lbl-sunlight">Luz Solar Directa</span></div>
+            <!-- Canvas donde Three.js renderiza la escena -->
+            <div id="canvas-container" class="w-full h-full flex-1"></div>
+
+            <!-- Leyenda Inferior de Circulación y Convenciones -->
+            <div class="absolute bottom-3 left-3 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-200/60 dark:border-slate-800 flex items-center gap-4 text-[11px] shadow-xs">
+                <div class="flex items-center gap-1.5 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> <span id="leg-free">Flujo Libre</span></div>
+                <div class="flex items-center gap-1.5 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span> <span id="leg-collision">Colisión / Bloqueo</span></div>
+                <div class="flex items-center gap-1.5 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span> <span id="leg-sun">Luz Solar Directa</span></div>
             </div>
 
-            <!-- Coordenadas -->
-            <div class="absolute bottom-4 right-4 bg-white/90 dark:bg-slate-900/80 border border-amber-200/80 dark:border-slate-700 px-3 py-1.5 rounded-xl text-[10px] text-slate-600 dark:text-slate-400 backdrop-blur-md z-10 flex gap-3 shadow-md">
-                <span><span id="lbl-cursor">Cursor</span>: <strong id="cursor-pos" class="text-amber-800 dark:text-slate-200 font-bold">X: 0.00m | Z: 0.00m</strong></span>
-                <span>Grid Snap: <strong class="text-emerald-600 dark:text-emerald-400 font-bold">0.05m (<span id="lbl-active">Activo</span>)</strong></span>
+            <!-- Indicador de coordenadas del cursor -->
+            <div class="absolute bottom-3 right-3 z-10 text-[10px] text-slate-500 dark:text-slate-400 font-mono bg-white/60 dark:bg-slate-900/60 px-2 py-0.5 rounded border border-amber-200/40 dark:border-slate-800">
+                <span id="cursor-pos">Cursor: X: 0.00m | Z: 0.00m</span> | Grid Snap: 0.05m (Activo)
             </div>
         </main>
 
-        <!-- Sidebar Derecha: Inspector & Métricas -->
-        <aside class="w-80 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-l border-amber-200/60 dark:border-slate-700/80 flex flex-col z-10 text-xs transition-colors duration-300">
-            <!-- Inspector -->
-            <div class="p-3 border-b border-amber-200/60 dark:border-slate-700/80">
-                <h3 id="lbl-inspector-title" class="font-bold text-amber-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <i class="fa-solid fa-sliders text-amber-500"></i> Inspector
-                </h3>
-                <div id="inspector-content" class="space-y-2">
-                    <p id="lbl-inspector-empty" class="text-slate-500 dark:text-slate-400 italic">Haz clic en un objeto o en la puerta para moverlo.</p>
-                </div>
+        <!-- LATERAL DERECHA: INSPECTOR & MÉTRICAS -->
+        <aside class="w-64 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-l border-amber-200/60 dark:border-slate-800 p-3 flex flex-col gap-3 z-10">
+            
+            <!-- Header Inspector -->
+            <div class="border-b border-amber-200 dark:border-slate-800 pb-2">
+                <h2 id="title-inspector" class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-sliders"></i> INSPECTOR
+                </h2>
+                <p id="sub-inspector" class="text-[10px] text-slate-500 dark:text-slate-400 italic">Haz clic en un objeto o en la puerta para moverla.</p>
             </div>
 
-            <!-- Métricas -->
-            <div class="p-3 border-b border-amber-200/60 dark:border-slate-700/80">
-                <h3 id="lbl-metrics-title" class="font-bold text-amber-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <i class="fa-solid fa-chart-pie text-emerald-500"></i> Métricas de Espacio
+            <!-- Contenido del Inspector (Mueble seleccionado) -->
+            <div id="inspector-content" class="text-xs text-slate-600 dark:text-slate-300">
+                <p class="text-slate-400 italic">Ningún objeto seleccionado.</p>
+            </div>
+
+            <div class="h-px bg-amber-200/60 dark:bg-slate-800"></div>
+
+            <!-- Sección de Métricas del Espacio -->
+            <div>
+                <h3 id="title-metrics" class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-400 mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie"></i> MÉTRICAS DE ESPACIO
                 </h3>
                 <div class="grid grid-cols-2 gap-2 text-center">
-                    <div class="bg-amber-50/60 dark:bg-slate-900/60 p-2 rounded-xl border border-amber-200 dark:border-slate-700/60">
-                        <span id="lbl-occupied" class="block text-[10px] text-slate-500 dark:text-slate-400 font-semibold">OCUPADA</span>
-                        <span id="metric-occupied" class="text-sm font-bold text-slate-900 dark:text-white">0.0 m²</span>
+                    <div class="bg-amber-100/60 dark:bg-slate-800/80 p-2 rounded-xl border border-amber-200/60 dark:border-slate-700/60">
+                        <div id="lbl-occupied" class="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400">OCUPADA</div>
+                        <div id="metric-occupied" class="font-extrabold text-sm text-amber-900 dark:text-amber-300 mt-0.5">0.0 m²</div>
                     </div>
-                    <div class="bg-amber-50/60 dark:bg-slate-900/60 p-2 rounded-xl border border-amber-200 dark:border-slate-700/60">
-                        <span id="lbl-free" class="block text-[10px] text-slate-500 dark:text-slate-400 font-semibold">LIBRE</span>
-                        <span id="metric-free" class="text-sm font-bold text-emerald-600 dark:text-emerald-400">0.0 m²</span>
+                    <div class="bg-emerald-100/60 dark:bg-slate-800/80 p-2 rounded-xl border border-emerald-200/60 dark:border-slate-700/60">
+                        <div id="lbl-free" class="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400">LIBRE</div>
+                        <div id="metric-free" class="font-extrabold text-sm text-emerald-800 dark:text-emerald-400 mt-0.5">14.0 m²</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Diagnóstico -->
-            <div class="p-3 flex-1 overflow-y-auto">
-                <h3 id="lbl-diagnostics-title" class="font-bold text-amber-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <i class="fa-solid fa-triangle-exclamation text-orange-500"></i> Diagnóstico
+            <div class="h-px bg-amber-200/60 dark:bg-slate-800"></div>
+
+            <!-- Diagnóstico de Flujo -->
+            <div class="flex-1 flex flex-col">
+                <h3 id="title-diag" class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-400 mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-triangle-exclamation"></i> DIAGNÓSTICO
                 </h3>
-                <div id="diagnostics-list" class="space-y-2">
-                    <div class="p-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 rounded-lg text-emerald-800 dark:text-emerald-300 text-[11px] font-medium">
-                        <i class="fa-solid fa-check-circle mr-1"></i> <span id="lbl-no-conflicts">Sin conflictos detectados.</span>
-                    </div>
+                <div id="diagnostic-box" class="flex-1 bg-emerald-50 dark:bg-slate-950 border border-emerald-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-emerald-800 dark:text-emerald-300 space-y-1">
+                    <div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span id="diag-ok">Sin conflictos detectados.</span></div>
                 </div>
             </div>
         </aside>
     </div>
 
-    <!-- Carga de librerías -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
+    <!-- SCRIPTS DE LA APLICACIÓN (EN ORDEN STRICTO DE DEPENDENCIA) -->
     <script src="js/catalog.js"></script>
+    <script src="js/materials.js"></script>
+    <script src="js/furniture-builder.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/inspector.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
