@@ -12,7 +12,133 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
-// Inicializacion de la escena 3D
+// Generador sintético de texturas procedimentales mediante Canvas HTML5
+const ProceduralTextures = {
+    // Textura de veta de madera
+    wood: (baseHex = "#d97706", lineHex = "#b45309") => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = baseHex;
+        ctx.fillRect(0, 0, 512, 512);
+
+        ctx.fillStyle = lineHex;
+        for (let i = 0; i < 500; i++) {
+            const y = Math.random() * 512;
+            const h = Math.random() * 2 + 0.5;
+            ctx.globalAlpha = Math.random() * 0.15 + 0.05;
+            ctx.fillRect(0, y, 512, h);
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        return texture;
+    },
+
+    // Textura de tela para ropa de cama y sofás
+    fabric: (baseHex = "#3b82f6", patternHex = "#1d4ed8") => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = baseHex;
+        ctx.fillRect(0, 0, 256, 256);
+
+        ctx.fillStyle = patternHex;
+        ctx.globalAlpha = 0.08;
+        for (let x = 0; x < 256; x += 4) {
+            ctx.fillRect(x, 0, 2, 256);
+        }
+        for (let y = 0; y < 256; y += 4) {
+            ctx.fillRect(0, y, 256, 2);
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        return texture;
+    },
+
+    // Textura de suelo de parquet / listones de madera
+    parquet: () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "#e2e8f0";
+        ctx.fillRect(0, 0, 512, 512);
+
+        const plankHeight = 64;
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 3;
+
+        for (let y = 0; y <= 512; y += plankHeight) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(512, y);
+            ctx.stroke();
+
+            // Vetas suaves de listón
+            ctx.fillStyle = "rgba(148, 163, 184, 0.08)";
+            for (let i = 0; i < 15; i++) {
+                ctx.fillRect(0, y + Math.random() * plankHeight, 512, Math.random() * 3 + 1);
+            }
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        return texture;
+    }
+};
+
+// Materiales detallados preconfigurados
+const TextureMaterials = {
+    oakWood: new THREE.MeshStandardMaterial({
+        map: ProceduralTextures.wood("#d97706", "#92400e"),
+        roughness: 0.5,
+        metalness: 0.05
+    }),
+    darkWood: new THREE.MeshStandardMaterial({
+        map: ProceduralTextures.wood("#78350f", "#451a03"),
+        roughness: 0.6,
+        metalness: 0.05
+    }),
+    whiteFabric: new THREE.MeshStandardMaterial({
+        map: ProceduralTextures.fabric("#f8fafc", "#e2e8f0"),
+        roughness: 0.95
+    }),
+    amberFabric: new THREE.MeshStandardMaterial({
+        map: ProceduralTextures.fabric("#f59e0b", "#d97706"),
+        roughness: 0.85
+    }),
+    blueFabric: new THREE.MeshStandardMaterial({
+        map: ProceduralTextures.fabric("#2563eb", "#1d4ed8"),
+        roughness: 0.85
+    }),
+    blackMetal: new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        roughness: 0.3,
+        metalness: 0.8
+    }),
+    goldMetal: new THREE.MeshStandardMaterial({
+        color: 0xf59e0b,
+        roughness: 0.2,
+        metalness: 0.9
+    }),
+    glassTv: new THREE.MeshStandardMaterial({
+        color: 0x0f172a,
+        roughness: 0.1,
+        metalness: 0.9
+    })
+};
+
+// Inicialización de la escena 3D
 function initScene() {
     const container = document.getElementById("canvas-container");
     if (!container) return;
@@ -27,7 +153,7 @@ function initScene() {
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(6, 6, 8);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -39,10 +165,10 @@ function initScene() {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
 
-    sunLight = new THREE.DirectionalLight(0xfffbde, 1.3);
+    sunLight = new THREE.DirectionalLight(0xfffbde, 1.4);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
@@ -63,27 +189,41 @@ function initScene() {
     animate();
 }
 
-// Actualizar dimensiones del cuarto
+// Actualizar dimensiones del cuarto con piso texturizado
 function updateRoomDimensions(width, length) {
     if (roomMesh) scene.remove(roomMesh);
 
     const group = new THREE.Group();
 
-    // Suelo
+    // Suelo con piso de madera texturizada
+    const floorTexture = ProceduralTextures.parquet();
+    floorTexture.repeat.set(width, length);
+
     const floorGeo = new THREE.PlaneGeometry(width, length);
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x475569, side: THREE.DoubleSide, roughness: 0.8 });
+    const floorMat = new THREE.MeshStandardMaterial({ 
+        map: floorTexture, 
+        roughness: 0.6, 
+        metalness: 0.1, 
+        side: THREE.DoubleSide 
+    });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     group.add(floor);
 
-    // Rejilla de apoyo
-    const grid = new THREE.GridHelper(Math.max(width, length), Math.max(width, length) * 10, 0xf59e0b, 0x64748b);
+    // Rejilla de guía
+    const grid = new THREE.GridHelper(Math.max(width, length), Math.max(width, length) * 10, 0xf59e0b, 0x94a3b8);
     grid.position.y = 0.01;
     group.add(grid);
 
-    // Paredes transparentes
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.18, side: THREE.DoubleSide });
+    // Paredes transparentes estilo cristal
+    const wallMat = new THREE.MeshStandardMaterial({ 
+        color: 0xf1f5f9, 
+        transparent: true, 
+        opacity: 0.22, 
+        side: THREE.DoubleSide, 
+        roughness: 0.1 
+    });
     const wallHeight = 2.2;
 
     const backWall = new THREE.Mesh(new THREE.PlaneGeometry(width, wallHeight), wallMat);
@@ -99,7 +239,7 @@ function updateRoomDimensions(width, length) {
     scene.add(roomMesh);
 }
 
-// Agregar puerta por defecto
+// Agregar puerta con textura de madera y manija metálica
 function addDefaultDoor(rw, rl) {
     const doorItem = {
         id: "puerta_movil",
@@ -113,18 +253,23 @@ function addDefaultDoor(rw, rl) {
 
     const group = new THREE.Group();
 
-    // Hoja de la puerta
-    const doorLeafMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.4 });
-    const doorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.9, 2.0, 0.08), doorLeafMat);
+    // Hoja de la puerta con textura de madera roble
+    const doorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.88, 2.0, 0.08), TextureMaterials.oakWood);
     doorLeaf.position.y = 1.0;
     group.add(doorLeaf);
 
-    // Arco de apertura
-    const doorSweepGeo = new THREE.RingGeometry(0.05, 0.9, 16, 1, 0, Math.PI / 2);
-    const doorSweepMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
+    // Perilla / Manija dorada
+    const handleMat = TextureMaterials.goldMetal;
+    const handle = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), handleMat);
+    handle.position.set(0.35, 1.0, 0.06);
+    group.add(handle);
+
+    // Arco de barrido / apertura en piso
+    const doorSweepGeo = new THREE.RingGeometry(0.05, 0.88, 16, 1, 0, Math.PI / 2);
+    const doorSweepMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
     const doorSweep = new THREE.Mesh(doorSweepGeo, doorSweepMat);
     doorSweep.rotation.x = -Math.PI / 2;
-    doorSweep.position.set(-0.45, 0.02, 0);
+    doorSweep.position.set(-0.44, 0.02, 0);
     group.add(doorSweep);
 
     group.position.set(rw / 2 - 0.45, 0, rl / 2 - 0.45);
@@ -144,53 +289,105 @@ function updateSunPosition(hour) {
     sunLight.position.z = 5;
 }
 
-// Crear objeto 3D detallado
+// Crear muebles 3D altamente detallados y texturizados
 function createDetailedFurniture(item) {
     const group = new THREE.Group();
     const w = item.w || 1, h = item.h || 0.5, l = item.l || 1;
-
-    const mainMat = new THREE.MeshStandardMaterial({ color: item.color || 0xd97706, roughness: 0.5 });
-    const woodMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.6 });
-    const woodDarkMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.7 });
-    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xfffbe1, roughness: 0.9 });
-
     const id = item.id || "";
 
     if (id.includes("cama")) {
-        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), woodDarkMat);
+        // Cama: Base de madera, cabecero, colchón de tela blanca, cobija texturizada y almohadas
+        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), TextureMaterials.darkWood);
         base.position.y = h * 0.125;
         group.add(base);
 
-        const head = new THREE.Mesh(new THREE.BoxGeometry(w, h * 1.1, 0.1), woodMat);
-        head.position.set(0, h * 0.55, -l / 2 + 0.05);
-        group.add(head);
+        const headboard = new THREE.Mesh(new THREE.BoxGeometry(w, h * 1.1, 0.08), TextureMaterials.oakWood);
+        headboard.position.set(0, h * 0.55, -l / 2 + 0.04);
+        group.add(headboard);
 
-        const mattress = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.4, l * 0.88), whiteMat);
-        mattress.position.set(0, h * 0.45, 0.04);
+        const mattress = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.38, l * 0.88), TextureMaterials.whiteFabric);
+        mattress.position.set(0, h * 0.44, 0.04);
         group.add(mattress);
 
-        const blanket = new THREE.Mesh(new THREE.BoxGeometry(w * 0.97, h * 0.42, l * 0.6), mainMat);
-        blanket.position.set(0, h * 0.46, l * 0.18);
+        const blanket = new THREE.Mesh(new THREE.BoxGeometry(w * 0.97, h * 0.4, l * 0.58), TextureMaterials.amberFabric);
+        blanket.position.set(0, h * 0.45, l * 0.18);
         group.add(blanket);
 
-        const count = w >= 1.5 ? 2 : 1;
-        const pWidth = (w * 0.8) / count;
-        for (let i = 0; i < count; i++) {
-            const pillow = new THREE.Mesh(new THREE.BoxGeometry(pWidth * 0.9, h * 0.12, l * 0.2), whiteMat);
-            const posX = count === 2 ? (-w * 0.22 + i * (w * 0.44)) : 0;
-            pillow.position.set(posX, h * 0.7, -l * 0.28);
+        const pillowCount = w >= 1.5 ? 2 : 1;
+        const pWidth = (w * 0.8) / pillowCount;
+        for (let i = 0; i < pillowCount; i++) {
+            const pillow = new THREE.Mesh(new THREE.BoxGeometry(pWidth * 0.88, h * 0.12, l * 0.22), TextureMaterials.whiteFabric);
+            const posX = pillowCount === 2 ? (-w * 0.22 + i * (w * 0.44)) : 0;
+            pillow.position.set(posX, h * 0.68, -l * 0.26);
             group.add(pillow);
         }
+
     } else if (id.includes("mesa_noche")) {
-        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), woodMat);
-        body.position.y = h / 2;
-        group.add(body);
-    } else {
-        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.9, l), mainMat);
+        // Mesa de noche: Cuerpo de madera, cajón detallado y tirador dorado
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.9, l), TextureMaterials.oakWood);
         body.position.y = h * 0.45;
+        group.add(body);
+
+        const handle = new THREE.Mesh(new THREE.SphereGeometry(0.025, 12, 12), TextureMaterials.goldMetal);
+        handle.position.set(0, h * 0.5, l / 2 + 0.01);
+        group.add(handle);
+
+    } else if (id.includes("escritorio")) {
+        // Escritorio: Tablero de madera roble con patas de metal negro
+        const top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, l), TextureMaterials.oakWood);
+        top.position.y = h - 0.025;
+        group.add(top);
+
+        const legGeo = new THREE.BoxGeometry(0.05, h - 0.05, 0.05);
+        const offsets = [
+            [-w / 2 + 0.05, (h - 0.05) / 2, -l / 2 + 0.05],
+            [w / 2 - 0.05, (h - 0.05) / 2, -l / 2 + 0.05],
+            [-w / 2 + 0.05, (h - 0.05) / 2, l / 2 - 0.05],
+            [w / 2 - 0.05, (h - 0.05) / 2, l / 2 - 0.05]
+        ];
+
+        offsets.forEach(pos => {
+            const leg = new THREE.Mesh(legGeo, TextureMaterials.blackMetal);
+            leg.position.set(...pos);
+            group.add(leg);
+        });
+
+    } else if (id.includes("sofa")) {
+        // Sofá: Asiento, respaldo y reposabrazos con textura de tela azul
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.35, l * 0.8), TextureMaterials.blueFabric);
+        seat.position.set(0, h * 0.2, 0);
+        group.add(seat);
+
+        const back = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.7, l * 0.25), TextureMaterials.blueFabric);
+        back.position.set(0, h * 0.55, -l * 0.375);
+        group.add(back);
+
+        const armL = new THREE.Mesh(new THREE.BoxGeometry(w * 0.15, h * 0.5, l), TextureMaterials.blueFabric);
+        armL.position.set(-w * 0.425, h * 0.35, 0);
+        group.add(armL);
+
+        const armR = new THREE.Mesh(new THREE.BoxGeometry(w * 0.15, h * 0.5, l), TextureMaterials.blueFabric);
+        armR.position.set(w * 0.425, h * 0.35, 0);
+        group.add(armR);
+
+    } else if (id.includes("mueble_tv")) {
+        // Mueble de TV con pantalla de cristal reflectante integrada
+        const cabinet = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), TextureMaterials.darkWood);
+        cabinet.position.y = h / 2;
+        group.add(cabinet);
+
+        const tvScreen = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, h * 1.4, 0.04), TextureMaterials.glassTv);
+        tvScreen.position.set(0, h + (h * 0.7), 0);
+        group.add(tvScreen);
+
+    } else {
+        // Mobiliario genérico estructurado en madera
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), TextureMaterials.oakWood);
+        body.position.y = h / 2;
         group.add(body);
     }
 
+    // Proyección de sombras realista para todas las partes
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
@@ -213,14 +410,14 @@ window.addFurnitureToScene = function(item) {
     if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
-// Mouse posicion
+// Obtener posición del puntero
 function updateMousePosition(event) {
     const rect = renderer.domElement.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 }
 
-// Evento click / toque
+// Evento al presionar
 function onPointerDown(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
@@ -247,7 +444,7 @@ function onPointerDown(event) {
     }
 }
 
-// Evento arrastrar
+// Evento al arrastrar
 function onPointerMove(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
@@ -288,7 +485,7 @@ function onPointerMove(event) {
     }
 }
 
-// Evento soltar
+// Evento al soltar
 function onPointerUp() {
     if (isDragging) {
         isDragging = false;
@@ -297,14 +494,14 @@ function onPointerUp() {
     }
 }
 
-// Bucle de renderizado
+// Bucle de animación
 function animate() {
     requestAnimationFrame(animate);
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
 }
 
-// Ajuste responsive
+// Ajuste responsivo de la ventana
 function onWindowResize() {
     const container = document.getElementById("canvas-container");
     if (!container || !camera || !renderer) return;
