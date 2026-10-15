@@ -7,7 +7,6 @@ const i18n = {
         subtitle: "Simulador de Circulación e Incidencia Solar",
         room: "SALA:",
         hour: "HORA:",
-        window: "VENTANA:",
         themeLight: "Modo Claro",
         themeDark: "Modo Oscuro",
         simulate: "SIMULAR",
@@ -28,7 +27,6 @@ const i18n = {
         subtitle: "Circulation & Solar Impact Simulator",
         room: "ROOM:",
         hour: "TIME:",
-        window: "WINDOW:",
         themeLight: "Light Mode",
         themeDark: "Dark Mode",
         simulate: "SIMULATE",
@@ -127,7 +125,6 @@ function updateLanguageTexts() {
     setTxt("txt-subtitle", t.subtitle);
     setTxt("lbl-room", t.room);
     setTxt("lbl-hour", t.hour);
-    setTxt("lbl-window", t.window);
     setTxt("txt-simulate", t.simulate);
     setTxt("title-catalog", t.catalog);
     setTxt("title-inspector", t.inspector);
