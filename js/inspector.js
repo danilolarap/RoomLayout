@@ -1,3 +1,4 @@
+// Seleccionar elemento e inspeccionar propiedades
 function selectFurniture(meshGroup) {
     selectedMesh = meshGroup;
     const container = document.getElementById("inspector-content");
@@ -19,25 +20,31 @@ function selectFurniture(meshGroup) {
     const lblWidth = currentLang === "es" ? "Ancho" : "Width";
     const lblLength = currentLang === "es" ? "Largo" : "Length";
     const lblRotate = currentLang === "es" ? "Rotar 45°" : "Rotate 45°";
+    const lblDelete = currentLang === "es" ? "Eliminar Objeto" : "Delete Object";
 
     container.innerHTML = `
-        <div class="bg-amber-50/80 dark:bg-slate-900 p-2.5 rounded-xl border border-amber-200 dark:border-slate-700/80 space-y-2">
-            <div class="flex items-center justify-between font-bold text-slate-800 dark:text-slate-100">
-                <span class="flex items-center gap-1.5"><i class="fa-solid ${data.icon || 'fa-cube'} text-amber-500"></i> ${displayName}</span>
-                ${!data.isDoor ? `<button onclick="window.deleteSelected()" class="text-red-500 hover:text-red-600 p-1"><i class="fa-solid fa-trash"></i></button>` : ''}
+        <div class="bg-amber-50/80 dark:bg-slate-900 p-3 rounded-xl border border-amber-200 dark:border-slate-700/80 space-y-3">
+            <div class="flex items-center justify-between font-bold text-slate-900 dark:text-slate-100 text-sm">
+                <span class="flex items-center gap-2"><i class="fa-solid ${data.icon || 'fa-cube'} text-amber-500 text-base"></i> ${displayName}</span>
             </div>
             
-            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300">
-                <div>Pos X: <strong>${meshGroup.position.x.toFixed(2)}m</strong></div>
-                <div>Pos Z: <strong>${meshGroup.position.z.toFixed(2)}m</strong></div>
-                <div>${lblWidth}: <strong>${data.w || 1}m</strong></div>
-                <div>${lblLength}: <strong>${data.l || 1}m</strong></div>
+            <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300 bg-white/60 dark:bg-slate-800/60 p-2 rounded-lg border border-amber-100 dark:border-slate-700/50">
+                <div>Pos X: <strong class="text-slate-900 dark:text-white">${meshGroup.position.x.toFixed(2)}m</strong></div>
+                <div>Pos Z: <strong class="text-slate-900 dark:text-white">${meshGroup.position.z.toFixed(2)}m</strong></div>
+                <div>${lblWidth}: <strong class="text-slate-900 dark:text-white">${data.w || 1}m</strong></div>
+                <div>${lblLength}: <strong class="text-slate-900 dark:text-white">${data.l || 1}m</strong></div>
             </div>
 
-            <div class="pt-1 flex gap-2">
-                <button onclick="window.rotateSelected(45)" class="flex-1 bg-amber-200/60 dark:bg-slate-800 hover:bg-amber-300 dark:hover:bg-slate-700 text-amber-900 dark:text-slate-200 font-bold py-1 rounded-lg transition text-[11px]">
-                    ${lblRotate} <i class="fa-solid fa-rotate-right ml-1"></i>
+            <!-- Botones de Acción Apilados y Más Grandes -->
+            <div class="space-y-2 pt-1">
+                <button onclick="window.rotateSelected(45)" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white font-bold py-2 px-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-rotate-right text-sm"></i> ${lblRotate}
                 </button>
+
+                ${!data.isDoor ? `
+                <button onclick="window.deleteSelected()" class="w-full bg-red-500/10 hover:bg-red-500 text-red-600 hover:text-white border border-red-200 dark:border-red-900/50 active:scale-[0.98] font-bold py-2 px-3 rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-trash-can text-sm"></i> ${lblDelete}
+                </button>` : ''}
             </div>
         </div>
     `;

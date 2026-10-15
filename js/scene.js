@@ -11,9 +11,8 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
-// Generador de texturas de alta calidad mediante Canvas 2D
+// Generador de texturas de alta calidad
 const TextureFactory = {
-    // Madera elegante y pulida
     smoothWood: (baseHex = "#c084fc", grainHex = "#9333ea") => {
         const canvas = document.createElement("canvas");
         canvas.width = 512; canvas.height = 512;
@@ -36,7 +35,6 @@ const TextureFactory = {
         return texture;
     },
 
-    // Tejido de tela con trama fina
     fabric: (baseHex = "#2563eb") => {
         const canvas = document.createElement("canvas");
         canvas.width = 256; canvas.height = 256;
@@ -56,7 +54,6 @@ const TextureFactory = {
         return texture;
     },
 
-    // Parquet de suelo de madera refinada
     parquetFloor: () => {
         const canvas = document.createElement("canvas");
         canvas.width = 512; canvas.height = 512;
@@ -82,7 +79,7 @@ const TextureFactory = {
     }
 };
 
-// Materiales globales
+// Materiales del proyecto
 const Materials = {
     oakWood: new THREE.MeshStandardMaterial({ map: TextureFactory.smoothWood("#d97706", "#b45309"), roughness: 0.4 }),
     darkNogal: new THREE.MeshStandardMaterial({ map: TextureFactory.smoothWood("#451a03", "#270e02"), roughness: 0.5 }),
@@ -227,14 +224,13 @@ function updateSunPosition(hour) {
     sunLight.position.z = 5;
 }
 
-// Modelado 3D detallado por tipo de objeto
+// Modelado de mobiliario detallado
 function createDetailedFurniture(item) {
     const group = new THREE.Group();
     const w = item.w || 1, h = item.h || 0.5, l = item.l || 1;
     const id = item.id || "";
 
     if (id === "cama_king") {
-        // Cama King: Madera oscura, sábanas blancas, cobija Azul Real
         const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), Materials.darkNogal);
         base.position.y = h * 0.125;
         group.add(base);
@@ -258,7 +254,6 @@ function createDetailedFurniture(item) {
         }
 
     } else if (id === "cama_queen") {
-        // Cama Queen: Madera Roble, cobija Esmeralda
         const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), Materials.oakWood);
         base.position.y = h * 0.125;
         group.add(base);
@@ -282,7 +277,6 @@ function createDetailedFurniture(item) {
         }
 
     } else if (id === "cama_sencilla") {
-        // Cama Individual: Madera Cerezo, cobija Ámbar
         const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), Materials.cherryWood);
         base.position.y = h * 0.125;
         group.add(base);
@@ -303,8 +297,22 @@ function createDetailedFurniture(item) {
         pillow.position.set(0, h * 0.68, -l * 0.26);
         group.add(pillow);
 
+    } else if (id === "mesa_noche") {
+        // Mesa de Noche: Cuerpo de madera, cajón frontal y manija dorada frontal
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.85, l), Materials.oakWood);
+        body.position.y = (h * 0.85) / 2;
+        group.add(body);
+
+        const drawerFront = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, h * 0.35, 0.02), Materials.cherryWood);
+        drawerFront.position.set(0, h * 0.5, l / 2 + 0.01);
+        group.add(drawerFront);
+
+        const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.1, 12), Materials.goldMetal);
+        handle.rotation.z = Math.PI / 2;
+        handle.position.set(0, h * 0.5, l / 2 + 0.03);
+        group.add(handle);
+
     } else if (id === "armario_doble") {
-        // Armario Doble: Madera roble con paneles dobles y 2 tiradores verticales cromados
         const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), Materials.oakWood);
         body.position.y = h / 2;
         group.add(body);
@@ -325,8 +333,27 @@ function createDetailedFurniture(item) {
         handleR.position.set(0.04, h / 2, l / 2 + 0.03);
         group.add(handleR);
 
+    } else if (id === "escritorio_recto") {
+        // Escritorio Recto: Tablero de madera pulida y 4 patas metálicas independientes
+        const top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, l), Materials.oakWood);
+        top.position.y = h - 0.025;
+        group.add(top);
+
+        const legGeo = new THREE.BoxGeometry(0.04, h - 0.05, 0.04);
+        const offsets = [
+            [-w / 2 + 0.05, (h - 0.05) / 2, -l / 2 + 0.05],
+            [w / 2 - 0.05, (h - 0.05) / 2, -l / 2 + 0.05],
+            [-w / 2 + 0.05, (h - 0.05) / 2, l / 2 - 0.05],
+            [w / 2 - 0.05, (h - 0.05) / 2, l / 2 - 0.05]
+        ];
+
+        offsets.forEach(pos => {
+            const leg = new THREE.Mesh(legGeo, Materials.blackMetal);
+            leg.position.set(...pos);
+            group.add(leg);
+        });
+
     } else if (id === "escritorio_l") {
-        // Escritorio en L: Estructura angular real en "L"
         const mainTop = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, l * 0.5), Materials.oakWood);
         mainTop.position.set(0, h - 0.025, -l * 0.25);
         group.add(mainTop);
@@ -351,7 +378,6 @@ function createDetailedFurniture(item) {
         });
 
     } else if (id === "silla_ergonomica") {
-        // Silla de Oficina Ergonómica: Base de 5 ruedas, pistón, asiento, respaldo y apoyabrazos
         const baseCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.1, 12), Materials.blackMetal);
         baseCenter.position.y = 0.1;
         group.add(baseCenter);
@@ -381,7 +407,6 @@ function createDetailedFurniture(item) {
         group.add(backrest);
 
     } else if (id.includes("mueble_tv")) {
-        // TV Stand: Mueble bajo de madera y Pantalla OLED ultradelgada prominente
         const tvWidth = id.includes("grande") ? 1.6 : 1.2;
         const tvHeight = id.includes("grande") ? 0.95 : 0.75;
 
@@ -406,7 +431,6 @@ function createDetailedFurniture(item) {
         group.add(bezel);
 
     } else if (id.includes("sofa")) {
-        // Sofá 1 o 2 puestos con cojines divididos y textura de tela
         const isTwoSeater = id === "sofa_2p";
         const cushionCount = isTwoSeater ? 2 : 1;
         const cushionWidth = (w * 0.8) / cushionCount;
@@ -435,7 +459,6 @@ function createDetailedFurniture(item) {
         group.add(armR);
 
     } else if (id === "rack_mancuernas") {
-        // Rack de Mancuernas: Estructura de marco en A de acero negro con pesas metálicas
         const frameL = new THREE.Mesh(new THREE.BoxGeometry(0.05, h, l * 0.9), Materials.blackMetal);
         frameL.position.set(-w * 0.45, h / 2, 0);
         group.add(frameL);
@@ -470,7 +493,6 @@ function createDetailedFurniture(item) {
         }
 
     } else if (id === "banco_plano") {
-        // Banco Plano: Cojín acolchado de piel sintética negra con patas de tubo de acero
         const pad = new THREE.Mesh(new THREE.BoxGeometry(w, 0.08, l), Materials.blackLeather);
         pad.position.y = h - 0.04;
         group.add(pad);
