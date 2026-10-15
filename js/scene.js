@@ -1,3 +1,5 @@
+// js/scene.js - Administrador Principal de la Escena 3D, Iluminación y Cámara
+
 let scene, camera, renderer, controls;
 let roomMesh, sunLight;
 let activeItems = [];
@@ -11,7 +13,7 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
-// Control de simulación solar
+// Control de simulación solar cinematográfica
 let isSimulating = false;
 
 function initScene() {
@@ -167,8 +169,10 @@ window.startSunSimulation = function() {
     const btnSimulate = document.getElementById("btn-simulate");
 
     let currentHour = 6.0;
-    btnSimulate.disabled = true;
-    btnSimulate.classList.add("opacity-50", "cursor-not-allowed");
+    if (btnSimulate) {
+        btnSimulate.disabled = true;
+        btnSimulate.classList.add("opacity-50", "cursor-not-allowed");
+    }
 
     const interval = setInterval(() => {
         currentHour += 0.1;
@@ -176,8 +180,10 @@ window.startSunSimulation = function() {
             currentHour = 18.0;
             clearInterval(interval);
             isSimulating = false;
-            btnSimulate.disabled = false;
-            btnSimulate.classList.remove("opacity-50", "cursor-not-allowed");
+            if (btnSimulate) {
+                btnSimulate.disabled = false;
+                btnSimulate.classList.remove("opacity-50", "cursor-not-allowed");
+            }
         }
 
         if (sunSlider) sunSlider.value = currentHour;
@@ -211,6 +217,30 @@ window.addFurnitureToScene = function(item) {
     activeItems.push(furnitureGroup);
     if (typeof selectFurniture === "function") selectFurniture(furnitureGroup);
     if (typeof window.updateMetrics === "function") window.updateMetrics();
+};
+
+// Cálculo y actualización de métricas del espacio y llamada al motor de IA
+window.updateMetrics = function() {
+    let occupied = 0;
+    activeItems.forEach(item => {
+        const d = item.userData || {};
+        if (!d.isDoor) occupied += (d.w || 1) * (d.l || 1);
+    });
+
+    const rw = parseFloat(document.getElementById("room-width")?.value) || 4;
+    const rl = parseFloat(document.getElementById("room-length")?.value) || 3.5;
+    const totalArea = rw * rl;
+
+    const occEl = document.getElementById("metric-occupied");
+    const freeEl = document.getElementById("metric-free");
+
+    if (occEl) occEl.innerText = `${occupied.toFixed(1)} m²`;
+    if (freeEl) freeEl.innerText = `${Math.max(0, totalArea - occupied).toFixed(1)} m²`;
+
+    // Disparar diagnóstico automático con IA
+    if (typeof window.runAIDiagnostic === "function") {
+        window.runAIDiagnostic();
+    }
 };
 
 function updateMousePosition(event) {

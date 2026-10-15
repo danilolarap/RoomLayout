@@ -17,8 +17,8 @@ const i18n = {
         metrics: "MÉTRICAS DE ESPACIO",
         occupied: "OCUPADA",
         free: "LIBRE",
-        diagTitle: "DIAGNÓSTICO",
-        diagOk: "Sin conflictos detectados.",
+        diagTitle: "ASISTENTE IA",
+        diagOk: "Distribución óptima sin conflictos.",
         freeFlow: "Flujo Libre",
         collision: "Colisión / Bloqueo",
         sunLight: "Luz Solar Directa"
@@ -37,8 +37,8 @@ const i18n = {
         metrics: "SPACE METRICS",
         occupied: "OCCUPIED",
         free: "FREE",
-        diagTitle: "DIAGNOSTIC",
-        diagOk: "No conflicts detected.",
+        diagTitle: "AI ASSISTANT",
+        diagOk: "Optimal layout with no conflicts.",
         freeFlow: "Free Flow",
         collision: "Collision / Block",
         sunLight: "Direct Sunlight"
@@ -70,7 +70,62 @@ window.stepRoomDimension = function(inputId, step) {
     }
 };
 
+// Función para ejecutar el diagnóstico inteligente
+window.runAIDiagnostic = function() {
+    if (typeof window.AIEngine === "undefined") return;
+
+    const analysis = window.AIEngine.analyzeScene();
+    const diagBox = document.getElementById("diagnostic-box");
+    const scoreBadge = document.getElementById("ai-score-badge");
+
+    if (scoreBadge) {
+        scoreBadge.innerText = `${analysis.score} / 100`;
+        if (analysis.score >= 80) {
+            scoreBadge.className = "text-xs font-black px-2 py-0.5 rounded-md bg-emerald-500 text-white shadow-xs";
+        } else if (analysis.score >= 50) {
+            scoreBadge.className = "text-xs font-black px-2 py-0.5 rounded-md bg-amber-500 text-white shadow-xs";
+        } else {
+            scoreBadge.className = "text-xs font-black px-2 py-0.5 rounded-md bg-red-500 text-white shadow-xs";
+        }
+    }
+
+    if (!diagBox) return;
+    diagBox.innerHTML = "";
+
+    if (analysis.conflicts.length === 0 && analysis.suggestions.length === 0) {
+        diagBox.className = "flex-1 bg-emerald-50 dark:bg-slate-950 border border-emerald-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-emerald-800 dark:text-emerald-300 space-y-2";
+        diagBox.innerHTML = `<div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span>${i18n[window.currentLang].diagOk}</span></div>`;
+        return;
+    }
+
+    diagBox.className = "flex-1 bg-amber-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-amber-900 dark:text-amber-200 space-y-2 max-h-48 overflow-y-auto custom-scrollbar";
+
+    // Mostrar conflictos / alertas
+    analysis.conflicts.forEach(msg => {
+        const item = document.createElement("div");
+        item.className = "flex items-start gap-1.5 text-red-600 dark:text-red-400 font-medium";
+        item.innerHTML = `<i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i> <span>${msg}</span>`;
+        diagBox.appendChild(item);
+    });
+
+    // Mostrar sugerencias ergonómicas
+    analysis.suggestions.forEach(msg => {
+        const item = document.createElement("div");
+        item.className = "flex items-start gap-1.5 text-amber-700 dark:text-amber-300 font-medium";
+        item.innerHTML = `<i class="fa-solid fa-lightbulb mt-0.5 shrink-0"></i> <span>${msg}</span>`;
+        diagBox.appendChild(item);
+    });
+};
+
 function initUI() {
+    // Botón Analizar con IA
+    const btnAi = document.getElementById("btn-analyze-ai");
+    if (btnAi) {
+        btnAi.addEventListener("click", () => {
+            window.runAIDiagnostic();
+        });
+    }
+
     // Cambio de Idioma
     const langBtn = document.getElementById("lang-toggle");
     if (langBtn) {
@@ -115,7 +170,7 @@ function initUI() {
         });
     }
 
-    // Botón de Simulación Solar Cinematográfica
+    // Botón de Simulación Solar
     const btnSimulate = document.getElementById("btn-simulate");
     if (btnSimulate) {
         btnSimulate.addEventListener("click", () => {
@@ -125,7 +180,7 @@ function initUI() {
         });
     }
 
-    // Actualización manual directa en los inputs
+    // Actualización manual en los inputs
     const inputW = document.getElementById("room-width");
     const inputL = document.getElementById("room-length");
 
@@ -143,7 +198,7 @@ function initUI() {
     if (inputW) inputW.addEventListener("change", updateRoom);
     if (inputL) inputL.addEventListener("change", updateRoom);
 
-    // Control solar manual
+    // Control solar
     const sunSlider = document.getElementById("sun-time");
     if (sunSlider) {
         sunSlider.addEventListener("input", (e) => {
