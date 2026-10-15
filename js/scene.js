@@ -281,17 +281,25 @@ function createDetailedFurniture(item) {
         }
 
     } else if (id === "mesa_noche") {
-        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.85, l), Materials.oakWood);
-        body.position.y = (h * 0.85) / 2;
+        // Mesa de Noche: Altura exacta de 0.55m con cuerpo, tapa superior y cajón
+        const topThickness = 0.03;
+        const bodyHeight = h - topThickness;
+
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, bodyHeight, l), Materials.oakWood);
+        body.position.y = bodyHeight / 2;
         group.add(body);
 
-        const drawerFront = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, h * 0.35, 0.02), Materials.cherryWood);
-        drawerFront.position.set(0, h * 0.5, l / 2 + 0.01);
+        const topBoard = new THREE.Mesh(new THREE.BoxGeometry(w * 1.04, topThickness, l * 1.04), Materials.oakWood);
+        topBoard.position.y = bodyHeight + topThickness / 2;
+        group.add(topBoard);
+
+        const drawerFront = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, bodyHeight * 0.45, 0.02), Materials.cherryWood);
+        drawerFront.position.set(0, bodyHeight * 0.6, l / 2 + 0.01);
         group.add(drawerFront);
 
-        const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.1, 12), Materials.goldMetal);
+        const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.12, 12), Materials.goldMetal);
         handle.rotation.z = Math.PI / 2;
-        handle.position.set(0, h * 0.5, l / 2 + 0.03);
+        handle.position.set(0, bodyHeight * 0.6, l / 2 + 0.03);
         group.add(handle);
 
     } else if (id === "escritorio_recto" || id === "escritorio_l") {
