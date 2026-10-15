@@ -1,4 +1,3 @@
-// Seleccionar elemento
 function selectFurniture(meshGroup) {
     selectedMesh = meshGroup;
     const container = document.getElementById("inspector-content");
@@ -35,25 +34,22 @@ function selectFurniture(meshGroup) {
                 <div>${lblLength}: <strong>${data.l || 1}m</strong></div>
             </div>
 
-            ${!data.isDoor ? `
             <div class="pt-1 flex gap-2">
                 <button onclick="window.rotateSelected(45)" class="flex-1 bg-amber-200/60 dark:bg-slate-800 hover:bg-amber-300 dark:hover:bg-slate-700 text-amber-900 dark:text-slate-200 font-bold py-1 rounded-lg transition text-[11px]">
                     ${lblRotate} <i class="fa-solid fa-rotate-right ml-1"></i>
                 </button>
-            </div>` : ''}
+            </div>
         </div>
     `;
 }
 
-// Rotar objeto seleccionado
 window.rotateSelected = function(deg = 45) {
-    if (!selectedMesh || selectedMesh.userData.isDoor) return;
+    if (!selectedMesh) return;
     selectedMesh.rotation.y += (deg * Math.PI) / 180;
     selectedMesh.userData.rotationY = selectedMesh.rotation.y;
     selectFurniture(selectedMesh);
 };
 
-// Eliminar objeto seleccionado
 window.deleteSelected = function() {
     if (!selectedMesh || selectedMesh.userData.isDoor) return;
     scene.remove(selectedMesh);
@@ -62,7 +58,6 @@ window.deleteSelected = function() {
     if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
-// Actualizar métricas
 window.updateMetrics = function() {
     const rw = parseFloat(document.getElementById("room-width").value) || 4;
     const rl = parseFloat(document.getElementById("room-length").value) || 3.5;

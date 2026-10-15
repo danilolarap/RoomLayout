@@ -1,11 +1,11 @@
-// Catálogo de muebles bilingüe
+// Catálogo de muebles bilingüe actualizado
 const FURNITURE_CATALOG = [
     {
         category: { es: "Básicos del Cuarto", en: "Bedroom Basics" },
         items: [
-            { id: "cama_king", name: { es: "Cama King", en: "King Bed" }, w: 2.0, l: 2.0, h: 0.65, color: 0xd97706, icon: "fa-bed" },
-            { id: "cama_queen", name: { es: "Cama Queen", en: "Queen Bed" }, w: 1.6, l: 2.0, h: 0.6, color: 0xf59e0b, icon: "fa-bed" },
-            { id: "cama_sencilla", name: { es: "Cama Individual", en: "Single Bed" }, w: 1.0, l: 1.9, h: 0.5, color: 0xfbbf24, icon: "fa-bed" },
+            { id: "cama_king", name: { es: "Cama King", en: "King Bed" }, w: 2.0, l: 2.0, h: 0.65, color: 0x1d4ed8, icon: "fa-bed" },
+            { id: "cama_queen", name: { es: "Cama Queen", en: "Queen Bed" }, w: 1.6, l: 2.0, h: 0.6, color: 0x059669, icon: "fa-bed" },
+            { id: "cama_sencilla", name: { es: "Cama Individual", en: "Single Bed" }, w: 1.0, l: 1.9, h: 0.5, color: 0xd97706, icon: "fa-bed" },
             { id: "mesa_noche", name: { es: "Mesa de Noche", en: "Nightstand" }, w: 0.45, l: 0.45, h: 0.5, color: 0xb45309, icon: "fa-box" },
             { id: "armario_doble", name: { es: "Armario Doble", en: "Double Wardrobe" }, w: 1.5, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" }
         ]
@@ -23,7 +23,8 @@ const FURNITURE_CATALOG = [
         items: [
             { id: "mueble_tv_grande", name: { es: "Mueble TV 65\"", en: "TV Stand 65\"" }, w: 1.8, l: 0.45, h: 0.5, color: 0xc2410c, icon: "fa-tv" },
             { id: "mueble_tv", name: { es: "Mueble TV 55\"", en: "TV Stand 55\"" }, w: 1.4, l: 0.4, h: 0.5, color: 0xea580c, icon: "fa-tv" },
-            { id: "sofa_2p", name: { es: "Sofá 2 Puestos", en: "2-Seater Sofa" }, w: 1.6, l: 0.85, h: 0.8, color: 0xd97706, icon: "fa-couch" }
+            { id: "sofa_1p", name: { es: "Sofá 1 Puesto", en: "Armchair (1-Seater)" }, w: 0.9, l: 0.85, h: 0.8, color: 0x2563eb, icon: "fa-couch" },
+            { id: "sofa_2p", name: { es: "Sofá 2 Puestos", en: "2-Seater Sofa" }, w: 1.6, l: 0.85, h: 0.8, color: 0x2563eb, icon: "fa-couch" }
         ]
     },
     {
@@ -35,7 +36,6 @@ const FURNITURE_CATALOG = [
     }
 ];
 
-// Renderizado del catálogo
 function renderCatalog(filterQuery = "") {
     const container = document.getElementById("catalog-container");
     const countBadge = document.getElementById("catalog-count");

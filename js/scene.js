@@ -1,4 +1,3 @@
-// Variables globales de Three.js
 let scene, camera, renderer, controls;
 let roomMesh, sunLight;
 let activeItems = [];
@@ -12,24 +11,23 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
-// Generador sintético de texturas procedimentales mediante Canvas HTML5
-const ProceduralTextures = {
-    // Textura de veta de madera
-    wood: (baseHex = "#d97706", lineHex = "#b45309") => {
+// Generador de texturas de alta calidad mediante Canvas 2D
+const TextureFactory = {
+    // Madera elegante y pulida
+    smoothWood: (baseHex = "#c084fc", grainHex = "#9333ea") => {
         const canvas = document.createElement("canvas");
-        canvas.width = 512;
-        canvas.height = 512;
+        canvas.width = 512; canvas.height = 512;
         const ctx = canvas.getContext("2d");
 
-        ctx.fillStyle = baseHex;
+        const grad = ctx.createLinearGradient(0, 0, 512, 512);
+        grad.addColorStop(0, baseHex);
+        grad.addColorStop(1, grainHex);
+        ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 512, 512);
 
-        ctx.fillStyle = lineHex;
-        for (let i = 0; i < 500; i++) {
-            const y = Math.random() * 512;
-            const h = Math.random() * 2 + 0.5;
-            ctx.globalAlpha = Math.random() * 0.15 + 0.05;
-            ctx.fillRect(0, y, 512, h);
+        ctx.fillStyle = "rgba(0,0,0,0.04)";
+        for (let i = 0; i < 200; i++) {
+            ctx.fillRect(0, Math.random() * 512, 512, Math.random() * 2 + 1);
         }
 
         const texture = new THREE.CanvasTexture(canvas);
@@ -38,24 +36,19 @@ const ProceduralTextures = {
         return texture;
     },
 
-    // Textura de tela para ropa de cama y sofás
-    fabric: (baseHex = "#3b82f6", patternHex = "#1d4ed8") => {
+    // Tejido de tela con trama fina
+    fabric: (baseHex = "#2563eb") => {
         const canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = 256;
+        canvas.width = 256; canvas.height = 256;
         const ctx = canvas.getContext("2d");
 
         ctx.fillStyle = baseHex;
         ctx.fillRect(0, 0, 256, 256);
 
-        ctx.fillStyle = patternHex;
-        ctx.globalAlpha = 0.08;
-        for (let x = 0; x < 256; x += 4) {
-            ctx.fillRect(x, 0, 2, 256);
-        }
-        for (let y = 0; y < 256; y += 4) {
-            ctx.fillRect(0, y, 256, 2);
-        }
+        ctx.fillStyle = "rgba(255,255,255,0.08)";
+        for (let x = 0; x < 256; x += 4) ctx.fillRect(x, 0, 2, 256);
+        ctx.fillStyle = "rgba(0,0,0,0.08)";
+        for (let y = 0; y < 256; y += 4) ctx.fillRect(0, y, 256, 2);
 
         const texture = new THREE.CanvasTexture(canvas);
         texture.wrapS = THREE.RepeatWrapping;
@@ -63,31 +56,23 @@ const ProceduralTextures = {
         return texture;
     },
 
-    // Textura de suelo de parquet / listones de madera
-    parquet: () => {
+    // Parquet de suelo de madera refinada
+    parquetFloor: () => {
         const canvas = document.createElement("canvas");
-        canvas.width = 512;
-        canvas.height = 512;
+        canvas.width = 512; canvas.height = 512;
         const ctx = canvas.getContext("2d");
 
-        ctx.fillStyle = "#e2e8f0";
+        ctx.fillStyle = "#f1f5f9";
         ctx.fillRect(0, 0, 512, 512);
 
-        const plankHeight = 64;
         ctx.strokeStyle = "#cbd5e1";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2;
 
-        for (let y = 0; y <= 512; y += plankHeight) {
+        for (let y = 0; y <= 512; y += 64) {
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(512, y);
             ctx.stroke();
-
-            // Vetas suaves de listón
-            ctx.fillStyle = "rgba(148, 163, 184, 0.08)";
-            for (let i = 0; i < 15; i++) {
-                ctx.fillRect(0, y + Math.random() * plankHeight, 512, Math.random() * 3 + 1);
-            }
         }
 
         const texture = new THREE.CanvasTexture(canvas);
@@ -97,48 +82,22 @@ const ProceduralTextures = {
     }
 };
 
-// Materiales detallados preconfigurados
-const TextureMaterials = {
-    oakWood: new THREE.MeshStandardMaterial({
-        map: ProceduralTextures.wood("#d97706", "#92400e"),
-        roughness: 0.5,
-        metalness: 0.05
-    }),
-    darkWood: new THREE.MeshStandardMaterial({
-        map: ProceduralTextures.wood("#78350f", "#451a03"),
-        roughness: 0.6,
-        metalness: 0.05
-    }),
-    whiteFabric: new THREE.MeshStandardMaterial({
-        map: ProceduralTextures.fabric("#f8fafc", "#e2e8f0"),
-        roughness: 0.95
-    }),
-    amberFabric: new THREE.MeshStandardMaterial({
-        map: ProceduralTextures.fabric("#f59e0b", "#d97706"),
-        roughness: 0.85
-    }),
-    blueFabric: new THREE.MeshStandardMaterial({
-        map: ProceduralTextures.fabric("#2563eb", "#1d4ed8"),
-        roughness: 0.85
-    }),
-    blackMetal: new THREE.MeshStandardMaterial({
-        color: 0x1e293b,
-        roughness: 0.3,
-        metalness: 0.8
-    }),
-    goldMetal: new THREE.MeshStandardMaterial({
-        color: 0xf59e0b,
-        roughness: 0.2,
-        metalness: 0.9
-    }),
-    glassTv: new THREE.MeshStandardMaterial({
-        color: 0x0f172a,
-        roughness: 0.1,
-        metalness: 0.9
-    })
+// Materiales globales
+const Materials = {
+    oakWood: new THREE.MeshStandardMaterial({ map: TextureFactory.smoothWood("#d97706", "#b45309"), roughness: 0.4 }),
+    darkNogal: new THREE.MeshStandardMaterial({ map: TextureFactory.smoothWood("#451a03", "#270e02"), roughness: 0.5 }),
+    cherryWood: new THREE.MeshStandardMaterial({ map: TextureFactory.smoothWood("#9a3412", "#7c2d12"), roughness: 0.4 }),
+    whiteSheet: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#f8fafc"), roughness: 0.9 }),
+    blueFabric: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#2563eb"), roughness: 0.8 }),
+    emeraldFabric: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#059669"), roughness: 0.8 }),
+    amberFabric: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#d97706"), roughness: 0.8 }),
+    blackLeather: new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.3, metalness: 0.2 }),
+    blackMetal: new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.3, metalness: 0.8 }),
+    chromeMetal: new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.1, metalness: 0.95 }),
+    goldMetal: new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 }),
+    tvScreen: new THREE.MeshStandardMaterial({ color: 0x030712, roughness: 0.1, metalness: 0.9 })
 };
 
-// Inicialización de la escena 3D
 function initScene() {
     const container = document.getElementById("canvas-container");
     if (!container) return;
@@ -153,7 +112,7 @@ function initScene() {
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(6, 6, 8);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -189,41 +148,26 @@ function initScene() {
     animate();
 }
 
-// Actualizar dimensiones del cuarto con piso texturizado
 function updateRoomDimensions(width, length) {
     if (roomMesh) scene.remove(roomMesh);
 
     const group = new THREE.Group();
 
-    // Suelo con piso de madera texturizada
-    const floorTexture = ProceduralTextures.parquet();
+    const floorTexture = TextureFactory.parquetFloor();
     floorTexture.repeat.set(width, length);
 
     const floorGeo = new THREE.PlaneGeometry(width, length);
-    const floorMat = new THREE.MeshStandardMaterial({ 
-        map: floorTexture, 
-        roughness: 0.6, 
-        metalness: 0.1, 
-        side: THREE.DoubleSide 
-    });
+    const floorMat = new THREE.MeshStandardMaterial({ map: floorTexture, roughness: 0.5, side: THREE.DoubleSide });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     group.add(floor);
 
-    // Rejilla de guía
     const grid = new THREE.GridHelper(Math.max(width, length), Math.max(width, length) * 10, 0xf59e0b, 0x94a3b8);
     grid.position.y = 0.01;
     group.add(grid);
 
-    // Paredes transparentes estilo cristal
-    const wallMat = new THREE.MeshStandardMaterial({ 
-        color: 0xf1f5f9, 
-        transparent: true, 
-        opacity: 0.22, 
-        side: THREE.DoubleSide, 
-        roughness: 0.1 
-    });
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
     const wallHeight = 2.2;
 
     const backWall = new THREE.Mesh(new THREE.PlaneGeometry(width, wallHeight), wallMat);
@@ -239,7 +183,6 @@ function updateRoomDimensions(width, length) {
     scene.add(roomMesh);
 }
 
-// Agregar puerta con textura de madera y manija metálica
 function addDefaultDoor(rw, rl) {
     const doorItem = {
         id: "puerta_movil",
@@ -253,18 +196,14 @@ function addDefaultDoor(rw, rl) {
 
     const group = new THREE.Group();
 
-    // Hoja de la puerta con textura de madera roble
-    const doorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.88, 2.0, 0.08), TextureMaterials.oakWood);
+    const doorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.88, 2.0, 0.08), Materials.oakWood);
     doorLeaf.position.y = 1.0;
     group.add(doorLeaf);
 
-    // Perilla / Manija dorada
-    const handleMat = TextureMaterials.goldMetal;
-    const handle = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), handleMat);
+    const handle = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), Materials.goldMetal);
     handle.position.set(0.35, 1.0, 0.06);
     group.add(handle);
 
-    // Arco de barrido / apertura en piso
     const doorSweepGeo = new THREE.RingGeometry(0.05, 0.88, 16, 1, 0, Math.PI / 2);
     const doorSweepMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
     const doorSweep = new THREE.Mesh(doorSweepGeo, doorSweepMat);
@@ -279,7 +218,6 @@ function addDefaultDoor(rw, rl) {
     activeItems.push(group);
 }
 
-// Posicionar luz solar
 function updateSunPosition(hour) {
     if (!sunLight) return;
     const angle = ((hour - 6) / 12) * Math.PI;
@@ -289,105 +227,276 @@ function updateSunPosition(hour) {
     sunLight.position.z = 5;
 }
 
-// Crear muebles 3D altamente detallados y texturizados
+// Modelado 3D detallado por tipo de objeto
 function createDetailedFurniture(item) {
     const group = new THREE.Group();
     const w = item.w || 1, h = item.h || 0.5, l = item.l || 1;
     const id = item.id || "";
 
-    if (id.includes("cama")) {
-        // Cama: Base de madera, cabecero, colchón de tela blanca, cobija texturizada y almohadas
-        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), TextureMaterials.darkWood);
+    if (id === "cama_king") {
+        // Cama King: Madera oscura, sábanas blancas, cobija Azul Real
+        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), Materials.darkNogal);
         base.position.y = h * 0.125;
         group.add(base);
 
-        const headboard = new THREE.Mesh(new THREE.BoxGeometry(w, h * 1.1, 0.08), TextureMaterials.oakWood);
+        const headboard = new THREE.Mesh(new THREE.BoxGeometry(w, h * 1.1, 0.08), Materials.darkNogal);
         headboard.position.set(0, h * 0.55, -l / 2 + 0.04);
         group.add(headboard);
 
-        const mattress = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.38, l * 0.88), TextureMaterials.whiteFabric);
+        const mattress = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.38, l * 0.88), Materials.whiteSheet);
         mattress.position.set(0, h * 0.44, 0.04);
         group.add(mattress);
 
-        const blanket = new THREE.Mesh(new THREE.BoxGeometry(w * 0.97, h * 0.4, l * 0.58), TextureMaterials.amberFabric);
+        const blanket = new THREE.Mesh(new THREE.BoxGeometry(w * 0.97, h * 0.4, l * 0.58), Materials.blueFabric);
         blanket.position.set(0, h * 0.45, l * 0.18);
         group.add(blanket);
 
-        const pillowCount = w >= 1.5 ? 2 : 1;
-        const pWidth = (w * 0.8) / pillowCount;
-        for (let i = 0; i < pillowCount; i++) {
-            const pillow = new THREE.Mesh(new THREE.BoxGeometry(pWidth * 0.88, h * 0.12, l * 0.22), TextureMaterials.whiteFabric);
-            const posX = pillowCount === 2 ? (-w * 0.22 + i * (w * 0.44)) : 0;
-            pillow.position.set(posX, h * 0.68, -l * 0.26);
+        for (let i = 0; i < 2; i++) {
+            const pillow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.38, h * 0.12, l * 0.2), Materials.whiteSheet);
+            pillow.position.set(-w * 0.22 + i * (w * 0.44), h * 0.68, -l * 0.26);
             group.add(pillow);
         }
 
-    } else if (id.includes("mesa_noche")) {
-        // Mesa de noche: Cuerpo de madera, cajón detallado y tirador dorado
-        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.9, l), TextureMaterials.oakWood);
-        body.position.y = h * 0.45;
+    } else if (id === "cama_queen") {
+        // Cama Queen: Madera Roble, cobija Esmeralda
+        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), Materials.oakWood);
+        base.position.y = h * 0.125;
+        group.add(base);
+
+        const headboard = new THREE.Mesh(new THREE.BoxGeometry(w, h * 1.1, 0.08), Materials.oakWood);
+        headboard.position.set(0, h * 0.55, -l / 2 + 0.04);
+        group.add(headboard);
+
+        const mattress = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.38, l * 0.88), Materials.whiteSheet);
+        mattress.position.set(0, h * 0.44, 0.04);
+        group.add(mattress);
+
+        const blanket = new THREE.Mesh(new THREE.BoxGeometry(w * 0.97, h * 0.4, l * 0.58), Materials.emeraldFabric);
+        blanket.position.set(0, h * 0.45, l * 0.18);
+        group.add(blanket);
+
+        for (let i = 0; i < 2; i++) {
+            const pillow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.38, h * 0.12, l * 0.2), Materials.whiteSheet);
+            pillow.position.set(-w * 0.22 + i * (w * 0.44), h * 0.68, -l * 0.26);
+            group.add(pillow);
+        }
+
+    } else if (id === "cama_sencilla") {
+        // Cama Individual: Madera Cerezo, cobija Ámbar
+        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), Materials.cherryWood);
+        base.position.y = h * 0.125;
+        group.add(base);
+
+        const headboard = new THREE.Mesh(new THREE.BoxGeometry(w, h * 1.1, 0.08), Materials.cherryWood);
+        headboard.position.set(0, h * 0.55, -l / 2 + 0.04);
+        group.add(headboard);
+
+        const mattress = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.38, l * 0.88), Materials.whiteSheet);
+        mattress.position.set(0, h * 0.44, 0.04);
+        group.add(mattress);
+
+        const blanket = new THREE.Mesh(new THREE.BoxGeometry(w * 0.97, h * 0.4, l * 0.58), Materials.amberFabric);
+        blanket.position.set(0, h * 0.45, l * 0.18);
+        group.add(blanket);
+
+        const pillow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.7, h * 0.12, l * 0.2), Materials.whiteSheet);
+        pillow.position.set(0, h * 0.68, -l * 0.26);
+        group.add(pillow);
+
+    } else if (id === "armario_doble") {
+        // Armario Doble: Madera roble con paneles dobles y 2 tiradores verticales cromados
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), Materials.oakWood);
+        body.position.y = h / 2;
         group.add(body);
 
-        const handle = new THREE.Mesh(new THREE.SphereGeometry(0.025, 12, 12), TextureMaterials.goldMetal);
-        handle.position.set(0, h * 0.5, l / 2 + 0.01);
-        group.add(handle);
+        const doorL = new THREE.Mesh(new THREE.BoxGeometry(w * 0.48, h * 0.94, 0.02), Materials.darkNogal);
+        doorL.position.set(-w * 0.24, h / 2, l / 2 + 0.01);
+        group.add(doorL);
 
-    } else if (id.includes("escritorio")) {
-        // Escritorio: Tablero de madera roble con patas de metal negro
-        const top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, l), TextureMaterials.oakWood);
-        top.position.y = h - 0.025;
-        group.add(top);
+        const doorR = new THREE.Mesh(new THREE.BoxGeometry(w * 0.48, h * 0.94, 0.02), Materials.darkNogal);
+        doorR.position.set(w * 0.24, h / 2, l / 2 + 0.01);
+        group.add(doorR);
 
-        const legGeo = new THREE.BoxGeometry(0.05, h - 0.05, 0.05);
-        const offsets = [
-            [-w / 2 + 0.05, (h - 0.05) / 2, -l / 2 + 0.05],
-            [w / 2 - 0.05, (h - 0.05) / 2, -l / 2 + 0.05],
-            [-w / 2 + 0.05, (h - 0.05) / 2, l / 2 - 0.05],
-            [w / 2 - 0.05, (h - 0.05) / 2, l / 2 - 0.05]
+        const handleL = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.25, 12), Materials.chromeMetal);
+        handleL.position.set(-0.04, h / 2, l / 2 + 0.03);
+        group.add(handleL);
+
+        const handleR = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.25, 12), Materials.chromeMetal);
+        handleR.position.set(0.04, h / 2, l / 2 + 0.03);
+        group.add(handleR);
+
+    } else if (id === "escritorio_l") {
+        // Escritorio en L: Estructura angular real en "L"
+        const mainTop = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, l * 0.5), Materials.oakWood);
+        mainTop.position.set(0, h - 0.025, -l * 0.25);
+        group.add(mainTop);
+
+        const sideTop = new THREE.Mesh(new THREE.BoxGeometry(w * 0.4, 0.05, l * 0.5), Materials.oakWood);
+        sideTop.position.set(-w * 0.3, h - 0.025, l * 0.25);
+        group.add(sideTop);
+
+        const legGeo = new THREE.BoxGeometry(0.04, h - 0.05, 0.04);
+        const legPositions = [
+            [w / 2 - 0.04, (h - 0.05) / 2, -l / 2 + 0.04],
+            [w / 2 - 0.04, (h - 0.05) / 2, 0],
+            [-w / 2 + 0.04, (h - 0.05) / 2, -l / 2 + 0.04],
+            [-w / 2 + 0.04, (h - 0.05) / 2, l / 2 - 0.04],
+            [-w * 0.1, (h - 0.05) / 2, l / 2 - 0.04]
         ];
 
-        offsets.forEach(pos => {
-            const leg = new THREE.Mesh(legGeo, TextureMaterials.blackMetal);
+        legPositions.forEach(pos => {
+            const leg = new THREE.Mesh(legGeo, Materials.blackMetal);
             leg.position.set(...pos);
             group.add(leg);
         });
 
-    } else if (id.includes("sofa")) {
-        // Sofá: Asiento, respaldo y reposabrazos con textura de tela azul
-        const seat = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.35, l * 0.8), TextureMaterials.blueFabric);
-        seat.position.set(0, h * 0.2, 0);
+    } else if (id === "silla_ergonomica") {
+        // Silla de Oficina Ergonómica: Base de 5 ruedas, pistón, asiento, respaldo y apoyabrazos
+        const baseCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.1, 12), Materials.blackMetal);
+        baseCenter.position.y = 0.1;
+        group.add(baseCenter);
+
+        for (let i = 0; i < 5; i++) {
+            const angle = (i * Math.PI * 2) / 5;
+            const leg = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.03, 0.04), Materials.blackMetal);
+            leg.position.set(Math.cos(angle) * 0.14, 0.08, Math.sin(angle) * 0.14);
+            leg.rotation.y = -angle;
+            group.add(leg);
+
+            const wheel = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), Materials.blackMetal);
+            wheel.position.set(Math.cos(angle) * 0.26, 0.025, Math.sin(angle) * 0.26);
+            group.add(wheel);
+        }
+
+        const piston = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.35, 12), Materials.chromeMetal);
+        piston.position.y = 0.28;
+        group.add(piston);
+
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(w * 0.8, 0.08, l * 0.8), Materials.blackLeather);
+        seat.position.y = 0.48;
         group.add(seat);
 
-        const back = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.7, l * 0.25), TextureMaterials.blueFabric);
-        back.position.set(0, h * 0.55, -l * 0.375);
-        group.add(back);
-
-        const armL = new THREE.Mesh(new THREE.BoxGeometry(w * 0.15, h * 0.5, l), TextureMaterials.blueFabric);
-        armL.position.set(-w * 0.425, h * 0.35, 0);
-        group.add(armL);
-
-        const armR = new THREE.Mesh(new THREE.BoxGeometry(w * 0.15, h * 0.5, l), TextureMaterials.blueFabric);
-        armR.position.set(w * 0.425, h * 0.35, 0);
-        group.add(armR);
+        const backrest = new THREE.Mesh(new THREE.BoxGeometry(w * 0.75, h * 0.55, 0.05), Materials.blackLeather);
+        backrest.position.set(0, 0.8, -l * 0.35);
+        group.add(backrest);
 
     } else if (id.includes("mueble_tv")) {
-        // Mueble de TV con pantalla de cristal reflectante integrada
-        const cabinet = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), TextureMaterials.darkWood);
-        cabinet.position.y = h / 2;
+        // TV Stand: Mueble bajo de madera y Pantalla OLED ultradelgada prominente
+        const tvWidth = id.includes("grande") ? 1.6 : 1.2;
+        const tvHeight = id.includes("grande") ? 0.95 : 0.75;
+
+        const cabinet = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.8, l), Materials.darkNogal);
+        cabinet.position.y = (h * 0.8) / 2;
         group.add(cabinet);
 
-        const tvScreen = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, h * 1.4, 0.04), TextureMaterials.glassTv);
-        tvScreen.position.set(0, h + (h * 0.7), 0);
-        group.add(tvScreen);
+        const tvStandBase = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.02, 0.25), Materials.blackMetal);
+        tvStandBase.position.set(0, h * 0.81, 0);
+        group.add(tvStandBase);
+
+        const tvPole = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.2, 0.04), Materials.blackMetal);
+        tvPole.position.set(0, h * 0.8 + 0.1, 0);
+        group.add(tvPole);
+
+        const screen = new THREE.Mesh(new THREE.BoxGeometry(tvWidth, tvHeight, 0.03), Materials.tvScreen);
+        screen.position.set(0, h * 0.8 + 0.1 + (tvHeight / 2), 0);
+        group.add(screen);
+
+        const bezel = new THREE.Mesh(new THREE.BoxGeometry(tvWidth + 0.03, tvHeight + 0.03, 0.01), Materials.blackMetal);
+        bezel.position.set(0, h * 0.8 + 0.1 + (tvHeight / 2), -0.01);
+        group.add(bezel);
+
+    } else if (id.includes("sofa")) {
+        // Sofá 1 o 2 puestos con cojines divididos y textura de tela
+        const isTwoSeater = id === "sofa_2p";
+        const cushionCount = isTwoSeater ? 2 : 1;
+        const cushionWidth = (w * 0.8) / cushionCount;
+
+        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.2, l), Materials.darkNogal);
+        base.position.y = h * 0.1;
+        group.add(base);
+
+        for (let i = 0; i < cushionCount; i++) {
+            const posX = isTwoSeater ? (-w * 0.2 + i * (w * 0.4)) : 0;
+            const cushion = new THREE.Mesh(new THREE.BoxGeometry(cushionWidth * 0.95, h * 0.25, l * 0.75), Materials.blueFabric);
+            cushion.position.set(posX, h * 0.28, 0.02);
+            group.add(cushion);
+        }
+
+        const backrest = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.55, l * 0.22), Materials.blueFabric);
+        backrest.position.set(0, h * 0.55, -l * 0.35);
+        group.add(backrest);
+
+        const armL = new THREE.Mesh(new THREE.BoxGeometry(w * 0.12, h * 0.45, l), Materials.blueFabric);
+        armL.position.set(-w * 0.44, h * 0.38, 0);
+        group.add(armL);
+
+        const armR = new THREE.Mesh(new THREE.BoxGeometry(w * 0.12, h * 0.45, l), Materials.blueFabric);
+        armR.position.set(w * 0.44, h * 0.38, 0);
+        group.add(armR);
+
+    } else if (id === "rack_mancuernas") {
+        // Rack de Mancuernas: Estructura de marco en A de acero negro con pesas metálicas
+        const frameL = new THREE.Mesh(new THREE.BoxGeometry(0.05, h, l * 0.9), Materials.blackMetal);
+        frameL.position.set(-w * 0.45, h / 2, 0);
+        group.add(frameL);
+
+        const frameR = new THREE.Mesh(new THREE.BoxGeometry(0.05, h, l * 0.9), Materials.blackMetal);
+        frameR.position.set(w * 0.45, h / 2, 0);
+        group.add(frameR);
+
+        for (let level = 0; level < 2; level++) {
+            const rail = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, 0.03, 0.08), Materials.blackMetal);
+            const posY = h * 0.35 + level * (h * 0.4);
+            rail.position.set(0, posY, 0);
+            group.add(rail);
+
+            for (let d = 0; d < 3; d++) {
+                const posX = -w * 0.3 + d * (w * 0.3);
+                const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.18, 12), Materials.chromeMetal);
+                handle.rotation.z = Math.PI / 2;
+                handle.position.set(posX, posY + 0.04, 0);
+                group.add(handle);
+
+                const weightL = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.04, 16), Materials.blackMetal);
+                weightL.rotation.z = Math.PI / 2;
+                weightL.position.set(posX - 0.08, posY + 0.04, 0);
+                group.add(weightL);
+
+                const weightR = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.04, 16), Materials.blackMetal);
+                weightR.rotation.z = Math.PI / 2;
+                weightR.position.set(posX + 0.08, posY + 0.04, 0);
+                group.add(weightR);
+            }
+        }
+
+    } else if (id === "banco_plano") {
+        // Banco Plano: Cojín acolchado de piel sintética negra con patas de tubo de acero
+        const pad = new THREE.Mesh(new THREE.BoxGeometry(w, 0.08, l), Materials.blackLeather);
+        pad.position.y = h - 0.04;
+        group.add(pad);
+
+        const legL = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, h - 0.08, 12), Materials.blackMetal);
+        legL.position.set(-w * 0.4, (h - 0.08) / 2, 0);
+        group.add(legL);
+
+        const legR = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, h - 0.08, 12), Materials.blackMetal);
+        legR.position.set(w * 0.4, (h - 0.08) / 2, 0);
+        group.add(legR);
+
+        const baseBarL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.03, l * 0.9), Materials.blackMetal);
+        baseBarL.position.set(-w * 0.4, 0.015, 0);
+        group.add(baseBarL);
+
+        const baseBarR = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.03, l * 0.9), Materials.blackMetal);
+        baseBarR.position.set(w * 0.4, 0.015, 0);
+        group.add(baseBarR);
 
     } else {
-        // Mobiliario genérico estructurado en madera
-        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), TextureMaterials.oakWood);
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), Materials.oakWood);
         body.position.y = h / 2;
         group.add(body);
     }
 
-    // Proyección de sombras realista para todas las partes
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
@@ -398,7 +507,6 @@ function createDetailedFurniture(item) {
     return group;
 }
 
-// Agregar mueble a la escena
 window.addFurnitureToScene = function(item) {
     const furnitureGroup = createDetailedFurniture(item);
     furnitureGroup.position.set(0, 0, 0);
@@ -410,14 +518,12 @@ window.addFurnitureToScene = function(item) {
     if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
-// Obtener posición del puntero
 function updateMousePosition(event) {
     const rect = renderer.domElement.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 }
 
-// Evento al presionar
 function onPointerDown(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
@@ -444,7 +550,6 @@ function onPointerDown(event) {
     }
 }
 
-// Evento al arrastrar
 function onPointerMove(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
@@ -485,7 +590,6 @@ function onPointerMove(event) {
     }
 }
 
-// Evento al soltar
 function onPointerUp() {
     if (isDragging) {
         isDragging = false;
@@ -494,14 +598,12 @@ function onPointerUp() {
     }
 }
 
-// Bucle de animación
 function animate() {
     requestAnimationFrame(animate);
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
 }
 
-// Ajuste responsivo de la ventana
 function onWindowResize() {
     const container = document.getElementById("canvas-container");
     if (!container || !camera || !renderer) return;
