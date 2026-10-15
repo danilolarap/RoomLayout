@@ -1,4 +1,4 @@
-// ui.js - Manejo de la Interfaz de Usuario e Idiomas
+// js/ui.js - Manejo de la Interfaz General (Idioma, Tema, Controles)
 
 window.currentLang = "es";
 
@@ -70,7 +70,6 @@ window.stepRoomDimension = function(inputId, step) {
     }
 };
 
-// Función para ejecutar el diagnóstico inteligente
 window.runAIDiagnostic = function() {
     if (typeof window.AIEngine === "undefined") return;
 
@@ -100,7 +99,6 @@ window.runAIDiagnostic = function() {
 
     diagBox.className = "flex-1 bg-amber-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-amber-900 dark:text-amber-200 space-y-2 max-h-48 overflow-y-auto custom-scrollbar";
 
-    // Mostrar conflictos / alertas
     analysis.conflicts.forEach(msg => {
         const item = document.createElement("div");
         item.className = "flex items-start gap-1.5 text-red-600 dark:text-red-400 font-medium";
@@ -108,7 +106,6 @@ window.runAIDiagnostic = function() {
         diagBox.appendChild(item);
     });
 
-    // Mostrar sugerencias ergonómicas
     analysis.suggestions.forEach(msg => {
         const item = document.createElement("div");
         item.className = "flex items-start gap-1.5 text-amber-700 dark:text-amber-300 font-medium";
@@ -118,7 +115,11 @@ window.runAIDiagnostic = function() {
 };
 
 function initUI() {
-    // Botón Analizar con IA
+    // Inicializar módulo de autenticación separado
+    if (typeof window.initAuthModal === "function") {
+        window.initAuthModal();
+    }
+
     const btnAi = document.getElementById("btn-analyze-ai");
     if (btnAi) {
         btnAi.addEventListener("click", () => {
@@ -126,7 +127,6 @@ function initUI() {
         });
     }
 
-    // Cambio de Idioma
     const langBtn = document.getElementById("lang-toggle");
     if (langBtn) {
         langBtn.addEventListener("click", () => {
@@ -138,7 +138,6 @@ function initUI() {
         });
     }
 
-    // Modo Oscuro / Claro
     const themeBtn = document.getElementById("theme-toggle");
     if (themeBtn) {
         themeBtn.addEventListener("click", () => {
@@ -152,7 +151,6 @@ function initUI() {
         });
     }
 
-    // Botones de Vistas de Cámara (ISO 3D / PLANTA TOP)
     const btnIso = document.getElementById("view-iso");
     const btnTop = document.getElementById("view-top");
 
@@ -170,7 +168,6 @@ function initUI() {
         });
     }
 
-    // Botón de Simulación Solar
     const btnSimulate = document.getElementById("btn-simulate");
     if (btnSimulate) {
         btnSimulate.addEventListener("click", () => {
@@ -180,7 +177,6 @@ function initUI() {
         });
     }
 
-    // Actualización manual en los inputs
     const inputW = document.getElementById("room-width");
     const inputL = document.getElementById("room-length");
 
@@ -198,7 +194,6 @@ function initUI() {
     if (inputW) inputW.addEventListener("change", updateRoom);
     if (inputL) inputL.addEventListener("change", updateRoom);
 
-    // Control solar
     const sunSlider = document.getElementById("sun-time");
     if (sunSlider) {
         sunSlider.addEventListener("input", (e) => {
@@ -214,7 +209,6 @@ function initUI() {
         });
     }
 
-    // Buscador del catálogo
     const searchInput = document.getElementById("search-catalog");
     if (searchInput) {
         searchInput.addEventListener("input", (e) => {

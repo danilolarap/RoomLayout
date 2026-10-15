@@ -38,6 +38,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
+    <!-- Dexie.js (Base de datos IndexedDB local) -->
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -94,8 +97,13 @@
             </div>
         </div>
 
-        <!-- Selector Idioma, Tema y Simulación -->
+        <!-- Selector Idioma, Tema, Usuario y Simulación -->
         <div class="flex items-center gap-2">
+            <!-- Botón de Usuario / Autenticación -->
+            <button id="btn-auth-modal" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
+                <i class="fa-solid fa-user"></i> <span id="user-display-name">Ingresar</span>
+            </button>
+
             <button id="lang-toggle" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 border border-amber-300/60 dark:border-slate-700">
                 <i class="fa-solid fa-globe"></i> <span id="lang-label">ES</span>
             </button>
@@ -207,13 +215,11 @@
                     </button>
                 </div>
 
-                <!-- Tarjeta de Puntaje Eficiencia -->
                 <div class="bg-amber-100/40 dark:bg-slate-800/50 p-2.5 rounded-xl border border-amber-200/60 dark:border-slate-700/50 flex items-center justify-between">
                     <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300">Puntaje Eficiencia:</span>
                     <span id="ai-score-badge" class="text-xs font-black px-2 py-0.5 rounded-md bg-emerald-500 text-white shadow-xs">100 / 100</span>
                 </div>
 
-                <!-- Caja de Resultados y Sugerencias -->
                 <div id="diagnostic-box" class="flex-1 bg-emerald-50 dark:bg-slate-950 border border-emerald-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-emerald-800 dark:text-emerald-300 space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
                     <div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span id="diag-ok">Distribución óptima sin conflictos.</span></div>
                 </div>
@@ -221,7 +227,60 @@
         </aside>
     </div>
 
-    <!-- SCRIPTS DE LA APLICACIÓN (ORDEN STRICTO) -->
+    <!-- MODAL DE AUTENTICACIÓN (LOGIN / SIGN IN) -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+            <button id="btn-close-modal" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Pestañas Iniciar Sesión / Registro -->
+            <div class="flex border-b border-amber-200 dark:border-slate-800 pb-2 mb-4 gap-4">
+                <button id="tab-login" class="font-bold text-sm text-amber-600 dark:text-amber-400 border-b-2 border-amber-500 pb-1">Iniciar Sesión</button>
+                <button id="tab-register" class="font-bold text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 pb-1">Registrarse</button>
+            </div>
+
+            <!-- Formulario Iniciar Sesión -->
+            <form id="form-login" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Usuario o Email</label>
+                    <input id="login-user" type="text" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Contraseña</label>
+                    <input id="login-pass" type="password" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
+                </div>
+                <div id="auth-error" class="text-red-500 text-[11px] font-medium hidden"></div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl transition shadow-xs mt-2">
+                    Entrar
+                </button>
+            </form>
+
+            <!-- Formulario Registro -->
+            <form id="form-register" class="space-y-3 text-xs hidden">
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Nombre de Usuario</label>
+                    <input id="reg-user" type="text" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Correo Electrónico</label>
+                    <input id="reg-email" type="email" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Contraseña</label>
+                    <input id="reg-pass" type="password" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
+                </div>
+                <div id="reg-error" class="text-red-500 text-[11px] font-medium hidden"></div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition shadow-xs mt-2">
+                    Crear Cuenta Local
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPTS DE LA APLICACIÓN (ORDEN ESTRICTO) -->
+    <script src="js/auth/db.js"></script>
+    <script src="js/auth/auth-ui.js"></script>
     <script src="js/catalog.js"></script>
     <script src="js/materials.js"></script>
     <script src="js/furniture-builder.js"></script>
