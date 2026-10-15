@@ -1,9 +1,11 @@
-// js/ai-engine.js - Motor Local de Análisis Inteligente de Espacios
+// js/ai-engine.js - Motor Local de Análisis Inteligente de Espacios 3D
 
 window.AIEngine = {
     analyzeScene: function() {
         const roomW = parseFloat(document.getElementById("room-width")?.value) || 4.0;
         const roomL = parseFloat(document.getElementById("room-length")?.value) || 3.5;
+        const halfW = roomW / 2;
+        const halfL = roomL / 2;
         const roomArea = roomW * roomL;
 
         const results = {
@@ -18,33 +20,36 @@ window.AIEngine = {
         };
 
         if (typeof activeItems === "undefined" || activeItems.length === 0) {
-            results.suggestions.push("La habitación está vacía. Agrega muebles desde el catálogo para obtener un análisis.");
+            results.suggestions.push("La habitación está vacía. Agrega muebles para iniciar la evaluación.");
             return results;
         }
 
-        // 1. Calcular Áreas Ocupadas y de Circulación
         let totalFurnitureArea = 0;
-        const itemsBounding = [];
+        const items = [];
 
+        // 1. Recopilar bounding boxes 3D en espacio del mundo y datos de cada objeto
         activeItems.forEach(group => {
             const data = group.userData || {};
-            if (data.isDoor) return; // Excluir puerta del área de muebles
+            if (data.isDoor) return;
 
-            const w = data.w || 1;
-            const l = data.l || 1;
-            const area = w * l;
-            totalFurnitureArea += area;
-
-            // Obtener caja delimitadora en espacio mundial 2D (XZ)
             const box = new THREE.Box3().setFromObject(group);
-            itemsBounding.push({
+            const w = data.w || (box.max.x - box.min.x);
+            const h = data.h || (box.max.y - box.min.y);
+            const l = data.l || (box.max.z - box.min.z);
+
+            totalFurnitureArea += (w * l);
+
+            items.push({
                 group: group,
-                name: data.name?.es || data.id || "Mueble",
-                id: data.id,
+                name: data.name?.es || data.id || "Objeto",
+                id: data.id || "",
                 box: box,
                 pos: group.position.clone(),
                 w: w,
-                l: l
+                h: h,
+                l: l,
+                isWallItem: data.id?.includes("ventana") || data.id === "reloj_pared" || data.id === "barra_pared",
+                isSurfaceItem: ["laptop", "pc_torre", "monitor", "mouse", "reloj_mesa"].includes(data.id)
             });
         });
 
@@ -52,63 +57,92 @@ window.AIEngine = {
         results.metrics.freeArea = Math.max(0, roomArea - totalFurnitureArea);
         results.metrics.occupancyPercentage = Math.round((totalFurnitureArea / roomArea) * 100);
 
-        // Penalización por saturación de espacio
-        if (results.metrics.occupancyPercentage > 45) {
-            results.score -= 20;
-            results.conflicts.push(`Habitación sobrecargada (${results.metrics.occupancyPercentage}% ocupado). Se recomienda mantener menos del 40% para buena circulación.`);
-        } else if (results.metrics.occupancyPercentage < 15 && activeItems.length > 1) {
-            results.suggestions.push("Espacio muy despejado. Puedes integrar zonas adicionales como estudio o descanso.");
-        }
+        // 2. REGLA 1: Verificar si el objeto está fuera del cuarto (Límites X / Z)
+        items.forEach(item => {
+            const margin = 0.02; // Pequeño margen numérico para imprecisiones flotantes
+            if (item.box.min.x < -halfW - margin || item.box.max.x > halfW + margin ||
+                item.box.min.z < -halfL - margin || item.box.max.z > halfL + margin) {
+                results.score -= 20;
+                results.conflicts.push(`"${item.name}" sobrepasa los límites de la habitación.`);
+            }
+        });
 
-        // 2. Detección de Colisiones entre Muebles
-        for (let i = 0; i < itemsBounding.length; i++) {
-            for (let j = i + 1; j < itemsBounding.length; j++) {
-                const itemA = itemsBounding[i];
-                const itemB = itemsBounding[j];
+        // 3. REGLA 2: Verificar si un objeto está FLOTANDO en el aire sin soporte
+        items.forEach(item => {
+            // Si está elevado del suelo y no es un objeto diseñado para ir colgado en la pared
+            if (item.pos.y > 0.1 && !item.isWallItem) {
+                let supported = false;
 
-                // Reducir ligeramente el margen para evitar falsos positivos por contacto de bordes
-                const boxA = itemA.box.clone().expandByScalar(-0.02);
-                const boxB = itemB.box.clone().expandByScalar(-0.02);
+                // Buscar si existe un objeto soporte debajo (escritorio, mesa de noche, mueble TV, etc.)
+                for (let other of items) {
+                    if (other === item) continue;
+
+                    // Comprobar si el objeto proyectado en XZ cae dentro del área del soporte
+                    const isOverlappingXZ = (
+                        item.box.min.x < other.box.max.x &&
+                        item.box.max.x > other.box.min.x &&
+                        item.box.min.z < other.box.max.z &&
+                        item.box.max.z > other.box.min.z
+                    );
+
+                    // Verificar si la base del objeto está apoyada cerca de la superficie superior del soporte
+                    const isSupportedVertically = Math.abs(item.box.min.y - other.box.max.y) < 0.15 || item.pos.y >= (other.h * 0.7);
+
+                    if (isOverlappingXZ && isSupportedVertically) {
+                        supported = true;
+                        break;
+                    }
+                }
+
+                if (!supported) {
+                    results.score -= 15;
+                    results.conflicts.push(`"${item.name}" está flotando en el aire sin un mueble o superficie que lo sostenga.`);
+                }
+            }
+        });
+
+        // 4. REGLA 3: Detección de Colisiones Reales (Volumétricas 3D)
+        for (let i = 0; i < items.length; i++) {
+            for (let j = i + 1; j < items.length; j++) {
+                const itemA = items[i];
+                const itemB = items[j];
+
+                // Excepción 1: Ventanas contiguas o unidas (no cuentan como colisión)
+                if (itemA.id.includes("ventana") && itemB.id.includes("ventana")) continue;
+
+                // Excepción 2: Un objeto apoyado encima de otro en Y (apilamiento permitido)
+                const isStacked = (itemA.box.min.y >= itemB.box.max.y - 0.05) || (itemB.box.min.y >= itemA.box.max.y - 0.05);
+                if (isStacked) continue;
+
+                // Reducir ligeramente la caja de colisión 3D para evitar rozamiento suave de bordes
+                const boxA = itemA.box.clone().expandByScalar(-0.03);
+                const boxB = itemB.box.clone().expandByScalar(-0.03);
 
                 if (boxA.intersectsBox(boxB)) {
-                    results.score -= 15;
-                    results.conflicts.push(`Colisión detectada entre "${itemA.name}" y "${itemB.name}".`);
+                    results.score -= 20;
+                    results.conflicts.push(`Colisión e incrustación detectada entre "${itemA.name}" y "${itemB.name}".`);
                 }
             }
         }
 
-        // 3. Verificación de Accesibilidad a la Puerta
+        // 5. REGLA 4: Bloqueo de Puerta
         const doorObj = activeItems.find(item => item.userData?.isDoor);
         if (doorObj) {
-            const doorBox = new THREE.Box3().setFromObject(doorObj).expandByScalar(0.2); // Área de apertura
-            itemsBounding.forEach(item => {
+            const doorBox = new THREE.Box3().setFromObject(doorObj).expandByScalar(0.15);
+            items.forEach(item => {
                 if (doorBox.intersectsBox(item.box)) {
                     results.score -= 25;
-                    results.conflicts.push(`"${item.name}" bloquea el paso o la apertura de la puerta.`);
+                    results.conflicts.push(`"${item.name}" bloquea el área de apertura de la puerta.`);
                 }
             });
         }
 
-        // 4. Análisis Ergonómico e Iluminación Solar
-        const sunHour = parseFloat(document.getElementById("sun-time")?.value) || 12;
-        
-        itemsBounding.forEach(item => {
-            // Pantallas / Monitores vs Luz Directa
-            if (item.id === "monitor" || item.id === "pc_torre" || item.id?.includes("mueble_tv")) {
-                if (sunHour >= 13 && sunHour <= 16 && item.pos.z < 0) {
-                    results.suggestions.push(`"${item.name}" podría recibir reflejo solar directo por la tarde (13:00-16:00). Se sugiere reorientarlo.`);
-                }
-            }
+        // 6. Sugerencias Ergonómicas Opcionales
+        if (results.metrics.occupancyPercentage > 45) {
+            results.suggestions.push(`La habitación está bastante llena (${results.metrics.occupancyPercentage}%). Intenta liberar zonas de paso.`);
+        }
 
-            // Escritorios
-            if (item.id?.includes("escritorio")) {
-                results.suggestions.push(`Asegúrate de que la silla de "${item.name}" tenga al menos 0.8m libres hacia atrás para desplazarse cómodamente.`);
-            }
-        });
-
-        // Asegurar que el puntaje permanezca entre 0 y 100
         results.score = Math.max(0, Math.min(100, results.score));
-
         return results;
     }
 };
