@@ -5,7 +5,7 @@ const FURNITURE_CATALOG = [
         items: [
             { id: "cama_king", name: { es: "Cama King", en: "King Bed" }, w: 2.0, l: 2.0, h: 0.65, color: 0x1d4ed8, icon: "fa-bed" },
             { id: "cama_queen", name: { es: "Cama Queen", en: "Queen Bed" }, w: 1.6, l: 2.0, h: 0.6, color: 0x059669, icon: "fa-bed" },
-            { id: "cama_sencilla", name: { es: "Cama Individual", en: "Single Bed" }, w: 1.0, l: 1.9, h: 0.5, color: 0xd97706, icon: "fa-bed" },
+            { id: "cama_sencilla", name: { es: "Cama Individual", en: "Single Bed" }, w: 1.0, l: 1.9, h: 0.5, color: 0xdc2626, icon: "fa-bed" },
             { id: "mesa_noche", name: { es: "Mesa de Noche", en: "Nightstand" }, w: 0.55, l: 0.55, h: 0.55, color: 0xb45309, icon: "fa-box" },
             { id: "armario_doble", name: { es: "Armario 2 Puertas", en: "2-Door Wardrobe" }, w: 1.2, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" },
             { id: "armario_3p", name: { es: "Armario 3 Puertas", en: "3-Door Wardrobe" }, w: 1.8, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" },

@@ -75,6 +75,7 @@ const Materials = {
     blueFabric: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#2563eb"), roughness: 0.8 }),
     emeraldFabric: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#059669"), roughness: 0.8 }),
     amberFabric: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#d97706"), roughness: 0.8 }),
+    redFabric: new THREE.MeshStandardMaterial({ map: TextureFactory.fabric("#dc2626"), roughness: 0.8 }),
     blackLeather: new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.3, metalness: 0.2 }),
     blackMetal: new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.3, metalness: 0.8 }),
     chromeMetal: new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.1, metalness: 0.95 }),

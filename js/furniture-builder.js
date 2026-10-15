@@ -6,7 +6,7 @@ function createDetailedFurniture(item) {
 
     if (id === "cama_king" || id === "cama_queen" || id === "cama_sencilla") {
         const matWood = id === "cama_king" ? Materials.darkNogal : (id === "cama_queen" ? Materials.oakWood : Materials.cherryWood);
-        const matFabric = id === "cama_king" ? Materials.blueFabric : (id === "cama_queen" ? Materials.emeraldFabric : Materials.amberFabric);
+        const matFabric = id === "cama_king" ? Materials.blueFabric : (id === "cama_queen" ? Materials.emeraldFabric : Materials.redFabric);
 
         const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.25, l), matWood);
         base.position.y = h * 0.125;
