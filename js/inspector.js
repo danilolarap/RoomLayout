@@ -19,7 +19,7 @@ function selectFurniture(meshGroup) {
 
     const lblWidth = currentLang === "es" ? "Ancho" : "Width";
     const lblLength = currentLang === "es" ? "Largo" : "Length";
-    const lblHeightY = currentLang === "es" ? "Elevación (Piso / Mesa)" : "Elevation (Floor / Desk)";
+    const lblHeightY = currentLang === "es" ? "Altura / Elevación" : "Height / Elevation";
     const lblRotate = currentLang === "es" ? "Rotar 45°" : "Rotate 45°";
     const lblDelete = currentLang === "es" ? "Eliminar Objeto" : "Delete Object";
 
@@ -38,13 +38,21 @@ function selectFurniture(meshGroup) {
                 <div>${lblLength}: <strong class="text-slate-900 dark:text-white">${data.l || 1}m</strong></div>
             </div>
 
-            <!-- Regulador de Altura en Eje Y -->
-            <div class="bg-white/60 dark:bg-slate-800/60 p-2.5 rounded-lg border border-amber-100 dark:border-slate-700/50 space-y-1">
+            <!-- Ajuste de Altura con Botones de +- 20cm -->
+            <div class="bg-white/60 dark:bg-slate-800/60 p-2.5 rounded-lg border border-amber-100 dark:border-slate-700/50 space-y-2">
                 <div class="flex justify-between items-center text-xs font-semibold text-slate-700 dark:text-slate-200">
                     <span>${lblHeightY}:</span>
                     <strong id="val-posY" class="text-amber-600 dark:text-amber-400 font-bold">${currentY.toFixed(2)} m</strong>
                 </div>
-                <input id="input-height-y" type="range" min="0" max="2.5" step="0.05" value="${currentY}" class="w-full accent-amber-500 cursor-pointer">
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="window.changeSelectedHeight(-0.20)" class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold py-1.5 px-2 rounded-lg transition text-xs flex items-center justify-center gap-1 active:scale-95">
+                        <i class="fa-solid fa-arrow-down text-amber-600"></i> -20 cm
+                    </button>
+                    <button onclick="window.changeSelectedHeight(0.20)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-1.5 px-2 rounded-lg transition text-xs flex items-center justify-center gap-1 active:scale-95 shadow-xs">
+                        <i class="fa-solid fa-arrow-up"></i> +20 cm
+                    </button>
+                </div>
             </div>
 
             <!-- Botones de Acción -->
@@ -60,20 +68,23 @@ function selectFurniture(meshGroup) {
             </div>
         </div>
     `;
-
-    // Event listener para regular la altura Y dinámicamente
-    const inputY = document.getElementById("input-height-y");
-    if (inputY) {
-        inputY.addEventListener("input", (e) => {
-            const val = parseFloat(e.target.value) || 0;
-            if (selectedMesh) {
-                selectedMesh.position.y = val;
-                const valDisplay = document.getElementById("val-posY");
-                if (valDisplay) valDisplay.innerText = `${val.toFixed(2)} m`;
-            }
-        });
-    }
 }
+
+// Función global para variar la altura en pasos de 20 cm
+window.changeSelectedHeight = function(deltaY) {
+    if (!selectedMesh) return;
+    let newY = (selectedMesh.position.y || 0) + deltaY;
+    
+    // Evitar que baje por debajo del piso
+    if (newY < 0) newY = 0;
+    // Límite superior máximo de pared
+    if (newY > 2.5) newY = 2.5;
+
+    selectedMesh.position.y = parseFloat(newY.toFixed(2));
+
+    const valDisplay = document.getElementById("val-posY");
+    if (valDisplay) valDisplay.innerText = `${selectedMesh.position.y.toFixed(2)} m`;
+};
 
 window.rotateSelected = function(deg = 45) {
     if (!selectedMesh) return;

@@ -11,7 +11,7 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
-// Generador de texturas sintéticas
+// Generador de texturas sintéticas procedimentales (Canvas HTML5)
 const TextureFactory = {
     smoothWood: (baseHex = "#c084fc", grainHex = "#9333ea") => {
         const canvas = document.createElement("canvas");
@@ -79,7 +79,7 @@ const TextureFactory = {
     }
 };
 
-// Materiales globales
+// Materiales globales de la aplicación
 const Materials = {
     oakWood: new THREE.MeshStandardMaterial({ map: TextureFactory.smoothWood("#d97706", "#b45309"), roughness: 0.4 }),
     darkNogal: new THREE.MeshStandardMaterial({ map: TextureFactory.smoothWood("#451a03", "#270e02"), roughness: 0.5 }),
@@ -325,6 +325,142 @@ function createDetailedFurniture(item) {
             group.add(leg);
         });
 
+    } else if (id === "silla_ergonomica") {
+        const baseCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.1, 12), Materials.blackMetal);
+        baseCenter.position.y = 0.1;
+        group.add(baseCenter);
+
+        for (let i = 0; i < 5; i++) {
+            const angle = (i * Math.PI * 2) / 5;
+            const leg = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.03, 0.04), Materials.blackMetal);
+            leg.position.set(Math.cos(angle) * 0.14, 0.08, Math.sin(angle) * 0.14);
+            leg.rotation.y = -angle;
+            group.add(leg);
+
+            const wheel = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), Materials.blackMetal);
+            wheel.position.set(Math.cos(angle) * 0.26, 0.025, Math.sin(angle) * 0.26);
+            group.add(wheel);
+        }
+
+        const piston = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.35, 12), Materials.chromeMetal);
+        piston.position.y = 0.28;
+        group.add(piston);
+
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(w * 0.8, 0.08, l * 0.8), Materials.blackLeather);
+        seat.position.y = 0.48;
+        group.add(seat);
+
+        const backrest = new THREE.Mesh(new THREE.BoxGeometry(w * 0.75, h * 0.55, 0.05), Materials.blackLeather);
+        backrest.position.set(0, 0.8, -l * 0.35);
+        group.add(backrest);
+
+    } else if (id.includes("mueble_tv")) {
+        const tvWidth = id.includes("grande") ? 1.6 : 1.2;
+        const tvHeight = id.includes("grande") ? 0.95 : 0.75;
+
+        const cabinet = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.8, l), Materials.darkNogal);
+        cabinet.position.y = (h * 0.8) / 2;
+        group.add(cabinet);
+
+        const tvStandBase = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.02, 0.25), Materials.blackMetal);
+        tvStandBase.position.set(0, h * 0.81, 0);
+        group.add(tvStandBase);
+
+        const tvPole = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.2, 0.04), Materials.blackMetal);
+        tvPole.position.set(0, h * 0.8 + 0.1, 0);
+        group.add(tvPole);
+
+        const screen = new THREE.Mesh(new THREE.BoxGeometry(tvWidth, tvHeight, 0.03), Materials.tvScreen);
+        screen.position.set(0, h * 0.8 + 0.1 + (tvHeight / 2), 0);
+        group.add(screen);
+
+        const bezel = new THREE.Mesh(new THREE.BoxGeometry(tvWidth + 0.03, tvHeight + 0.03, 0.01), Materials.blackMetal);
+        bezel.position.set(0, h * 0.8 + 0.1 + (tvHeight / 2), -0.01);
+        group.add(bezel);
+
+    } else if (id.includes("sofa")) {
+        const isTwoSeater = id === "sofa_2p";
+        const cushionCount = isTwoSeater ? 2 : 1;
+        const cushionWidth = (w * 0.8) / cushionCount;
+
+        const base = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.2, l), Materials.darkNogal);
+        base.position.y = h * 0.1;
+        group.add(base);
+
+        for (let i = 0; i < cushionCount; i++) {
+            const posX = isTwoSeater ? (-w * 0.2 + i * (w * 0.4)) : 0;
+            const cushion = new THREE.Mesh(new THREE.BoxGeometry(cushionWidth * 0.95, h * 0.25, l * 0.75), Materials.blueFabric);
+            cushion.position.set(posX, h * 0.28, 0.02);
+            group.add(cushion);
+        }
+
+        const backrest = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, h * 0.55, l * 0.22), Materials.blueFabric);
+        backrest.position.set(0, h * 0.55, -l * 0.35);
+        group.add(backrest);
+
+        const armL = new THREE.Mesh(new THREE.BoxGeometry(w * 0.12, h * 0.45, l), Materials.blueFabric);
+        armL.position.set(-w * 0.44, h * 0.38, 0);
+        group.add(armL);
+
+        const armR = new THREE.Mesh(new THREE.BoxGeometry(w * 0.12, h * 0.45, l), Materials.blueFabric);
+        armR.position.set(w * 0.44, h * 0.38, 0);
+        group.add(armR);
+
+    } else if (id === "rack_mancuernas") {
+        const frameL = new THREE.Mesh(new THREE.BoxGeometry(0.05, h, l * 0.9), Materials.blackMetal);
+        frameL.position.set(-w * 0.45, h / 2, 0);
+        group.add(frameL);
+
+        const frameR = new THREE.Mesh(new THREE.BoxGeometry(0.05, h, l * 0.9), Materials.blackMetal);
+        frameR.position.set(w * 0.45, h / 2, 0);
+        group.add(frameR);
+
+        for (let level = 0; level < 2; level++) {
+            const rail = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, 0.03, 0.08), Materials.blackMetal);
+            const posY = h * 0.35 + level * (h * 0.4);
+            rail.position.set(0, posY, 0);
+            group.add(rail);
+
+            for (let d = 0; d < 3; d++) {
+                const posX = -w * 0.3 + d * (w * 0.3);
+                const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.18, 12), Materials.chromeMetal);
+                handle.rotation.z = Math.PI / 2;
+                handle.position.set(posX, posY + 0.04, 0);
+                group.add(handle);
+
+                const weightL = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.04, 16), Materials.blackMetal);
+                weightL.rotation.z = Math.PI / 2;
+                weightL.position.set(posX - 0.08, posY + 0.04, 0);
+                group.add(weightL);
+
+                const weightR = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.04, 16), Materials.blackMetal);
+                weightR.rotation.z = Math.PI / 2;
+                weightR.position.set(posX + 0.08, posY + 0.04, 0);
+                group.add(weightR);
+            }
+        }
+
+    } else if (id === "banco_plano") {
+        const pad = new THREE.Mesh(new THREE.BoxGeometry(w, 0.08, l), Materials.blackLeather);
+        pad.position.y = h - 0.04;
+        group.add(pad);
+
+        const legL = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, h - 0.08, 12), Materials.blackMetal);
+        legL.position.set(-w * 0.4, (h - 0.08) / 2, 0);
+        group.add(legL);
+
+        const legR = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, h - 0.08, 12), Materials.blackMetal);
+        legR.position.set(w * 0.4, (h - 0.08) / 2, 0);
+        group.add(legR);
+
+        const baseBarL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.03, l * 0.9), Materials.blackMetal);
+        baseBarL.position.set(-w * 0.4, 0.015, 0);
+        group.add(baseBarL);
+
+        const baseBarR = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.03, l * 0.9), Materials.blackMetal);
+        baseBarR.position.set(w * 0.4, 0.015, 0);
+        group.add(baseBarR);
+
     } else if (id === "laptop") {
         const base = new THREE.Mesh(new THREE.BoxGeometry(w, 0.015, l), Materials.chromeMetal);
         base.position.y = 0.0075;
@@ -438,7 +574,6 @@ function createDetailedFurniture(item) {
             group.add(post);
 
         } else {
-            // Ventana Cuadrada y Rectangular con marco perimetral verdadero
             const frameTop = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, 0.06), frameMat);
             frameTop.position.y = h - frameThick / 2;
             group.add(frameTop);
@@ -503,13 +638,13 @@ function createDetailedFurniture(item) {
 window.addFurnitureToScene = function(item) {
     const furnitureGroup = createDetailedFurniture(item);
     
-    // Asignar elevación inicial Y sugerida según tipo de objeto
+    // Asignar elevación inicial Y moderada según tipo de objeto
     let initialY = 0;
     const id = item.id || "";
     if (id === "laptop" || id === "pc_torre" || id === "monitor" || id === "mouse" || id === "reloj_mesa") {
-        initialY = 0.75; // Altura estándar de escritorio
+        initialY = 0.75; // Altura estándar para descansar sobre una mesa
     } else if (id.includes("ventana") || id === "reloj_pared" || id === "barra_pared") {
-        initialY = 1.2; // Altura estándar de pared
+        initialY = 1.0; // Altura moderada de pared
     }
 
     furnitureGroup.position.set(0, initialY, 0);
