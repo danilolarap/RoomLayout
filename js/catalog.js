@@ -7,7 +7,9 @@ const FURNITURE_CATALOG = [
             { id: "cama_queen", name: { es: "Cama Queen", en: "Queen Bed" }, w: 1.6, l: 2.0, h: 0.6, color: 0x059669, icon: "fa-bed" },
             { id: "cama_sencilla", name: { es: "Cama Individual", en: "Single Bed" }, w: 1.0, l: 1.9, h: 0.5, color: 0xd97706, icon: "fa-bed" },
             { id: "mesa_noche", name: { es: "Mesa de Noche", en: "Nightstand" }, w: 0.45, l: 0.45, h: 0.5, color: 0xb45309, icon: "fa-box" },
-            { id: "armario_doble", name: { es: "Armario Doble", en: "Double Wardrobe" }, w: 1.5, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" }
+            { id: "armario_doble", name: { es: "Armario 2 Puertas", en: "2-Door Wardrobe" }, w: 1.2, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" },
+            { id: "armario_3p", name: { es: "Armario 3 Puertas", en: "3-Door Wardrobe" }, w: 1.8, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" },
+            { id: "armario_4p", name: { es: "Armario 4 Puertas", en: "4-Door Wardrobe" }, w: 2.4, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" }
         ]
     },
     {
@@ -16,6 +18,15 @@ const FURNITURE_CATALOG = [
             { id: "escritorio_l", name: { es: "Escritorio Tipo L", en: "L-Shaped Desk" }, w: 1.6, l: 1.4, h: 0.75, color: 0xd97706, icon: "fa-laptop" },
             { id: "escritorio_recto", name: { es: "Escritorio Recto", en: "Straight Desk" }, w: 1.2, l: 0.7, h: 0.75, color: 0xf59e0b, icon: "fa-laptop" },
             { id: "silla_ergonomica", name: { es: "Silla de Oficina", en: "Office Chair" }, w: 0.6, l: 0.6, h: 1.1, color: 0xea580c, icon: "fa-chair" }
+        ]
+    },
+    {
+        category: { es: "Electrónica & Periféricos", en: "Electronics & Gadgets" },
+        items: [
+            { id: "laptop", name: { es: "Laptop Portátil", en: "Laptop" }, w: 0.38, l: 0.28, h: 0.2, color: 0x9ca3af, icon: "fa-laptop" },
+            { id: "pc_torre", name: { es: "Torre PC Gaming", en: "PC Tower" }, w: 0.25, l: 0.45, h: 0.5, color: 0x111827, icon: "fa-server" },
+            { id: "monitor", name: { es: "Monitor 27\"", en: "27\" Monitor" }, w: 0.62, l: 0.18, h: 0.45, color: 0x030712, icon: "fa-desktop" },
+            { id: "mouse", name: { es: "Mouse & Pad", en: "Mouse & Pad" }, w: 0.22, l: 0.28, h: 0.03, color: 0x374151, icon: "fa-computer-mouse" }
         ]
     },
     {
@@ -30,8 +41,26 @@ const FURNITURE_CATALOG = [
     {
         category: { es: "Fitness & Ejercicio", en: "Fitness & Workout" },
         items: [
+            { id: "caminadora", name: { es: "Caminadora Eléctrica", en: "Treadmill" }, w: 0.8, l: 1.6, h: 1.3, color: 0x111827, icon: "fa-person-walking" },
+            { id: "barra_pared", name: { es: "Barra Dominadas (Pared)", en: "Wall Pull-Up Bar" }, w: 1.0, l: 0.5, h: 0.4, color: 0x1f2937, icon: "fa-dumbbell" },
             { id: "rack_mancuernas", name: { es: "Rack Mancuernas", en: "Dumbbell Rack" }, w: 1.1, l: 0.5, h: 0.8, color: 0xd97706, icon: "fa-dumbbell" },
             { id: "banco_plano", name: { es: "Banco Plano", en: "Flat Bench" }, w: 1.2, l: 0.45, h: 0.4, color: 0xb45309, icon: "fa-cubes" }
+        ]
+    },
+    {
+        category: { es: "Decoración & Pared", en: "Decor & Wall Objects" },
+        items: [
+            { id: "reloj_pared", name: { es: "Reloj de Pared", en: "Wall Clock" }, w: 0.4, l: 0.1, h: 0.4, color: 0xf59e0b, icon: "fa-clock" },
+            { id: "reloj_mesa", name: { es: "Reloj de Mesa", en: "Table Clock" }, w: 0.18, l: 0.1, h: 0.15, color: 0x059669, icon: "fa-clock" }
+        ]
+    },
+    {
+        category: { es: "Ventanas & Arquitectura", en: "Windows & Architecture" },
+        items: [
+            { id: "ventana_cuadrada", name: { es: "Ventana Cuadrada", en: "Square Window" }, w: 1.0, l: 0.1, h: 1.0, color: 0x38bdf8, icon: "fa-window-maximize" },
+            { id: "ventana_rect", name: { es: "Ventana Rectangular", en: "Rectangular Window" }, w: 1.6, l: 0.1, h: 0.9, color: 0x38bdf8, icon: "fa-window-maximize" },
+            { id: "ventana_circular", name: { es: "Ventana Circular", en: "Circular Window" }, w: 0.9, l: 0.1, h: 0.9, color: 0x38bdf8, icon: "fa-circle-dot" },
+            { id: "ventana_esquina", name: { es: "Ventanal de Esquina L", en: "Corner L-Window" }, w: 1.2, l: 1.2, h: 1.4, color: 0x38bdf8, icon: "fa-border-all" }
         ]
     }
 ];
