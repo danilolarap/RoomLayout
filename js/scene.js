@@ -1,3 +1,4 @@
+// Variables globales de Three.js
 let scene, camera, renderer, controls;
 let roomMesh, sunLight;
 let activeItems = [];
@@ -11,6 +12,7 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
+// Inicializacion de la escena 3D
 function initScene() {
     const container = document.getElementById("canvas-container");
     if (!container) return;
@@ -61,6 +63,7 @@ function initScene() {
     animate();
 }
 
+// Actualizar dimensiones del cuarto
 function updateRoomDimensions(width, length) {
     if (roomMesh) scene.remove(roomMesh);
 
@@ -74,12 +77,12 @@ function updateRoomDimensions(width, length) {
     floor.receiveShadow = true;
     group.add(floor);
 
-    // Grid
+    // Rejilla de apoyo
     const grid = new THREE.GridHelper(Math.max(width, length), Math.max(width, length) * 10, 0xf59e0b, 0x64748b);
     grid.position.y = 0.01;
     group.add(grid);
 
-    // Paredes Perimetrales
+    // Paredes transparentes
     const wallMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.18, side: THREE.DoubleSide });
     const wallHeight = 2.2;
 
@@ -96,10 +99,11 @@ function updateRoomDimensions(width, length) {
     scene.add(roomMesh);
 }
 
+// Agregar puerta por defecto
 function addDefaultDoor(rw, rl) {
     const doorItem = {
         id: "puerta_movil",
-        name: "Puerta de Acceso",
+        name: { es: "Puerta de Acceso", en: "Access Door" },
         w: 0.9,
         l: 0.9,
         h: 2.0,
@@ -109,13 +113,13 @@ function addDefaultDoor(rw, rl) {
 
     const group = new THREE.Group();
 
-    // Hoja de Puerta en Tono Amarillento Cálido
+    // Hoja de la puerta
     const doorLeafMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.4 });
     const doorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.9, 2.0, 0.08), doorLeafMat);
     doorLeaf.position.y = 1.0;
     group.add(doorLeaf);
 
-    // Arco de Barrido / Apertura
+    // Arco de apertura
     const doorSweepGeo = new THREE.RingGeometry(0.05, 0.9, 16, 1, 0, Math.PI / 2);
     const doorSweepMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
     const doorSweep = new THREE.Mesh(doorSweepGeo, doorSweepMat);
@@ -130,6 +134,7 @@ function addDefaultDoor(rw, rl) {
     activeItems.push(group);
 }
 
+// Posicionar luz solar
 function updateSunPosition(hour) {
     if (!sunLight) return;
     const angle = ((hour - 6) / 12) * Math.PI;
@@ -139,6 +144,7 @@ function updateSunPosition(hour) {
     sunLight.position.z = 5;
 }
 
+// Crear objeto 3D detallado
 function createDetailedFurniture(item) {
     const group = new THREE.Group();
     const w = item.w || 1, h = item.h || 0.5, l = item.l || 1;
@@ -146,7 +152,6 @@ function createDetailedFurniture(item) {
     const mainMat = new THREE.MeshStandardMaterial({ color: item.color || 0xd97706, roughness: 0.5 });
     const woodMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.6 });
     const woodDarkMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.7 });
-    const darkMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 });
     const whiteMat = new THREE.MeshStandardMaterial({ color: 0xfffbe1, roughness: 0.9 });
 
     const id = item.id || "";
@@ -196,6 +201,7 @@ function createDetailedFurniture(item) {
     return group;
 }
 
+// Agregar mueble a la escena
 window.addFurnitureToScene = function(item) {
     const furnitureGroup = createDetailedFurniture(item);
     furnitureGroup.position.set(0, 0, 0);
@@ -207,12 +213,14 @@ window.addFurnitureToScene = function(item) {
     if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
+// Mouse posicion
 function updateMousePosition(event) {
     const rect = renderer.domElement.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 }
 
+// Evento click / toque
 function onPointerDown(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
@@ -239,6 +247,7 @@ function onPointerDown(event) {
     }
 }
 
+// Evento arrastrar
 function onPointerMove(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
@@ -279,6 +288,7 @@ function onPointerMove(event) {
     }
 }
 
+// Evento soltar
 function onPointerUp() {
     if (isDragging) {
         isDragging = false;
@@ -287,12 +297,14 @@ function onPointerUp() {
     }
 }
 
+// Bucle de renderizado
 function animate() {
     requestAnimationFrame(animate);
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
 }
 
+// Ajuste responsive
 function onWindowResize() {
     const container = document.getElementById("canvas-container");
     if (!container || !camera || !renderer) return;

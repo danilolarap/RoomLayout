@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Personalización de barra de desplazamiento estilizada */
+/* Estilos de barra de desplazamiento */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -25,7 +25,7 @@
     background: rgba(217, 119, 6, 0.6);
 }
 
-/* Transiciones de selección para tarjetas e interactivos */
+/* Transiciones interactivas para tarjetas */
 .item-card {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }

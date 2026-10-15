@@ -1,9 +1,111 @@
-document.addEventListener("DOMContentLoaded", () => {
-    if (typeof initScene === "function") {
-        initScene();
+window.currentLang = "es";
+
+const I18N_DICTIONARY = {
+    es: {
+        subtitle: "Simulador de Circulación e Incidencia Solar",
+        room: "SALA:",
+        width: "Ancho",
+        length: "Largo",
+        time: "HORA",
+        window: "VENTANA:",
+        themeLight: "Modo Claro",
+        themeDark: "Modo Oscuro",
+        simulate: "SIMULAR",
+        catalogTitle: "Catálogo Mobiliario",
+        catalogSearchPlaceholder: "Buscar muebles...",
+        topView: "PLANTA (TOP)",
+        freeFlow: "Flujo Libre",
+        collision: "Colisión / Bloqueo",
+        sunlight: "Luz Solar Directa",
+        cursor: "Cursor",
+        active: "Activo",
+        inspectorTitle: "Inspector",
+        metricsTitle: "Métricas de Espacio",
+        occupied: "OCUPADA",
+        free: "LIBRE",
+        diagnosticsTitle: "Diagnóstico",
+        noConflicts: "Sin conflictos detectados."
+    },
+    en: {
+        subtitle: "Circulation & Solar Incidence Simulator",
+        room: "ROOM:",
+        width: "Width",
+        length: "Length",
+        time: "TIME",
+        window: "WINDOW:",
+        themeLight: "Light Mode",
+        themeDark: "Dark Mode",
+        simulate: "SIMULATE",
+        catalogTitle: "Furniture Catalog",
+        catalogSearchPlaceholder: "Search furniture...",
+        topView: "TOP VIEW",
+        freeFlow: "Free Flow",
+        collision: "Collision / Blocked",
+        sunlight: "Direct Sunlight",
+        cursor: "Cursor",
+        active: "Active",
+        inspectorTitle: "Inspector",
+        metricsTitle: "Space Metrics",
+        occupied: "OCCUPIED",
+        free: "FREE",
+        diagnosticsTitle: "Diagnostics",
+        noConflicts: "No conflicts detected."
     }
-    if (typeof renderCatalog === "function") {
-        renderCatalog();
+};
+
+function applyLanguage(lang) {
+    window.currentLang = lang;
+    const dict = I18N_DICTIONARY[lang];
+
+    const setText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = text;
+    };
+
+    setText("lbl-subtitle", dict.subtitle);
+    setText("lbl-room", dict.room);
+    setText("lbl-width", dict.width);
+    setText("lbl-length", dict.length);
+    setText("lbl-time", dict.time);
+    setText("lbl-window", dict.window);
+    setText("lbl-simulate", dict.simulate);
+    setText("lbl-catalog-title", dict.catalogTitle);
+    setText("lbl-top-view", dict.topView);
+    setText("lbl-free-flow", dict.freeFlow);
+    setText("lbl-collision", dict.collision);
+    setText("lbl-sunlight", dict.sunlight);
+    setText("lbl-cursor", dict.cursor);
+    setText("lbl-active", dict.active);
+    setText("lbl-inspector-title", dict.inspectorTitle);
+    setText("lbl-metrics-title", dict.metricsTitle);
+    setText("lbl-occupied", dict.occupied);
+    setText("lbl-free", dict.free);
+    setText("lbl-diagnostics-title", dict.diagnosticsTitle);
+    setText("lbl-no-conflicts", dict.noConflicts);
+
+    const searchInput = document.getElementById("catalog-search");
+    if (searchInput) searchInput.placeholder = dict.catalogSearchPlaceholder;
+
+    const isDark = document.documentElement.classList.contains("dark");
+    setText("theme-text", isDark ? dict.themeDark : dict.themeLight);
+
+    if (typeof renderCatalog === "function") renderCatalog();
+    if (typeof selectFurniture === "function") selectFurniture(selectedMesh);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof initScene === "function") initScene();
+    if (typeof renderCatalog === "function") renderCatalog();
+
+    const langToggleBtn = document.getElementById("lang-toggle");
+    const langText = document.getElementById("lang-text");
+
+    if (langToggleBtn) {
+        langToggleBtn.addEventListener("click", () => {
+            const newLang = window.currentLang === "es" ? "en" : "es";
+            if (langText) langText.innerText = newLang.toUpperCase();
+            applyLanguage(newLang);
+        });
     }
 
     const themeToggleBtn = document.getElementById("theme-toggle");
@@ -14,23 +116,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener("click", () => {
             const isDark = htmlEl.classList.contains("dark");
+            const dict = I18N_DICTIONARY[window.currentLang];
 
             if (isDark) {
                 htmlEl.classList.remove("dark");
                 if (themeIcon) themeIcon.className = "fa-solid fa-sun text-amber-500";
-                if (themeText) themeText.innerText = "Modo Claro";
-                
-                if (typeof scene !== "undefined" && scene) {
-                    scene.background = new THREE.Color(0xfef3c7);
-                }
+                if (themeText) themeText.innerText = dict.themeLight;
+                if (typeof scene !== "undefined" && scene) scene.background = new THREE.Color(0xfef3c7);
             } else {
                 htmlEl.classList.add("dark");
                 if (themeIcon) themeIcon.className = "fa-solid fa-moon text-amber-400";
-                if (themeText) themeText.innerText = "Modo Oscuro";
-
-                if (typeof scene !== "undefined" && scene) {
-                    scene.background = new THREE.Color(0x0f172a);
-                }
+                if (themeText) themeText.innerText = dict.themeDark;
+                if (typeof scene !== "undefined" && scene) scene.background = new THREE.Color(0x0f172a);
             }
         });
     }
@@ -38,9 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("catalog-search");
     if (searchInput) {
         searchInput.addEventListener("input", (e) => {
-            if (typeof renderCatalog === "function") {
-                renderCatalog(e.target.value);
-            }
+            if (typeof renderCatalog === "function") renderCatalog(e.target.value);
         });
     }
 
@@ -51,12 +146,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const handleRoomChange = () => {
             const w = parseFloat(roomW.value) || 4;
             const l = parseFloat(roomL.value) || 3.5;
-            if (typeof updateRoomDimensions === "function") {
-                updateRoomDimensions(w, l);
-            }
-            if (typeof window.updateMetrics === "function") {
-                window.updateMetrics();
-            }
+            if (typeof updateRoomDimensions === "function") updateRoomDimensions(w, l);
+            if (typeof window.updateMetrics === "function") window.updateMetrics();
         };
 
         roomW.addEventListener("change", handleRoomChange);
@@ -72,9 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const hours = Math.floor(val);
             const mins = (val % 1) === 0 ? "00" : "30";
             timeDisplay.innerText = `${hours}:${mins}`;
-            if (typeof updateSunPosition === "function") {
-                updateSunPosition(val);
-            }
+            if (typeof updateSunPosition === "function") updateSunPosition(val);
         });
     }
 

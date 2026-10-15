@@ -1,42 +1,45 @@
+// Catálogo de muebles bilingüe
 const FURNITURE_CATALOG = [
     {
-        category: "Básicos del Cuarto",
+        category: { es: "Básicos del Cuarto", en: "Bedroom Basics" },
         items: [
-            { id: "cama_king", name: "Cama King", w: 2.0, l: 2.0, h: 0.65, color: 0xd97706, icon: "fa-bed" },
-            { id: "cama_queen", name: "Cama Queen", w: 1.6, l: 2.0, h: 0.6, color: 0xf59e0b, icon: "fa-bed" },
-            { id: "cama_sencilla", name: "Cama Individual", w: 1.0, l: 1.9, h: 0.5, color: 0xfbbf24, icon: "fa-bed" },
-            { id: "mesa_noche", name: "Mesa de Noche", w: 0.45, l: 0.45, h: 0.5, color: 0xb45309, icon: "fa-box" },
-            { id: "armario_doble", name: "Armario Doble", w: 1.5, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" }
+            { id: "cama_king", name: { es: "Cama King", en: "King Bed" }, w: 2.0, l: 2.0, h: 0.65, color: 0xd97706, icon: "fa-bed" },
+            { id: "cama_queen", name: { es: "Cama Queen", en: "Queen Bed" }, w: 1.6, l: 2.0, h: 0.6, color: 0xf59e0b, icon: "fa-bed" },
+            { id: "cama_sencilla", name: { es: "Cama Individual", en: "Single Bed" }, w: 1.0, l: 1.9, h: 0.5, color: 0xfbbf24, icon: "fa-bed" },
+            { id: "mesa_noche", name: { es: "Mesa de Noche", en: "Nightstand" }, w: 0.45, l: 0.45, h: 0.5, color: 0xb45309, icon: "fa-box" },
+            { id: "armario_doble", name: { es: "Armario Doble", en: "Double Wardrobe" }, w: 1.5, l: 0.6, h: 2.0, color: 0x78350f, icon: "fa-door-closed" }
         ]
     },
     {
-        category: "Estudio & Oficina",
+        category: { es: "Estudio & Oficina", en: "Study & Office" },
         items: [
-            { id: "escritorio_l", name: "Escritorio Tipo L", w: 1.6, l: 1.4, h: 0.75, color: 0xd97706, icon: "fa-laptop" },
-            { id: "escritorio_recto", name: "Escritorio Recto", w: 1.2, l: 0.7, h: 0.75, color: 0xf59e0b, icon: "fa-laptop" },
-            { id: "silla_ergonomica", name: "Silla de Oficina", w: 0.6, l: 0.6, h: 1.1, color: 0xea580c, icon: "fa-chair" }
+            { id: "escritorio_l", name: { es: "Escritorio Tipo L", en: "L-Shaped Desk" }, w: 1.6, l: 1.4, h: 0.75, color: 0xd97706, icon: "fa-laptop" },
+            { id: "escritorio_recto", name: { es: "Escritorio Recto", en: "Straight Desk" }, w: 1.2, l: 0.7, h: 0.75, color: 0xf59e0b, icon: "fa-laptop" },
+            { id: "silla_ergonomica", name: { es: "Silla de Oficina", en: "Office Chair" }, w: 0.6, l: 0.6, h: 1.1, color: 0xea580c, icon: "fa-chair" }
         ]
     },
     {
-        category: "Entretenimiento & Confort",
+        category: { es: "Entretenimiento & Confort", en: "Entertainment & Comfort" },
         items: [
-            { id: "mueble_tv_grande", name: "Mueble TV 65\"", w: 1.8, l: 0.45, h: 0.5, color: 0xc2410c, icon: "fa-tv" },
-            { id: "mueble_tv", name: "Mueble TV 55\"", w: 1.4, l: 0.4, h: 0.5, color: 0xea580c, icon: "fa-tv" },
-            { id: "sofa_2p", name: "Sofá 2 Puestos", w: 1.6, l: 0.85, h: 0.8, color: 0xd97706, icon: "fa-couch" }
+            { id: "mueble_tv_grande", name: { es: "Mueble TV 65\"", en: "TV Stand 65\"" }, w: 1.8, l: 0.45, h: 0.5, color: 0xc2410c, icon: "fa-tv" },
+            { id: "mueble_tv", name: { es: "Mueble TV 55\"", en: "TV Stand 55\"" }, w: 1.4, l: 0.4, h: 0.5, color: 0xea580c, icon: "fa-tv" },
+            { id: "sofa_2p", name: { es: "Sofá 2 Puestos", en: "2-Seater Sofa" }, w: 1.6, l: 0.85, h: 0.8, color: 0xd97706, icon: "fa-couch" }
         ]
     },
     {
-        category: "Fitness & Ejercicio",
+        category: { es: "Fitness & Ejercicio", en: "Fitness & Workout" },
         items: [
-            { id: "rack_mancuernas", name: "Rack Mancuernas", w: 1.1, l: 0.5, h: 0.8, color: 0xd97706, icon: "fa-dumbbell" },
-            { id: "banco_plano", name: "Banco Plano", w: 1.2, l: 0.45, h: 0.4, color: 0xb45309, icon: "fa-cubes" }
+            { id: "rack_mancuernas", name: { es: "Rack Mancuernas", en: "Dumbbell Rack" }, w: 1.1, l: 0.5, h: 0.8, color: 0xd97706, icon: "fa-dumbbell" },
+            { id: "banco_plano", name: { es: "Banco Plano", en: "Flat Bench" }, w: 1.2, l: 0.45, h: 0.4, color: 0xb45309, icon: "fa-cubes" }
         ]
     }
 ];
 
+// Renderizado del catálogo
 function renderCatalog(filterQuery = "") {
     const container = document.getElementById("catalog-container");
     const countBadge = document.getElementById("catalog-count");
+    const currentLang = window.currentLang || "es";
     
     if (!container) return;
     container.innerHTML = "";
@@ -45,9 +48,12 @@ function renderCatalog(filterQuery = "") {
     const query = filterQuery.toLowerCase().trim();
 
     FURNITURE_CATALOG.forEach(cat => {
-        const filteredItems = cat.items.filter(item => 
-            item.name.toLowerCase().includes(query) || cat.category.toLowerCase().includes(query)
-        );
+        const categoryName = cat.category[currentLang] || cat.category.es;
+
+        const filteredItems = cat.items.filter(item => {
+            const itemName = (item.name[currentLang] || item.name.es).toLowerCase();
+            return itemName.includes(query) || categoryName.toLowerCase().includes(query);
+        });
 
         if (filteredItems.length === 0) return;
 
@@ -55,7 +61,7 @@ function renderCatalog(filterQuery = "") {
 
         const catHeader = document.createElement("div");
         catHeader.className = "font-bold text-amber-800 dark:text-amber-400 mt-3 mb-1.5 text-[11px] uppercase tracking-wider border-b border-amber-200 dark:border-slate-700/60 pb-0.5";
-        catHeader.innerText = cat.category;
+        catHeader.innerText = categoryName;
         container.appendChild(catHeader);
 
         const grid = document.createElement("div");
@@ -71,9 +77,11 @@ function renderCatalog(filterQuery = "") {
                 }
             };
 
+            const displayName = item.name[currentLang] || item.name.es;
+
             card.innerHTML = `
                 <div class="text-amber-600 dark:text-amber-400 mb-1 text-lg"><i class="fa-solid ${item.icon}"></i></div>
-                <div class="font-bold text-slate-800 dark:text-slate-100 text-[11px] truncate">${item.name}</div>
+                <div class="font-bold text-slate-800 dark:text-slate-100 text-[11px] truncate">${displayName}</div>
                 <div class="text-[10px] text-amber-700/70 dark:text-slate-400 mt-0.5 font-medium">${item.w}m × ${item.l}m</div>
             `;
             grid.appendChild(card);
