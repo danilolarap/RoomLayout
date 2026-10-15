@@ -19,8 +19,11 @@ function selectFurniture(meshGroup) {
 
     const lblWidth = currentLang === "es" ? "Ancho" : "Width";
     const lblLength = currentLang === "es" ? "Largo" : "Length";
+    const lblHeightY = currentLang === "es" ? "Elevación (Piso / Mesa)" : "Elevation (Floor / Desk)";
     const lblRotate = currentLang === "es" ? "Rotar 45°" : "Rotate 45°";
     const lblDelete = currentLang === "es" ? "Eliminar Objeto" : "Delete Object";
+
+    const currentY = meshGroup.position.y || 0;
 
     container.innerHTML = `
         <div class="bg-amber-50/80 dark:bg-slate-900 p-3 rounded-xl border border-amber-200 dark:border-slate-700/80 space-y-3">
@@ -35,7 +38,16 @@ function selectFurniture(meshGroup) {
                 <div>${lblLength}: <strong class="text-slate-900 dark:text-white">${data.l || 1}m</strong></div>
             </div>
 
-            <!-- Botones de Acción Apilados y Más Grandes -->
+            <!-- Regulador de Altura en Eje Y -->
+            <div class="bg-white/60 dark:bg-slate-800/60 p-2.5 rounded-lg border border-amber-100 dark:border-slate-700/50 space-y-1">
+                <div class="flex justify-between items-center text-xs font-semibold text-slate-700 dark:text-slate-200">
+                    <span>${lblHeightY}:</span>
+                    <strong id="val-posY" class="text-amber-600 dark:text-amber-400 font-bold">${currentY.toFixed(2)} m</strong>
+                </div>
+                <input id="input-height-y" type="range" min="0" max="2.5" step="0.05" value="${currentY}" class="w-full accent-amber-500 cursor-pointer">
+            </div>
+
+            <!-- Botones de Acción -->
             <div class="space-y-2 pt-1">
                 <button onclick="window.rotateSelected(45)" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white font-bold py-2 px-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-xs">
                     <i class="fa-solid fa-rotate-right text-sm"></i> ${lblRotate}
@@ -48,6 +60,19 @@ function selectFurniture(meshGroup) {
             </div>
         </div>
     `;
+
+    // Event listener para regular la altura Y dinámicamente
+    const inputY = document.getElementById("input-height-y");
+    if (inputY) {
+        inputY.addEventListener("input", (e) => {
+            const val = parseFloat(e.target.value) || 0;
+            if (selectedMesh) {
+                selectedMesh.position.y = val;
+                const valDisplay = document.getElementById("val-posY");
+                if (valDisplay) valDisplay.innerText = `${val.toFixed(2)} m`;
+            }
+        });
+    }
 }
 
 window.rotateSelected = function(deg = 45) {

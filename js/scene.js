@@ -11,7 +11,7 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
-// Generador de texturas de alta calidad
+// Generador de texturas sintéticas
 const TextureFactory = {
     smoothWood: (baseHex = "#c084fc", grainHex = "#9333ea") => {
         const canvas = document.createElement("canvas");
@@ -93,8 +93,8 @@ const Materials = {
     chromeMetal: new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.1, metalness: 0.95 }),
     goldMetal: new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 }),
     tvScreen: new THREE.MeshStandardMaterial({ color: 0x030712, roughness: 0.1, metalness: 0.9 }),
-    glassWindow: new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45, roughness: 0.1 }),
-    whitePlastic: new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 }),
+    glassWindow: new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45, roughness: 0.1, side: THREE.DoubleSide }),
+    whiteFrame: new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.2, metalness: 0.1 }),
     darkPlastic: new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.4 })
 };
 
@@ -410,8 +410,9 @@ function createDetailedFurniture(item) {
         group.add(armR);
 
     } else if (id.includes("ventana")) {
-        const frameMat = Materials.whitePlastic;
+        const frameMat = Materials.whiteFrame;
         const glassMat = Materials.glassWindow;
+        const frameThick = 0.05;
 
         if (id === "ventana_circular") {
             const outerRing = new THREE.Mesh(new THREE.TorusGeometry(w / 2, 0.04, 16, 32), frameMat);
@@ -424,30 +425,43 @@ function createDetailedFurniture(item) {
             group.add(glass);
 
         } else if (id === "ventana_esquina") {
-            const frame1 = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.04), glassMat);
-            frame1.position.set(0, h / 2, -l / 2);
-            group.add(frame1);
+            const glass1 = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.02), glassMat);
+            glass1.position.set(0, h / 2, -l / 2);
+            group.add(glass1);
 
-            const frame2 = new THREE.Mesh(new THREE.BoxGeometry(0.04, h, l), glassMat);
-            frame2.position.set(-w / 2, h / 2, 0);
-            group.add(frame2);
+            const glass2 = new THREE.Mesh(new THREE.BoxGeometry(0.02, h, l), glassMat);
+            glass2.position.set(-w / 2, h / 2, 0);
+            group.add(glass2);
 
-            const cornerPost = new THREE.Mesh(new THREE.BoxGeometry(0.06, h, 0.06), frameMat);
-            cornerPost.position.set(-w / 2, h / 2, -l / 2);
-            group.add(cornerPost);
+            const post = new THREE.Mesh(new THREE.BoxGeometry(0.06, h, 0.06), frameMat);
+            post.position.set(-w / 2, h / 2, -l / 2);
+            group.add(post);
 
         } else {
-            const outerFrame = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.06), frameMat);
-            outerFrame.position.y = h / 2;
-            group.add(outerFrame);
+            // Ventana Cuadrada y Rectangular con marco perimetral verdadero
+            const frameTop = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, 0.06), frameMat);
+            frameTop.position.y = h - frameThick / 2;
+            group.add(frameTop);
 
-            const glass = new THREE.Mesh(new THREE.BoxGeometry(w * 0.88, h * 0.88, 0.02), glassMat);
+            const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, 0.06), frameMat);
+            frameBottom.position.y = frameThick / 2;
+            group.add(frameBottom);
+
+            const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, 0.06), frameMat);
+            frameLeft.position.set(-w / 2 + frameThick / 2, h / 2, 0);
+            group.add(frameLeft);
+
+            const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, 0.06), frameMat);
+            frameRight.position.set(w / 2 - frameThick / 2, h / 2, 0);
+            group.add(frameRight);
+
+            const glass = new THREE.Mesh(new THREE.BoxGeometry(w - frameThick * 2, h - frameThick * 2, 0.015), glassMat);
             glass.position.y = h / 2;
             group.add(glass);
         }
 
     } else if (id === "reloj_pared") {
-        const frame = new THREE.Mesh(new THREE.CylinderGeometry(w / 2, w / 2, 0.04, 32), Materials.whitePlastic);
+        const frame = new THREE.Mesh(new THREE.CylinderGeometry(w / 2, w / 2, 0.04, 32), Materials.whiteFrame);
         frame.rotation.x = Math.PI / 2;
         frame.position.y = h / 2;
         group.add(frame);
@@ -488,7 +502,17 @@ function createDetailedFurniture(item) {
 
 window.addFurnitureToScene = function(item) {
     const furnitureGroup = createDetailedFurniture(item);
-    furnitureGroup.position.set(0, 0, 0);
+    
+    // Asignar elevación inicial Y sugerida según tipo de objeto
+    let initialY = 0;
+    const id = item.id || "";
+    if (id === "laptop" || id === "pc_torre" || id === "monitor" || id === "mouse" || id === "reloj_mesa") {
+        initialY = 0.75; // Altura estándar de escritorio
+    } else if (id.includes("ventana") || id === "reloj_pared" || id === "barra_pared") {
+        initialY = 1.2; // Altura estándar de pared
+    }
+
+    furnitureGroup.position.set(0, initialY, 0);
     furnitureGroup.userData = { ...item, rotationY: 0 };
 
     scene.add(furnitureGroup);
