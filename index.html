@@ -97,8 +97,17 @@
             </div>
         </div>
 
-        <!-- Selector Idioma, Tema, Usuario y Simulación -->
+        <!-- Acciones de Proyecto, Usuario y Tema -->
         <div class="flex items-center gap-2">
+            <!-- Gestión de Proyectos -->
+            <button id="btn-save-project" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
+                <i class="fa-solid fa-floppy-disk"></i> <span>Guardar</span>
+            </button>
+            
+            <button id="btn-my-projects" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 border border-amber-300/60 dark:border-slate-700">
+                <i class="fa-solid fa-folder-open"></i> <span>Mis Diseños</span>
+            </button>
+
             <!-- Botón de Usuario / Autenticación -->
             <button id="btn-auth-modal" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
                 <i class="fa-solid fa-user"></i> <span id="user-display-name">Ingresar</span>
@@ -227,6 +236,35 @@
         </aside>
     </div>
 
+    <!-- MODAL DE PROYECTOS / DISEÑOS GUARDADOS -->
+    <div id="projects-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl relative">
+            <button id="btn-close-projects-modal" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center justify-between border-b border-amber-200 dark:border-slate-800 pb-3 mb-4">
+                <h3 class="font-bold text-base text-amber-900 dark:text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-folder-open"></i> Mis Diseños Guardados
+                </h3>
+                <div class="flex gap-2">
+                    <button id="btn-export-json" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1 border border-amber-300/60 dark:border-slate-700">
+                        <i class="fa-solid fa-download"></i> Exportar JSON
+                    </button>
+                    <label class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1 cursor-pointer">
+                        <i class="fa-solid fa-upload"></i> Importar
+                        <input id="file-import-json" type="file" accept=".json" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Lista Dinámica de Proyectos -->
+            <div id="projects-list-container" class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar pr-1">
+                <p class="text-slate-400 italic text-xs text-center py-4">Cargando diseños...</p>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE AUTENTICACIÓN (LOGIN / SIGN IN) -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 hidden">
         <div class="bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
@@ -278,14 +316,14 @@
         </div>
     </div>
 
-    <!-- SCRIPTS DE LA APLICACIÓN (ORDEN ESTRICTO) -->
+    <!-- SCRIPTS DE LA APLICACIÓN EN ORDEN STRICTO DE DEPENDENCIA -->
     <script src="js/auth/db.js"></script>
     <script src="js/auth/auth-ui.js"></script>
     <script src="js/catalog.js"></script>
     <script src="js/materials.js"></script>
     <script src="js/furniture-builder.js"></script>
-    <script src="js/ai-engine.js"></script>
     <script src="js/scene.js"></script>
+    <script src="js/ai-engine.js"></script>
     <script src="js/inspector.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/main.js"></script>

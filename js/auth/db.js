@@ -1,9 +1,11 @@
-// js/auth/db.js - Base de datos local e interfaz de autenticación
+// js/auth/db.js - Base de datos local e interfaz de autenticación y proyectos
 
 const db = new Dexie("RoomLayoutDB");
 
-db.version(1).stores({
-    users: "++id, username, email, passwordHash, createdAt"
+// Definir esquemas (Versión 2 con colección de proyectos)
+db.version(2).stores({
+    users: "++id, username, email, passwordHash, createdAt",
+    projects: "++id, userId, name, createdAt, updatedAt"
 });
 
 async function hashPassword(password) {
@@ -63,5 +65,47 @@ window.AuthService = {
     getCurrentUser: function() {
         const data = localStorage.getItem("roomlayout_user");
         return data ? JSON.parse(data) : null;
+    }
+};
+
+// Servicio de gestión de Proyectos en IndexedDB
+window.ProjectService = {
+    // Guardar o actualizar un proyecto
+    saveProject: async function(name, roomData, itemsData, projectId = null) {
+        const user = AuthService.getCurrentUser();
+        if (!user) throw new Error("Debes iniciar sesión para guardar tus proyectos.");
+
+        const projectPayload = {
+            userId: user.id,
+            name: name,
+            room: roomData, // { width, length, sunTime }
+            items: itemsData, // array de objetos guardados con posicion y rotación
+            updatedAt: new Date().toISOString()
+        };
+
+        if (projectId) {
+            await db.projects.update(projectId, projectPayload);
+            return projectId;
+        } else {
+            projectPayload.createdAt = new Date().toISOString();
+            return await db.projects.add(projectPayload);
+        }
+    },
+
+    // Obtener la lista de proyectos del usuario activo
+    getUserProjects: async function() {
+        const user = AuthService.getCurrentUser();
+        if (!user) return [];
+        return await db.projects.where("userId").equals(user.id).reverse().sortBy("updatedAt");
+    },
+
+    // Obtener un proyecto por ID
+    getProjectById: async function(id) {
+        return await db.projects.get(id);
+    },
+
+    // Eliminar un proyecto
+    deleteProject: async function(id) {
+        return await db.projects.delete(id);
     }
 };

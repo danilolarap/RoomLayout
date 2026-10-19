@@ -1,4 +1,4 @@
-// js/scene.js - Administrador Principal de la Escena 3D, Iluminación y Cámara
+// js/scene.js - Escena 3D, Cámaras, Luces y Serialización
 
 let scene, camera, renderer, controls;
 let roomMesh, sunLight;
@@ -13,9 +13,9 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
-// Control de simulación solar cinematográfica
 let isSimulating = false;
 
+// Inicialización de la escena 3D
 function initScene() {
     const container = document.getElementById("canvas-container");
     if (!container) return;
@@ -30,7 +30,7 @@ function initScene() {
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(6, 6, 8);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -145,7 +145,6 @@ function updateSunPosition(hour) {
     sunLight.position.z = 5;
 }
 
-// Cambiar entre Vista Isométrica 3D y Planta (TOP)
 window.setCameraView = function(viewType) {
     if (!camera || !controls) return;
 
@@ -159,7 +158,6 @@ window.setCameraView = function(viewType) {
     controls.update();
 };
 
-// Simulación Cinematográfica del paso del sol (06:00 a 18:00)
 window.startSunSimulation = function() {
     if (isSimulating) return;
     isSimulating = true;
@@ -219,7 +217,6 @@ window.addFurnitureToScene = function(item) {
     if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
-// Cálculo y actualización de métricas del espacio y llamada al motor de IA
 window.updateMetrics = function() {
     let occupied = 0;
     activeItems.forEach(item => {
@@ -237,10 +234,85 @@ window.updateMetrics = function() {
     if (occEl) occEl.innerText = `${occupied.toFixed(1)} m²`;
     if (freeEl) freeEl.innerText = `${Math.max(0, totalArea - occupied).toFixed(1)} m²`;
 
-    // Disparar diagnóstico automático con IA
     if (typeof window.runAIDiagnostic === "function") {
         window.runAIDiagnostic();
     }
+};
+
+window.getSceneData = function() {
+    const roomW = parseFloat(document.getElementById("room-width")?.value) || 4.0;
+    const roomL = parseFloat(document.getElementById("room-length")?.value) || 3.5;
+    const sunTime = parseFloat(document.getElementById("sun-time")?.value) || 15.5;
+
+    const itemsData = activeItems.map(group => {
+        const d = group.userData || {};
+        return {
+            id: d.id,
+            name: d.name,
+            w: d.w,
+            l: d.l,
+            h: d.h,
+            color: d.color,
+            icon: d.icon,
+            isDoor: d.isDoor || false,
+            position: { x: group.position.x, y: group.position.y, z: group.position.z },
+            rotationY: d.rotationY || 0
+        };
+    });
+
+    return {
+        room: { width: roomW, length: roomL, sunTime: sunTime },
+        items: itemsData
+    };
+};
+
+window.loadSceneData = function(data) {
+    if (!data || !data.room) return;
+
+    activeItems.forEach(group => scene.remove(group));
+    activeItems = [];
+    if (typeof selectFurniture === "function") selectFurniture(null);
+
+    const roomW = data.room.width || 4.0;
+    const roomL = data.room.length || 3.5;
+    const sunTime = data.room.sunTime || 15.5;
+
+    document.getElementById("room-width").value = roomW;
+    document.getElementById("room-length").value = roomL;
+    document.getElementById("sun-time").value = sunTime;
+
+    const hours = Math.floor(sunTime);
+    const mins = Math.round((sunTime % 1) * 60);
+    const formattedMins = mins < 10 ? `0${mins}` : mins;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    document.getElementById("time-display").innerText = `${formattedHours}:${formattedMins}`;
+
+    updateRoomDimensions(roomW, roomL);
+    updateSunPosition(sunTime);
+
+    if (Array.isArray(data.items)) {
+        data.items.forEach(itemData => {
+            if (itemData.isDoor) {
+                addDefaultDoor(roomW, roomL);
+                const doorGroup = activeItems[activeItems.length - 1];
+                if (doorGroup && itemData.position) {
+                    doorGroup.position.set(itemData.position.x, itemData.position.y, itemData.position.z);
+                }
+            } else {
+                const furnitureGroup = createDetailedFurniture(itemData);
+                if (itemData.position) {
+                    furnitureGroup.position.set(itemData.position.x, itemData.position.y, itemData.position.z);
+                }
+                furnitureGroup.userData = { ...itemData, rotationY: itemData.rotationY || 0 };
+                furnitureGroup.rotation.y = itemData.rotationY || 0;
+
+                scene.add(furnitureGroup);
+                activeItems.push(furnitureGroup);
+            }
+        });
+    }
+
+    if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
 function updateMousePosition(event) {
@@ -336,3 +408,8 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
 }
+
+// Exponer funciones globales
+window.initScene = initScene;
+window.updateRoomDimensions = updateRoomDimensions;
+window.updateSunPosition = updateSunPosition;

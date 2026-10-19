@@ -1,126 +1,77 @@
-// Seleccionar elemento e inspeccionar propiedades
+// js/inspector.js - Panel Lateral de Inspección y Edición de Muebles
+
 function selectFurniture(meshGroup) {
     selectedMesh = meshGroup;
-    const container = document.getElementById("inspector-content");
-    const currentLang = window.currentLang || "es";
-    if (!container) return;
+    const content = document.getElementById("inspector-content");
+    if (!content) return;
 
-    if (!meshGroup) {
-        const emptyText = currentLang === "es" 
-            ? "Haz clic en un objeto o en la puerta para moverlo." 
-            : "Click on an object or the door to move it.";
-        container.innerHTML = `<p class="text-slate-500 dark:text-slate-400 italic">${emptyText}</p>`;
+    if (!selectedMesh) {
+        content.innerHTML = `<p class="text-slate-400 italic">Ningún objeto seleccionado.</p>`;
         return;
     }
 
-    const data = meshGroup.userData || {};
-    const nameObj = data.name || { es: "Mueble", en: "Furniture" };
-    const displayName = typeof nameObj === "object" ? (nameObj[currentLang] || nameObj.es) : nameObj;
+    const d = selectedMesh.userData || {};
+    const nameStr = d.name ? (d.name[window.currentLang] || d.name.es) : (d.isDoor ? "Puerta de Acceso" : "Mueble");
 
-    const lblWidth = currentLang === "es" ? "Ancho" : "Width";
-    const lblLength = currentLang === "es" ? "Largo" : "Length";
-    const lblHeightY = currentLang === "es" ? "Altura / Elevación" : "Height / Elevation";
-    const lblRotate = currentLang === "es" ? "Rotar 45°" : "Rotate 45°";
-    const lblDelete = currentLang === "es" ? "Eliminar Objeto" : "Delete Object";
-
-    const currentY = meshGroup.position.y || 0;
-
-    container.innerHTML = `
-        <div class="bg-amber-50/80 dark:bg-slate-900 p-3 rounded-xl border border-amber-200 dark:border-slate-700/80 space-y-3">
-            <div class="flex items-center justify-between font-bold text-slate-900 dark:text-slate-100 text-sm">
-                <span class="flex items-center gap-2"><i class="fa-solid ${data.icon || 'fa-cube'} text-amber-500 text-base"></i> ${displayName}</span>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300 bg-white/60 dark:bg-slate-800/60 p-2 rounded-lg border border-amber-100 dark:border-slate-700/50">
-                <div>Pos X: <strong class="text-slate-900 dark:text-white">${meshGroup.position.x.toFixed(2)}m</strong></div>
-                <div>Pos Z: <strong class="text-slate-900 dark:text-white">${meshGroup.position.z.toFixed(2)}m</strong></div>
-                <div>${lblWidth}: <strong class="text-slate-900 dark:text-white">${data.w || 1}m</strong></div>
-                <div>${lblLength}: <strong class="text-slate-900 dark:text-white">${data.l || 1}m</strong></div>
+    content.innerHTML = `
+        <div class="space-y-3">
+            <div class="font-bold text-amber-900 dark:text-amber-400 text-sm border-b border-amber-200 dark:border-slate-800 pb-1">
+                ${nameStr}
             </div>
 
-            <!-- Ajuste de Altura con Botones de +- 20cm -->
-            <div class="bg-white/60 dark:bg-slate-800/60 p-2.5 rounded-lg border border-amber-100 dark:border-slate-700/50 space-y-2">
-                <div class="flex justify-between items-center text-xs font-semibold text-slate-700 dark:text-slate-200">
-                    <span>${lblHeightY}:</span>
-                    <strong id="val-posY" class="text-amber-600 dark:text-amber-400 font-bold">${currentY.toFixed(2)} m</strong>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="window.changeSelectedHeight(-0.20)" class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold py-1.5 px-2 rounded-lg transition text-xs flex items-center justify-center gap-1 active:scale-95">
-                        <i class="fa-solid fa-arrow-down text-amber-600"></i> -20 cm
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+                <div><span class="text-slate-400">Ancho:</span> <strong>${d.w || 1} m</strong></div>
+                <div><span class="text-slate-400">Largo:</span> <strong>${d.l || 1} m</strong></div>
+            </div>
+
+            <!-- Controles de Rotación -->
+            <div>
+                <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">Rotación (Girar 90°)</label>
+                <div class="flex gap-2">
+                    <button onclick="window.rotateSelected(-Math.PI / 2)" class="flex-1 bg-amber-100 hover:bg-amber-200 dark:bg-slate-800 text-amber-900 dark:text-amber-300 font-bold py-1 rounded-lg border border-amber-300/60 dark:border-slate-700 transition">
+                        <i class="fa-solid fa-rotate-left"></i> -90°
                     </button>
-                    <button onclick="window.changeSelectedHeight(0.20)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-1.5 px-2 rounded-lg transition text-xs flex items-center justify-center gap-1 active:scale-95 shadow-xs">
-                        <i class="fa-solid fa-arrow-up"></i> +20 cm
+                    <button onclick="window.rotateSelected(Math.PI / 2)" class="flex-1 bg-amber-100 hover:bg-amber-200 dark:bg-slate-800 text-amber-900 dark:text-amber-300 font-bold py-1 rounded-lg border border-amber-300/60 dark:border-slate-700 transition">
+                        <i class="fa-solid fa-rotate-right"></i> +90°
                     </button>
                 </div>
             </div>
 
-            <!-- Botones de Acción -->
-            <div class="space-y-2 pt-1">
-                <button onclick="window.rotateSelected(45)" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white font-bold py-2 px-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-xs">
-                    <i class="fa-solid fa-rotate-right text-sm"></i> ${lblRotate}
+            ${d.isDoor ? '' : `
+                <button onclick="window.deleteSelected()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold py-1.5 rounded-lg border border-red-200 dark:border-red-900/50 transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-trash-can"></i> Eliminar Objeto
                 </button>
-
-                ${!data.isDoor ? `
-                <button onclick="window.deleteSelected()" class="w-full bg-red-500/10 hover:bg-red-500 text-red-600 hover:text-white border border-red-200 dark:border-red-900/50 active:scale-[0.98] font-bold py-2 px-3 rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 text-xs">
-                    <i class="fa-solid fa-trash-can text-sm"></i> ${lblDelete}
-                </button>` : ''}
-            </div>
+            `}
         </div>
     `;
 }
 
-// Función global para variar la altura en pasos de 20 cm
-window.changeSelectedHeight = function(deltaY) {
+window.rotateSelected = function(angle) {
     if (!selectedMesh) return;
-    let newY = (selectedMesh.position.y || 0) + deltaY;
-    
-    // Evitar que baje por debajo del piso
-    if (newY < 0) newY = 0;
-    // Límite superior máximo de pared
-    if (newY > 2.5) newY = 2.5;
-
-    selectedMesh.position.y = parseFloat(newY.toFixed(2));
-
-    const valDisplay = document.getElementById("val-posY");
-    if (valDisplay) valDisplay.innerText = `${selectedMesh.position.y.toFixed(2)} m`;
-};
-
-window.rotateSelected = function(deg = 45) {
-    if (!selectedMesh) return;
-    selectedMesh.rotation.y += (deg * Math.PI) / 180;
+    selectedMesh.rotation.y += angle;
+    if (!selectedMesh.userData) selectedMesh.userData = {};
     selectedMesh.userData.rotationY = selectedMesh.rotation.y;
-    selectFurniture(selectedMesh);
+
+    if (typeof window.updateMetrics === "function") {
+        window.updateMetrics();
+    }
 };
 
 window.deleteSelected = function() {
-    if (!selectedMesh || selectedMesh.userData.isDoor) return;
-    scene.remove(selectedMesh);
-    activeItems = activeItems.filter(item => item !== selectedMesh);
+    if (!selectedMesh || selectedMesh.userData?.isDoor) return;
+
+    if (scene) {
+        scene.remove(selectedMesh);
+    }
+
+    const idx = activeItems.indexOf(selectedMesh);
+    if (idx !== -1) {
+        activeItems.splice(idx, 1);
+    }
+
     selectFurniture(null);
-    if (typeof window.updateMetrics === "function") window.updateMetrics();
-};
 
-window.updateMetrics = function() {
-    const rw = parseFloat(document.getElementById("room-width").value) || 4;
-    const rl = parseFloat(document.getElementById("room-length").value) || 3.5;
-    const totalArea = rw * rl;
-
-    let occupiedArea = 0;
-
-    activeItems.forEach(item => {
-        if (!item.userData.isDoor) {
-            const w = item.userData.w || 1;
-            const l = item.userData.l || 1;
-            occupiedArea += w * l;
-        }
-    });
-
-    const freeArea = Math.max(0, totalArea - occupiedArea);
-
-    const occEl = document.getElementById("metric-occupied");
-    const freeEl = document.getElementById("metric-free");
-
-    if (occEl) occEl.innerText = `${occupiedArea.toFixed(1)} m²`;
-    if (freeEl) freeEl.innerText = `${freeArea.toFixed(1)} m²`;
+    if (typeof window.updateMetrics === "function") {
+        window.updateMetrics();
+    }
 };
