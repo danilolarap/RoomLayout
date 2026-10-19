@@ -1,4 +1,4 @@
-// ui.js - Manejo de la Interfaz de Usuario e Idiomas
+// js/ui.js - Manejo de la Interfaz General, Idiomas, Exportación PNG y Proyectos
 
 window.currentLang = "es";
 window.currentProjectId = null;
@@ -71,7 +71,25 @@ window.stepRoomDimension = function(inputId, step) {
     }
 };
 
-// Gestión de Modales de Proyectos
+// Función de Exportación PNG Render HQ
+function initExportPNG() {
+    const btnExportPng = document.getElementById("btn-export-png");
+    if (btnExportPng) {
+        btnExportPng.onclick = () => {
+            if (typeof renderer === "undefined" || !renderer) return;
+
+            // Renderizar la escena en el canvas antes de capturar
+            renderer.render(scene, camera);
+            const dataURL = renderer.domElement.toDataURL("image/png");
+
+            const link = document.createElement("a");
+            link.download = `room_layout_render_${Date.now()}.png`;
+            link.href = dataURL;
+            link.click();
+        };
+    }
+}
+
 function initProjectsUI() {
     const btnSave = document.getElementById("btn-save-project");
     const btnMyProjects = document.getElementById("btn-my-projects");
@@ -119,7 +137,6 @@ function initProjectsUI() {
         btnCloseProjects.onclick = () => modalProjects.classList.add("hidden");
     }
 
-    // Exportar JSON
     if (btnExportJson) {
         btnExportJson.onclick = () => {
             const data = window.getSceneData();
@@ -133,7 +150,6 @@ function initProjectsUI() {
         };
     }
 
-    // Importar JSON
     if (fileImportJson) {
         fileImportJson.onchange = (e) => {
             const file = e.target.files[0];
@@ -263,6 +279,7 @@ function initUI() {
         window.initAuthModal();
     }
     initProjectsUI();
+    initExportPNG();
 
     const btnAi = document.getElementById("btn-analyze-ai");
     if (btnAi) {

@@ -1,25 +1,28 @@
-// js/main.js - Punto de Entrada Principal de la Aplicación
+// js/main.js - Punto de Entrada Principal e Interacciones de Teclado
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Inicializar la escena 3D de Three.js
-    if (typeof initScene === "function") {
-        initScene();
-    } else {
-        console.error("Error: initScene no está definida. Revisa js/scene.js");
-    }
+    if (typeof initScene === "function") initScene();
+    if (typeof renderCatalog === "function") renderCatalog();
+    if (typeof initUI === "function") initUI();
 
-    // 2. Renderizar el catálogo de muebles
-    if (typeof renderCatalog === "function") {
-        renderCatalog();
-    }
-
-    // 3. Inicializar eventos de la interfaz e idioma
-    if (typeof initUI === "function") {
-        initUI();
-    }
-
-    // 4. Calcular métricas iniciales y ejecutar diagnóstico IA inicial
     if (typeof window.updateMetrics === "function") {
         window.updateMetrics();
     }
+
+    // Atajos de Teclado para Elevar/Bajar Objetos (+0.20m / -0.20m)
+    document.addEventListener("keydown", (e) => {
+        if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) return;
+
+        if (typeof selectedMesh !== "undefined" && selectedMesh) {
+            if (e.key === "PageUp" || (e.shiftKey && e.key === "ArrowUp")) {
+                e.preventDefault();
+                if (typeof window.stepElevation === "function") window.stepElevation(0.20);
+            } else if (e.key === "PageDown" || (e.shiftKey && e.key === "ArrowDown")) {
+                e.preventDefault();
+                if (typeof window.stepElevation === "function") window.stepElevation(-0.20);
+            } else if (e.key === "Delete" || e.key === "Backspace") {
+                if (typeof window.deleteSelected === "function") window.deleteSelected();
+            }
+        }
+    });
 });

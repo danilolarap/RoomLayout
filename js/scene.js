@@ -1,4 +1,4 @@
-// js/scene.js - Escena 3D, Cámaras, Luces y Serialización
+// js/scene.js - Escena 3D, Cámaras, Luces y Transparencia Inteligente
 
 let scene, camera, renderer, controls;
 let roomMesh, sunLight;
@@ -15,7 +15,6 @@ const dragOffset = new THREE.Vector3();
 
 let isSimulating = false;
 
-// Inicialización de la escena 3D
 function initScene() {
     const container = document.getElementById("canvas-container");
     if (!container) return;
@@ -85,20 +84,41 @@ function updateRoomDimensions(width, length) {
     grid.position.y = 0.01;
     group.add(grid);
 
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
     const wallHeight = 2.2;
 
-    const backWall = new THREE.Mesh(new THREE.PlaneGeometry(width, wallHeight), wallMat);
+    // Paredes inteligentes con transparencia dinámica
+    const backWallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+    const backWall = new THREE.Mesh(new THREE.PlaneGeometry(width, wallHeight), backWallMat);
     backWall.position.set(0, wallHeight / 2, -length / 2);
+    backWall.userData = { isWall: true, axis: "z", dir: -1 };
     group.add(backWall);
 
-    const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(length, wallHeight), wallMat);
+    const leftWallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+    const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(length, wallHeight), leftWallMat);
     leftWall.rotation.y = Math.PI / 2;
     leftWall.position.set(-width / 2, wallHeight / 2, 0);
+    leftWall.userData = { isWall: true, axis: "x", dir: -1 };
     group.add(leftWall);
 
     roomMesh = group;
     scene.add(roomMesh);
+}
+
+function updateSmartWallOpacity() {
+    if (!roomMesh || !camera) return;
+
+    roomMesh.children.forEach(child => {
+        if (child.userData && child.userData.isWall) {
+            const axis = child.userData.axis;
+            const camPosOnAxis = camera.position[axis];
+            // Si la cámara está en el lado opuesto de la pared, la hace casi invisible
+            if ((child.userData.dir < 0 && camPosOnAxis > 0) || (child.userData.dir > 0 && camPosOnAxis < 0)) {
+                child.material.opacity = 0.15;
+            } else {
+                child.material.opacity = 0.6;
+            }
+        }
+    });
 }
 
 function addDefaultDoor(rw, rl) {
@@ -255,7 +275,12 @@ window.getSceneData = function() {
             color: d.color,
             icon: d.icon,
             isDoor: d.isDoor || false,
-            position: { x: group.position.x, y: group.position.y, z: group.position.z },
+            customColor: d.customColor || null,
+            position: { 
+                x: group.position.x, 
+                y: Math.round(group.position.y * 100) / 100, 
+                z: group.position.z 
+            },
             rotationY: d.rotationY || 0
         };
     });
@@ -296,15 +321,20 @@ window.loadSceneData = function(data) {
                 addDefaultDoor(roomW, roomL);
                 const doorGroup = activeItems[activeItems.length - 1];
                 if (doorGroup && itemData.position) {
-                    doorGroup.position.set(itemData.position.x, itemData.position.y, itemData.position.z);
+                    doorGroup.position.set(itemData.position.x, itemData.position.y || 0, itemData.position.z);
                 }
             } else {
                 const furnitureGroup = createDetailedFurniture(itemData);
                 if (itemData.position) {
-                    furnitureGroup.position.set(itemData.position.x, itemData.position.y, itemData.position.z);
+                    furnitureGroup.position.set(itemData.position.x, itemData.position.y || 0, itemData.position.z);
                 }
                 furnitureGroup.userData = { ...itemData, rotationY: itemData.rotationY || 0 };
                 furnitureGroup.rotation.y = itemData.rotationY || 0;
+
+                if (itemData.customColor && typeof window.changeSelectedColor === "function") {
+                    selectFurniture(furnitureGroup);
+                    window.changeSelectedColor(itemData.customColor);
+                }
 
                 scene.add(furnitureGroup);
                 activeItems.push(furnitureGroup);
@@ -397,6 +427,7 @@ function onPointerUp() {
 
 function animate() {
     requestAnimationFrame(animate);
+    updateSmartWallOpacity();
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
 }
@@ -409,7 +440,6 @@ function onWindowResize() {
     renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
-// Exponer funciones globales
 window.initScene = initScene;
 window.updateRoomDimensions = updateRoomDimensions;
 window.updateSunPosition = updateSunPosition;
