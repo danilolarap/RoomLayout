@@ -1,4 +1,4 @@
-// js/auth/auth-ui.js - Interacción del Modal de Autenticación, Transición de Color de Pestaña e Idiomas
+// js/auth/auth-ui.js - Gestión del Modal de Autenticación, Transiciones y Sincronización de Idioma/Tema
 
 window.initAuthModal = function() {
     const authModal = document.getElementById("auth-modal");
@@ -20,6 +20,8 @@ window.initAuthModal = function() {
 
     // Función de Cambio entre Iniciar Sesión y Registro con Color Verde en Registrarse
     function showTab(view) {
+        const isEn = window.currentLang === "en";
+
         if (view === "login") {
             formLogin.classList.remove("hidden");
             formRegister.classList.add("hidden");
@@ -28,8 +30,8 @@ window.initAuthModal = function() {
             tabLogin.className = "py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
             tabRegister.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
 
-            authTitle.innerText = window.currentLang === "en" ? "Welcome back" : "Bienvenido de nuevo";
-            authSubtitle.innerText = window.currentLang === "en" ? "Enter your credentials to access RoomLayout." : "Ingresa tus datos para acceder a RoomLayout.";
+            authTitle.innerText = isEn ? "Welcome" : "Te damos la bienvenida";
+            authSubtitle.innerText = isEn ? "Enter your credentials to access RoomLayout." : "Ingresa tus datos para acceder a RoomLayout.";
         } else {
             formRegister.classList.remove("hidden");
             formLogin.classList.add("hidden");
@@ -38,8 +40,8 @@ window.initAuthModal = function() {
             tabRegister.className = "py-2 rounded-xl bg-emerald-50 dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold border border-emerald-200/50 dark:border-emerald-800/40";
             tabLogin.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
 
-            authTitle.innerText = window.currentLang === "en" ? "Create local account" : "Regístrate";
-            authSubtitle.innerText = window.currentLang === "en" ? "Register your credentials in your browser local database." : "Registra tus credenciales en la base de datos local de tu navegador.";
+            authTitle.innerText = isEn ? "Create local account" : "Regístrate";
+            authSubtitle.innerText = isEn ? "Register your credentials in your browser local database." : "Registra tus credenciales en la base de datos local de tu navegador.";
         }
     }
 
@@ -50,22 +52,30 @@ window.initAuthModal = function() {
     if (modalLangToggle) {
         modalLangToggle.onclick = () => {
             const langBtn = document.getElementById("lang-toggle");
-            if (langBtn) langBtn.click(); // Dispara el cambio global
+            if (langBtn) langBtn.click(); // Dispara el cambio global de idioma
             window.updateModalLanguageTexts();
         };
     }
 
-    // Alternar Tema desde el Modal
+    // Alternar Tema desde el Modal (Claro / Oscuro)
     if (btnModalTheme) {
         btnModalTheme.onclick = () => {
             const isDark = document.documentElement.classList.toggle("dark");
+            const isEn = window.currentLang === "en";
+
             if (lblModalTheme) {
-                lblModalTheme.innerText = isDark ? (window.currentLang === "en" ? "Dark Mode" : "Modo Oscuro") : (window.currentLang === "en" ? "Light Mode" : "Modo Claro");
+                lblModalTheme.innerText = isEn ? (isDark ? "Dark Mode" : "Light Mode") : (isDark ? "Modo Oscuro" : "Modo Claro");
             }
+
             const themeLabel = document.getElementById("theme-label");
-            if (themeLabel) themeLabel.innerText = isDark ? (window.currentLang === "en" ? "Dark Mode" : "Modo Oscuro") : (window.currentLang === "en" ? "Light Mode" : "Modo Claro");
+            if (themeLabel) {
+                themeLabel.innerText = isEn ? (isDark ? "Dark Mode" : "Light Mode") : (isDark ? "Modo Oscuro" : "Modo Claro");
+            }
+
             const themeIcon = document.getElementById("theme-icon");
-            if (themeIcon) themeIcon.className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
+            if (themeIcon) {
+                themeIcon.className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
+            }
 
             if (typeof scene !== "undefined" && scene) {
                 scene.background = new THREE.Color(isDark ? 0x0f172a : 0xfef3c7);
@@ -73,7 +83,7 @@ window.initAuthModal = function() {
         };
     }
 
-    // Actualizar Estado de UI de Sesión
+    // Actualizar Estado de la Interfaz según la Sesión
     function updateUIState() {
         const user = AuthService.getCurrentUser();
         if (user) {
@@ -92,7 +102,7 @@ window.initAuthModal = function() {
         }
     }
 
-    // Envío del Formulario Login
+    // Envío del Formulario de Inicio de Sesión
     if (formLogin) {
         formLogin.onsubmit = async (e) => {
             e.preventDefault();
@@ -111,7 +121,7 @@ window.initAuthModal = function() {
         };
     }
 
-    // Envío del Formulario Registro
+    // Envío del Formulario de Registro
     if (formRegister) {
         formRegister.onsubmit = async (e) => {
             e.preventDefault();
@@ -131,7 +141,7 @@ window.initAuthModal = function() {
         };
     }
 
-    // Acceso como Invitado
+    // Acceso directo en Modo Invitado
     if (btnGuestMode) {
         btnGuestMode.onclick = () => {
             const guestUser = { id: "guest", username: "Invitado Demo", email: "invitado@local" };
@@ -152,9 +162,11 @@ window.initAuthModal = function() {
     updateUIState();
 };
 
+// Función Global para Actualizar las Traducciones del Modal
 window.updateModalLanguageTexts = function() {
     const isEn = window.currentLang === "en";
     const isDark = document.documentElement.classList.contains("dark");
+
     const setTxt = (id, txt) => {
         const el = document.getElementById(id);
         if (el) el.innerText = txt;
@@ -189,7 +201,7 @@ window.updateModalLanguageTexts = function() {
         setTxt("auth-title", isEn ? "Create local account" : "Regístrate");
         setTxt("auth-subtitle", isEn ? "Register your credentials in your browser local database." : "Registra tus credenciales en la base de datos local de tu navegador.");
     } else {
-        setTxt("auth-title", isEn ? "Welcome back" : "Bienvenido de nuevo");
+        setTxt("auth-title", isEn ? "Welcome" : "Te damos la bienvenida");
         setTxt("auth-subtitle", isEn ? "Enter your credentials to access RoomLayout." : "Ingresa tus datos para acceder a RoomLayout.");
     }
 };
