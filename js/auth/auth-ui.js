@@ -1,4 +1,4 @@
-// js/auth/auth-ui.js - Interacción del Modal de Autenticación e Idiomas
+// js/auth/auth-ui.js - Interacción del Modal de Autenticación, Transición de Color de Pestaña e Idiomas
 
 window.initAuthModal = function() {
     const authModal = document.getElementById("auth-modal");
@@ -18,12 +18,13 @@ window.initAuthModal = function() {
     const lblModalTheme = document.getElementById("lbl-modal-theme");
     const modalLangToggle = document.getElementById("modal-lang-toggle");
 
-    // Función de Cambio entre Iniciar Sesión y Registro
+    // Función de Cambio entre Iniciar Sesión y Registro con Color Verde en Registrarse
     function showTab(view) {
         if (view === "login") {
             formLogin.classList.remove("hidden");
             formRegister.classList.add("hidden");
 
+            // Estilos activa login (Naranja)
             tabLogin.className = "py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
             tabRegister.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
 
@@ -33,7 +34,8 @@ window.initAuthModal = function() {
             formRegister.classList.remove("hidden");
             formLogin.classList.add("hidden");
 
-            tabRegister.className = "py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
+            // Estilos activa registro (Verde Esmeralda)
+            tabRegister.className = "py-2 rounded-xl bg-emerald-50 dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold border border-emerald-200/50 dark:border-emerald-800/40";
             tabLogin.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
 
             authTitle.innerText = window.currentLang === "en" ? "Create local account" : "Regístrate";
@@ -44,12 +46,12 @@ window.initAuthModal = function() {
     if (tabLogin) tabLogin.onclick = () => showTab("login");
     if (tabRegister) tabRegister.onclick = () => showTab("register");
 
-    // Conmutador de Idiomas
+    // Conmutador de Idiomas Sincronizado
     if (modalLangToggle) {
         modalLangToggle.onclick = () => {
             const langBtn = document.getElementById("lang-toggle");
             if (langBtn) langBtn.click(); // Dispara el cambio global
-            updateModalLanguageTexts();
+            window.updateModalLanguageTexts();
         };
     }
 
@@ -61,7 +63,7 @@ window.initAuthModal = function() {
                 lblModalTheme.innerText = isDark ? (window.currentLang === "en" ? "Dark Mode" : "Modo Oscuro") : (window.currentLang === "en" ? "Light Mode" : "Modo Claro");
             }
             const themeLabel = document.getElementById("theme-label");
-            if (themeLabel) themeLabel.innerText = isDark ? "Modo Oscuro" : "Modo Claro";
+            if (themeLabel) themeLabel.innerText = isDark ? (window.currentLang === "en" ? "Dark Mode" : "Modo Oscuro") : (window.currentLang === "en" ? "Light Mode" : "Modo Claro");
             const themeIcon = document.getElementById("theme-icon");
             if (themeIcon) themeIcon.className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
 
@@ -152,12 +154,14 @@ window.initAuthModal = function() {
 
 window.updateModalLanguageTexts = function() {
     const isEn = window.currentLang === "en";
+    const isDark = document.documentElement.classList.contains("dark");
     const setTxt = (id, txt) => {
         const el = document.getElementById(id);
         if (el) el.innerText = txt;
     };
 
     setTxt("modal-lang-label", isEn ? "EN" : "ES");
+    setTxt("lbl-modal-theme", isEn ? (isDark ? "Dark Mode" : "Light Mode") : (isDark ? "Modo Oscuro" : "Modo Claro"));
     setTxt("m-brand-sub", isEn ? "FROM IDEA TO ORGANIZED SPACE" : "DE LA IDEA AL ESPACIO ORGANIZADO");
     setTxt("m-hero-title", isEn ? "Smart 3D Interior Design" : "Diseño e interiorismo inteligente 3D");
     setTxt("m-hero-desc", isEn ? "Simulate ergonomic flow, analyze real-time solar impact, and store your designs in your local database." : "Simula la circulación ergonómica, analiza la incidencia solar en tiempo real y guarda tus proyectos en tu base de datos local.");
@@ -165,7 +169,7 @@ window.updateModalLanguageTexts = function() {
     setTxt("txt-tab-login", isEn ? "Log In" : "Iniciar Sesión");
     setTxt("txt-tab-reg", isEn ? "Register" : "Registrarse");
 
-    setTxt("lbl-login-user", isEn ? "User or Email Address" : "Usuario o Correo Electrónico");
+    setTxt("lbl-login-user", isEn ? "Username or Email Address" : "Usuario o Correo Electrónico");
     setTxt("lbl-login-pass", isEn ? "Password" : "Contraseña");
     setTxt("lbl-remember", isEn ? "Remember me in this browser" : "Recordarme en este navegador");
     setTxt("lbl-forgot", isEn ? "Forgot password?" : "¿Olvidaste tu contraseña?");
@@ -178,6 +182,7 @@ window.updateModalLanguageTexts = function() {
 
     setTxt("txt-or-continue", isEn ? "OR CONTINUE AS" : "O CONTINUAR COMO");
     setTxt("btn-txt-guest", isEn ? "Access in Demo / Guest Mode" : "Acceder en Modo Demo / Invitado");
+    setTxt("m-footer-sub", isEn ? "RoomLayout · Smart Space Management" : "RoomLayout · Gestión Inteligente de Espacios");
 
     const isRegVisible = !document.getElementById("form-register")?.classList.contains("hidden");
     if (isRegVisible) {
