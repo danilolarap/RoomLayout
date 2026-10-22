@@ -46,13 +46,13 @@
     <style>
         /* PATRÓN DE FONDOS CON ÍCONOS DE MOBILIARIO Y HERRAMIENTAS (ESTILO STITCH) */
         .bg-pattern-stitch {
-            background-color: #fef3c7; /* Warm Amber 100 */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23b45309' fill-opacity='0.22'%3E%3C!-- Cama --%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3C!-- Silla --%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3C!-- Ventana/Regla --%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3C!-- Sofá --%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+            background-color: #fef3c7;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23b45309' fill-opacity='0.22'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
         }
 
         .dark .bg-pattern-stitch {
-            background-color: #020617; /* Dark Slate 950 */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23fcd34d' fill-opacity='0.18'%3E%3C!-- Cama --%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3C!-- Silla --%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3C!-- Ventana/Regla --%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3C!-- Sofá --%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+            background-color: #020617;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23fcd34d' fill-opacity='0.18'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
         }
     </style>
 </head>
@@ -242,16 +242,16 @@
         </aside>
     </div>
 
-    <!-- PANTALLA COMPLETA DE LOGIN STITCH - FONDO CON ÍCONOS Y BORDE ONDULADO/WAVE -->
+    <!-- MODAL DE LOGIN CON BORDE ONDULADO REAL Y CONTROLES OPERATIVOS -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-pattern-stitch p-4 md:p-8 flex items-center justify-center transition-colors duration-300">
         <div class="w-full max-w-5xl h-full max-h-[640px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-amber-200/80 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row relative">
             
-            <!-- PANEL IZQUIERDO: HERO BRANDING Y MODELO ISOMÉTRICO -->
-            <div class="w-full md:w-5/12 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-8 flex flex-col justify-between text-white relative overflow-hidden shadow-xl">
+            <!-- PANEL IZQUIERDO: HERO NARANJA CON DIVISOR ONDULADO REAL SOBREPUESTO -->
+            <div class="w-full md:w-5/12 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-8 flex flex-col justify-between text-white relative shadow-xl z-10">
                 
-                <!-- DIVISOR SVG ONDULADO (WAVE) EN EL BORDE DERECHO -->
-                <svg class="absolute right-0 top-0 bottom-0 h-full w-20 text-white dark:text-slate-900 z-20 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 600">
-                    <path d="M 100 0 C 40 100 0 200 40 300 C 80 400 20 500 100 600 L 100 600 L 100 0 Z" fill="currentColor" />
+                <!-- WAVE SVG ONDULADA REAL QUE SE ADAPTA AL TEMA CLARO/OSCURO EN EL BORDE DERECHO -->
+                <svg class="absolute -right-1 top-0 bottom-0 h-full w-14 text-white dark:text-slate-900 z-20 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 600">
+                    <path d="M 0 0 C 80 120 -20 280 70 420 C 100 480 30 550 0 600 L 100 600 L 100 0 Z" fill="currentColor" />
                 </svg>
 
                 <!-- Header de Marca -->
@@ -264,19 +264,19 @@
                             <h2 class="font-black text-xl leading-none flex items-center gap-2">
                                 RoomLayout <span class="text-[9px] bg-amber-400/40 text-white px-1.5 py-0.5 rounded-md font-bold">LIGHT 3D</span>
                             </h2>
-                            <p class="text-[10px] text-amber-100 font-bold tracking-wider uppercase mt-1">DE LA IDEA AL ESPACIO ORGANIZADO</p>
+                            <p class="text-[10px] text-amber-100 font-bold tracking-wider uppercase mt-1" id="m-brand-sub">DE LA IDEA AL ESPACIO ORGANIZADO</p>
                         </div>
                     </div>
 
-                    <h3 class="text-2xl md:text-3xl font-black leading-tight tracking-tight mb-2">
+                    <h3 class="text-2xl md:text-3xl font-black leading-tight tracking-tight mb-2" id="m-hero-title">
                         Diseño e interiorismo inteligente 3D
                     </h3>
-                    <p class="text-amber-100 text-xs leading-relaxed font-medium">
+                    <p class="text-amber-100 text-xs leading-relaxed font-medium" id="m-hero-desc">
                         Simula la circulación ergonómica, analiza la incidencia solar en tiempo real y guarda tus proyectos en tu base de datos local.
                     </p>
                 </div>
 
-                <!-- PREVIEW ILUSTRATIVO HABITACIÓN COMPACTA (SISTEMA STITCH CLEAN) -->
+                <!-- PREVIEW ILUSTRATIVO HABITACIÓN COMPACTA -->
                 <div class="relative z-10 my-auto flex items-center justify-center py-2">
                     <svg viewBox="0 0 300 240" class="w-full max-w-[240px] h-auto drop-shadow-2xl">
                         <!-- Estructura e Isometría -->
@@ -310,8 +310,8 @@
                 </div>
             </div>
 
-            <!-- PANEL DERECHO: FORMULARIO SÓLIDO Y LIMPIO -->
-            <div class="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-between bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+            <!-- PANEL DERECHO: FORMULARIO Y CONTROLES -->
+            <div class="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-between bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 z-0 pl-10">
                 <div>
                     <!-- Header Formulario con Selectores de Idioma y Tema -->
                     <div class="flex justify-between items-start mb-6">
@@ -322,8 +322,8 @@
 
                         <!-- Selector de Idioma y Selector de Tema -->
                         <div class="flex items-center gap-2">
-                            <button id="modal-lang-toggle" onclick="document.getElementById('lang-toggle').click()" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
-                                <i class="fa-solid fa-globe text-amber-500"></i> ES
+                            <button id="modal-lang-toggle" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                                <i class="fa-solid fa-globe text-amber-500"></i> <span id="modal-lang-label">ES</span>
                             </button>
 
                             <button id="btn-modal-theme-toggle" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
@@ -334,18 +334,18 @@
 
                     <!-- Pestañas de Cambio de Formulario Estilo Pill -->
                     <div class="grid grid-cols-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-bold text-center mb-5">
-                        <button id="tab-login" class="py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold">
-                            <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                        <button id="tab-login" type="button" class="py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold">
+                            <i class="fa-solid fa-right-to-bracket"></i> <span id="txt-tab-login">Iniciar Sesión</span>
                         </button>
-                        <button id="tab-register" class="py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold">
-                            <i class="fa-solid fa-user-plus"></i> Registrarse
+                        <button id="tab-register" type="button" class="py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold">
+                            <i class="fa-solid fa-user-plus"></i> <span id="txt-tab-reg">Registrarse</span>
                         </button>
                     </div>
 
                     <!-- Formulario Iniciar Sesión -->
                     <form id="form-login" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Usuario o Correo Electrónico</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5" id="lbl-login-user">Usuario o Correo Electrónico</label>
                             <div class="relative">
                                 <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                                 <input id="login-user" type="text" required placeholder="ej. arquitecto@estudio3d.com" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
@@ -353,7 +353,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Contraseña</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5" id="lbl-login-pass">Contraseña</label>
                             <div class="relative">
                                 <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                                 <input id="login-pass" type="password" required placeholder="••••••••••••" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
@@ -363,47 +363,47 @@
                         <div class="flex items-center justify-between text-xs font-medium pt-1">
                             <label class="flex items-center gap-2 text-slate-600 dark:text-slate-400 cursor-pointer select-none">
                                 <input id="chk-remember" type="checkbox" checked class="w-4 h-4 accent-amber-500 rounded-md">
-                                <span>Recordarme en este navegador</span>
+                                <span id="lbl-remember">Recordarme en este navegador</span>
                             </label>
-                            <a href="#" onclick="alert('Consulta con tu administrador local o crea una cuenta nueva.')" class="text-amber-600 dark:text-amber-400 hover:underline font-bold">¿Olvidaste tu contraseña?</a>
+                            <a href="#" onclick="alert('Consulta con tu administrador local o crea una cuenta nueva.')" class="text-amber-600 dark:text-amber-400 hover:underline font-bold" id="lbl-forgot">¿Olvidaste tu contraseña?</a>
                         </div>
 
                         <div id="auth-error" class="text-red-500 text-xs font-semibold hidden bg-red-50 dark:bg-red-950/50 p-2.5 rounded-xl border border-red-200 dark:border-red-900/50 text-center"></div>
 
                         <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-extrabold py-3.5 rounded-2xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs">
-                            <span>Entrar al Simulador</span> <i class="fa-solid fa-chevron-right"></i>
+                            <span id="btn-txt-login">Entrar al Simulador</span> <i class="fa-solid fa-chevron-right"></i>
                         </button>
                     </form>
 
                     <!-- Formulario Registro -->
                     <form id="form-register" class="space-y-3.5 hidden">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre de Usuario</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" id="lbl-reg-user">Nombre de Usuario</label>
                             <input id="reg-user" type="text" required placeholder="Tu nombre de usuario" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Correo Electrónico</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" id="lbl-reg-email">Correo Electrónico</label>
                             <input id="reg-email" type="email" required placeholder="usuario@correo.com" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Contraseña</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" id="lbl-reg-pass">Contraseña</label>
                             <input id="reg-pass" type="password" required placeholder="••••••••••••" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
                         </div>
 
                         <div id="reg-error" class="text-red-500 text-xs font-semibold hidden bg-red-50 dark:bg-red-950/50 p-2.5 rounded-xl border border-red-200 dark:border-red-900/50 text-center"></div>
 
                         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold py-3.5 rounded-2xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 text-xs">
-                            <span>Crear cuenta local</span> <i class="fa-solid fa-user-plus"></i>
+                            <span id="btn-txt-reg">Crear cuenta local</span> <i class="fa-solid fa-user-plus"></i>
                         </button>
                     </form>
 
                     <div class="relative my-4 text-center">
                         <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
-                        <span class="relative bg-white dark:bg-slate-900 px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider">O CONTINUAR COMO</span>
+                        <span class="relative bg-white dark:bg-slate-900 px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider" id="txt-or-continue">O CONTINUAR COMO</span>
                     </div>
 
                     <button id="btn-guest-mode" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-2xl transition text-xs flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700">
-                        <i class="fa-solid fa-play text-amber-500"></i> Acceder en Modo Demo / Invitado
+                        <i class="fa-solid fa-play text-amber-500"></i> <span id="btn-txt-guest">Acceder en Modo Demo / Invitado</span>
                     </button>
                 </div>
 
