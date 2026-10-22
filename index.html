@@ -97,14 +97,12 @@
             </div>
         </div>
 
-        <!-- Acciones de Proyecto, Usuario y Tema -->
+        <!-- Acciones de Proyecto, Sesión y Tema -->
         <div class="flex items-center gap-2">
-            <!-- Botón de Exportar Render PNG -->
             <button id="btn-export-png" title="Tomar Captura Render HQ" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
                 <i class="fa-solid fa-camera"></i> <span>Render PNG</span>
             </button>
 
-            <!-- Gestión de Proyectos -->
             <button id="btn-save-project" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
                 <i class="fa-solid fa-floppy-disk"></i> <span>Guardar</span>
             </button>
@@ -113,10 +111,14 @@
                 <i class="fa-solid fa-folder-open"></i> <span>Mis Diseños</span>
             </button>
 
-            <!-- Botón de Usuario / Autenticación -->
-            <button id="btn-auth-modal" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
-                <i class="fa-solid fa-user"></i> <span id="user-display-name">Ingresar</span>
-            </button>
+            <!-- Usuario Activo y Cierre de Sesión -->
+            <div id="user-info-badge" class="hidden items-center gap-2 bg-amber-100/70 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-amber-300/60 dark:border-slate-700 text-xs font-bold text-amber-900 dark:text-amber-300">
+                <i class="fa-solid fa-circle-user text-amber-500"></i>
+                <span id="user-display-name">Usuario</span>
+                <button id="btn-logout" title="Cerrar Sesión" class="text-slate-400 hover:text-red-500 ml-1 transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
 
             <button id="lang-toggle" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 border border-amber-300/60 dark:border-slate-700">
                 <i class="fa-solid fa-globe"></i> <span id="lang-label">ES</span>
@@ -150,32 +152,24 @@
                 <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
             </div>
 
-            <!-- Contenedor dinámico del catálogo -->
-            <div id="catalog-container" class="flex-1 overflow-y-auto pr-1 space-y-3 custom-scrollbar">
-                <!-- Se genera mediante js/catalog.js -->
-            </div>
+            <div id="catalog-container" class="flex-1 overflow-y-auto pr-1 space-y-3 custom-scrollbar"></div>
         </aside>
 
         <!-- AREA CENTRAL: LIENZO Y VISOR 3D THREE.JS -->
         <main class="flex-1 relative bg-amber-50/30 dark:bg-slate-950/60 flex flex-col">
-            
-            <!-- Selector de Vistas Cambiables -->
             <div class="absolute top-3 right-3 z-10 flex gap-2">
                 <button id="view-iso" class="bg-amber-500 text-white font-bold px-3 py-1 rounded-lg text-xs shadow-md hover:bg-amber-600 transition">ISO 3D</button>
                 <button id="view-top" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-300 dark:border-slate-700 font-bold px-3 py-1 rounded-lg text-xs shadow-xs hover:bg-amber-100 dark:hover:bg-slate-700 transition">PLANTA (TOP)</button>
             </div>
 
-            <!-- Canvas donde Three.js renderiza la escena -->
             <div id="canvas-container" class="w-full h-full flex-1"></div>
 
-            <!-- Leyenda Inferior de Circulación -->
             <div class="absolute bottom-3 left-3 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-200/60 dark:border-slate-800 flex items-center gap-4 text-[11px] shadow-xs">
                 <div class="flex items-center gap-1.5 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> <span id="leg-free">Flujo Libre</span></div>
                 <div class="flex items-center gap-1.5 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span> <span id="leg-collision">Colisión / Bloqueo</span></div>
                 <div class="flex items-center gap-1.5 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span> <span id="leg-sun">Luz Solar Directa</span></div>
             </div>
 
-            <!-- Indicador de coordenadas -->
             <div class="absolute bottom-3 right-3 z-10 text-[10px] text-slate-500 dark:text-slate-400 font-mono bg-white/60 dark:bg-slate-900/60 px-2 py-0.5 rounded border border-amber-200/40 dark:border-slate-800">
                 <span id="cursor-pos">Cursor: X: 0.00m | Z: 0.00m</span> | Grid Snap: 0.05m (Activo)
             </div>
@@ -183,8 +177,6 @@
 
         <!-- LATERAL DERECHA: INSPECTOR & ASISTENTE IA -->
         <aside class="w-64 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-l border-amber-200/60 dark:border-slate-800 p-3 flex flex-col gap-3 z-10 overflow-y-auto">
-            
-            <!-- Header Inspector -->
             <div class="border-b border-amber-200 dark:border-slate-800 pb-2">
                 <h2 id="title-inspector" class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-400 flex items-center gap-1.5">
                     <i class="fa-solid fa-sliders"></i> INSPECTOR
@@ -192,14 +184,12 @@
                 <p id="sub-inspector" class="text-[10px] text-slate-500 dark:text-slate-400 italic">Haz clic en un objeto o en la puerta para moverla.</p>
             </div>
 
-            <!-- Contenido del Inspector -->
             <div id="inspector-content" class="text-xs text-slate-600 dark:text-slate-300">
                 <p class="text-slate-400 italic">Ningún objeto seleccionado.</p>
             </div>
 
             <div class="h-px bg-amber-200/60 dark:bg-slate-800"></div>
 
-            <!-- Sección de Métricas del Espacio -->
             <div>
                 <h3 id="title-metrics" class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-400 mb-2 flex items-center gap-1.5">
                     <i class="fa-solid fa-chart-pie"></i> MÉTRICAS DE ESPACIO
@@ -218,7 +208,6 @@
 
             <div class="h-px bg-amber-200/60 dark:bg-slate-800"></div>
 
-            <!-- SECCIÓN ASISTENTE IA & DIAGNÓSTICO -->
             <div class="flex-1 flex flex-col gap-2">
                 <div class="flex items-center justify-between">
                     <h3 id="title-diag" class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-400 flex items-center gap-1.5">
@@ -239,6 +228,117 @@
                 </div>
             </div>
         </aside>
+    </div>
+
+    <!-- MODAL DE AUTENTICACIÓN INITIAL -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 transition-colors duration-300">
+        <div class="bg-slate-50 dark:bg-slate-900/95 border border-amber-200/80 dark:border-slate-800 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden relative transition-colors duration-300">
+            
+            <!-- Banner superior -->
+            <div class="p-6 pb-4 border-b border-slate-200 dark:border-slate-800/80">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-amber-500 text-white p-2 rounded-2xl shadow-md">
+                            <i class="fa-solid fa-cubes text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-black text-slate-900 dark:text-white text-base leading-none flex items-center gap-2">
+                                RoomLayout <span class="text-[10px] bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 px-1.5 py-0.5 rounded-md font-bold">LIGHT 3D</span>
+                            </h2>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">Acceso al simulador y proyectos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Iniciar Sesión / Registrarse -->
+                <div class="grid grid-cols-2 bg-slate-200/60 dark:bg-slate-800/60 p-1 rounded-2xl text-xs font-bold text-center">
+                    <button id="tab-login" class="py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold">
+                        <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                    </button>
+                    <button id="tab-register" class="py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold">
+                        <i class="fa-solid fa-user-plus"></i> Registrarse
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6 pt-4 space-y-4">
+                <!-- Formulario Iniciar Sesión -->
+                <form id="form-login" class="space-y-3.5 text-xs">
+                    <div>
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Usuario o Correo Electrónico</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3.5 top-3 text-slate-400"></i>
+                            <input id="login-user" type="text" required placeholder="ej. arquitecto@estudio3d.com" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 shadow-2xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Contraseña</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400"></i>
+                            <input id="login-pass" type="password" required placeholder="••••••••••••" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 shadow-2xs">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-[11px] font-medium pt-1">
+                        <label class="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+                            <input id="chk-remember" type="checkbox" checked class="accent-amber-500 rounded">
+                            <span>Recordarme</span>
+                        </label>
+                        <a href="#" onclick="alert('Contacta al administrador local para reajustar credenciales.')" class="text-amber-600 dark:text-amber-400 hover:underline">¿Olvidé mi contraseña?</a>
+                    </div>
+
+                    <div id="auth-error" class="text-red-500 text-[11px] font-medium hidden text-center"></div>
+
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-extrabold py-3 rounded-2xl transition shadow-md flex items-center justify-center gap-2 text-xs">
+                        <span>Entrar</span> <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </form>
+
+                <!-- Formulario Registro -->
+                <form id="form-register" class="space-y-3 text-xs hidden">
+                    <div>
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre de Usuario</label>
+                        <input id="reg-user" type="text" required class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 shadow-2xs">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Correo Electrónico</label>
+                        <input id="reg-email" type="email" required class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 shadow-2xs">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Contraseña</label>
+                        <input id="reg-pass" type="password" required class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 shadow-2xs">
+                    </div>
+
+                    <div id="reg-error" class="text-red-500 text-[11px] font-medium hidden text-center"></div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold py-3 rounded-2xl transition shadow-md flex items-center justify-center gap-2 text-xs">
+                        <span>Crear Cuenta Local</span> <i class="fa-solid fa-user-check"></i>
+                    </button>
+                </form>
+
+                <!-- Separador / Modo Invitado -->
+                <div class="relative my-2 text-center">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
+                    <span class="relative bg-slate-50 dark:bg-slate-900 px-2 text-[10px] uppercase font-bold text-slate-400">O continuar como</span>
+                </div>
+
+                <button id="btn-guest-mode" class="w-full bg-slate-200/70 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-2xl transition text-xs flex items-center justify-center gap-2 border border-slate-300/50 dark:border-slate-700/50">
+                    <i class="fa-solid fa-play"></i> Acceder en Modo Demo / Invitado
+                </button>
+            </div>
+
+            <!-- Footer del Modal con Toggle de Tema -->
+            <div class="bg-slate-100 dark:bg-slate-950/80 px-6 py-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                <div class="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                    <span>Persistencia en IndexedDB local</span>
+                </div>
+                
+                <button id="btn-modal-theme-toggle" class="hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1 bg-white dark:bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-300 dark:border-slate-800 shadow-2xs font-semibold">
+                    <span id="lbl-modal-theme">Modo Claro</span> <i class="fa-solid fa-sun text-amber-500"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL DE PROYECTOS / DISEÑOS GUARDADOS -->
@@ -263,65 +363,13 @@
                 </div>
             </div>
 
-            <!-- Lista Dinámica de Proyectos -->
             <div id="projects-list-container" class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar pr-1">
                 <p class="text-slate-400 italic text-xs text-center py-4">Cargando diseños...</p>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN (LOGIN / SIGN IN) -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 hidden">
-        <div class="bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-            <button id="btn-close-modal" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <!-- Pestañas Iniciar Sesión / Registro -->
-            <div class="flex border-b border-amber-200 dark:border-slate-800 pb-2 mb-4 gap-4">
-                <button id="tab-login" class="font-bold text-sm text-amber-600 dark:text-amber-400 border-b-2 border-amber-500 pb-1">Iniciar Sesión</button>
-                <button id="tab-register" class="font-bold text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 pb-1">Registrarse</button>
-            </div>
-
-            <!-- Formulario Iniciar Sesión -->
-            <form id="form-login" class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Usuario o Email</label>
-                    <input id="login-user" type="text" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Contraseña</label>
-                    <input id="login-pass" type="password" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
-                </div>
-                <div id="auth-error" class="text-red-500 text-[11px] font-medium hidden"></div>
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl transition shadow-xs mt-2">
-                    Entrar
-                </button>
-            </form>
-
-            <!-- Formulario Registro -->
-            <form id="form-register" class="space-y-3 text-xs hidden">
-                <div>
-                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Nombre de Usuario</label>
-                    <input id="reg-user" type="text" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Correo Electrónico</label>
-                    <input id="reg-email" type="email" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Contraseña</label>
-                    <input id="reg-pass" type="password" required class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500">
-                </div>
-                <div id="reg-error" class="text-red-500 text-[11px] font-medium hidden"></div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition shadow-xs mt-2">
-                    Crear Cuenta Local
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- SCRIPTS DE LA APLICACIÓN EN ORDEN STRICTO DE DEPENDENCIA -->
+    <!-- SCRIPTS DE LA APLICACIÓN EN ORDEN STRICTO -->
     <script src="js/auth/db.js"></script>
     <script src="js/auth/auth-ui.js"></script>
     <script src="js/catalog.js"></script>

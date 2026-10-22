@@ -1,66 +1,88 @@
-// js/auth/auth-ui.js - Manejo de la UI de autenticación
+// js/auth/auth-ui.js - Lógica de Interfaz del Modal de Autenticación y Persistencia Local
 
-function updateAuthUI() {
-    const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
-    const userDisplay = document.getElementById("user-display-name");
-    const btnAuth = document.getElementById("btn-auth-modal");
-
-    if (user && userDisplay) {
-        userDisplay.innerText = user.username;
-        btnAuth.onclick = () => {
-            if (confirm(`¿Deseas cerrar la sesión de ${user.username}?`)) {
-                window.AuthService.logout();
-                updateAuthUI();
-            }
-        };
-    } else if (userDisplay) {
-        userDisplay.innerText = "Ingresar";
-        btnAuth.onclick = () => {
-            const modal = document.getElementById("auth-modal");
-            if (modal) modal.classList.remove("hidden");
-        };
-    }
-}
-
-function initAuthModal() {
-    const modal = document.getElementById("auth-modal");
-    const btnClose = document.getElementById("btn-close-modal");
+window.initAuthModal = function() {
+    const authModal = document.getElementById("auth-modal");
     const tabLogin = document.getElementById("tab-login");
     const tabRegister = document.getElementById("tab-register");
     const formLogin = document.getElementById("form-login");
     const formRegister = document.getElementById("form-register");
     const authError = document.getElementById("auth-error");
     const regError = document.getElementById("reg-error");
+    const btnGuestMode = document.getElementById("btn-guest-mode");
+    const btnLogout = document.getElementById("btn-logout");
+    const userBadge = document.getElementById("user-info-badge");
+    const userDisplayName = document.getElementById("user-display-name");
+    const btnModalTheme = document.getElementById("btn-modal-theme-toggle");
+    const lblModalTheme = document.getElementById("lbl-modal-theme");
 
-    if (btnClose) btnClose.onclick = () => modal.classList.add("hidden");
-
+    // Reorganizar Pestañas Login / Registro
     if (tabLogin && tabRegister) {
-        tabLogin.onclick = () => {
-            tabLogin.className = "font-bold text-sm text-amber-600 dark:text-amber-400 border-b-2 border-amber-500 pb-1";
-            tabRegister.className = "font-bold text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 pb-1";
+        tabLogin.onclick = (e) => {
+            e.preventDefault();
+            tabLogin.className = "py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
+            tabRegister.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
             formLogin.classList.remove("hidden");
             formRegister.classList.add("hidden");
         };
 
-        tabRegister.onclick = () => {
-            tabRegister.className = "font-bold text-sm text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-500 pb-1";
-            tabLogin.className = "font-bold text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 pb-1";
+        tabRegister.onclick = (e) => {
+            e.preventDefault();
+            tabRegister.className = "py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
+            tabLogin.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
             formRegister.classList.remove("hidden");
             formLogin.classList.add("hidden");
         };
     }
 
+    // Toggle de Tema directamente desde el Modal de Login
+    if (btnModalTheme) {
+        btnModalTheme.onclick = () => {
+            const isDark = document.documentElement.classList.toggle("dark");
+            if (lblModalTheme) {
+                lblModalTheme.innerText = isDark ? "Modo Oscuro" : "Modo Claro";
+            }
+            const themeLabel = document.getElementById("theme-label");
+            if (themeLabel) themeLabel.innerText = isDark ? "Modo Oscuro" : "Modo Claro";
+            const themeIcon = document.getElementById("theme-icon");
+            if (themeIcon) themeIcon.className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
+
+            if (typeof scene !== "undefined" && scene) {
+                scene.background = new THREE.Color(isDark ? 0x0f172a : 0xfef3c7);
+            }
+        };
+    }
+
+    // Comprobar la sesión guardada al iniciar la aplicación
+    function updateUIState() {
+        const user = AuthService.getCurrentUser();
+        if (user) {
+            if (userDisplayName) userDisplayName.innerText = user.username;
+            if (userBadge) {
+                userBadge.classList.remove("hidden");
+                userBadge.classList.add("flex");
+            }
+            if (authModal) authModal.classList.add("hidden");
+        } else {
+            if (userBadge) {
+                userBadge.classList.add("hidden");
+                userBadge.classList.remove("flex");
+            }
+            if (authModal) authModal.classList.remove("hidden");
+        }
+    }
+
+    // Iniciar Sesión
     if (formLogin) {
         formLogin.onsubmit = async (e) => {
             e.preventDefault();
             authError.classList.add("hidden");
+
+            const emailOrUser = document.getElementById("login-user").value.trim();
+            const pass = document.getElementById("login-pass").value;
+
             try {
-                await window.AuthService.login(
-                    document.getElementById("login-user").value,
-                    document.getElementById("login-pass").value
-                );
-                modal.classList.add("hidden");
-                updateAuthUI();
+                const user = await AuthService.login(emailOrUser, pass);
+                updateUIState();
             } catch (err) {
                 authError.innerText = err.message;
                 authError.classList.remove("hidden");
@@ -68,18 +90,19 @@ function initAuthModal() {
         };
     }
 
+    // Registrar Usuario Local
     if (formRegister) {
         formRegister.onsubmit = async (e) => {
             e.preventDefault();
             regError.classList.add("hidden");
+
+            const username = document.getElementById("reg-user").value.trim();
+            const email = document.getElementById("reg-email").value.trim();
+            const pass = document.getElementById("reg-pass").value;
+
             try {
-                await window.AuthService.register(
-                    document.getElementById("reg-user").value,
-                    document.getElementById("reg-email").value,
-                    document.getElementById("reg-pass").value
-                );
-                modal.classList.add("hidden");
-                updateAuthUI();
+                const user = await AuthService.register(username, email, pass);
+                updateUIState();
             } catch (err) {
                 regError.innerText = err.message;
                 regError.classList.remove("hidden");
@@ -87,8 +110,23 @@ function initAuthModal() {
         };
     }
 
-    updateAuthUI();
-}
+    // Modo Invitado / Demo
+    if (btnGuestMode) {
+        btnGuestMode.onclick = () => {
+            const guestUser = { id: "guest", username: "Invitado Demo", email: "invitado@local" };
+            localStorage.setItem("roomlayout_user", JSON.stringify(guestUser));
+            updateUIState();
+        };
+    }
 
-// Exponer inicialización para main.js / ui.js
-window.initAuthModal = initAuthModal;
+    // Cerrar Sesión
+    if (btnLogout) {
+        btnLogout.onclick = () => {
+            AuthService.logout();
+            window.currentProjectId = null;
+            updateUIState();
+        };
+    }
+
+    updateUIState();
+};
