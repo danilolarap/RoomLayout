@@ -41,8 +41,20 @@
     <!-- Dexie.js (Base de datos IndexedDB local) -->
     <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
 
-    <!-- Estilos personalizados -->
+    <!-- Estilos personalizados con el Patrón de Íconos de Fondo Stitch -->
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* PATRÓN DE FONDOS CON ÍCONOS DE MOBILIARIO Y HERRAMIENTAS (ESTILO STITCH) */
+        .bg-pattern-stitch {
+            background-color: #fef3c7; /* Warm Amber 100 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23b45309' fill-opacity='0.22'%3E%3C!-- Cama --%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3C!-- Silla --%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3C!-- Ventana/Regla --%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3C!-- Sofá --%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .dark .bg-pattern-stitch {
+            background-color: #020617; /* Dark Slate 950 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23fcd34d' fill-opacity='0.18'%3E%3C!-- Cama --%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3C!-- Silla --%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3C!-- Ventana/Regla --%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3C!-- Sofá --%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
 </head>
 <body class="bg-amber-50/50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col h-screen overflow-hidden select-none transition-colors duration-300">
 
@@ -230,31 +242,29 @@
         </aside>
     </div>
 
-    <!-- PANTALLA COMPLETA DE LOGIN OPACO CON LÍNEA DINÁMICA (IRREGULAR A RECTA) Y MODELO ISOMÉTRICO 3D -->
-    <div id="auth-modal" class="fixed inset-0 z-50 bg-amber-50/90 dark:bg-slate-950 p-4 md:p-8 flex items-center justify-center transition-colors duration-300">
-        <div class="w-full max-w-5xl h-full max-h-[660px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-amber-200/80 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row">
+    <!-- PANTALLA COMPLETA DE LOGIN STITCH - FONDO CON ÍCONOS CONTRASTADOS Y VISIBLES -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-pattern-stitch p-4 md:p-8 flex items-center justify-center transition-colors duration-300">
+        <div class="w-full max-w-5xl h-full max-h-[640px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-amber-200/80 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row relative">
             
-            <!-- PANEL IZQUIERDO: HERO BRANDING CON RECORTE DE LÍNEA IRREGULAR A RECTA Y MODELO ISOMÉTRICO DE HABITACIÓN -->
-            <div class="w-full md:w-5/12 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-8 flex flex-col justify-between text-white relative overflow-hidden shadow-2xl transition-all duration-500"
-                 style="clip-path: polygon(0 0, 100% 0, 100% 70%, 88% 82%, 100% 90%, 100% 100%, 0 100%);">
+            <!-- PANEL IZQUIERDO: HERO BRANDING Y MODELO ISOMÉTRICO CON BORDE CURVO ORGÁNICO A RECTO -->
+            <div class="w-full md:w-5/12 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-8 flex flex-col justify-between text-white relative overflow-hidden shadow-xl">
                 
-                <!-- SVG DE FONDO CON OLA/LÍNEA IRREGULAR A RECTA (SÍMBOLO DE ORGANIZACIÓN) -->
-                <svg class="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 400 600">
-                    <path d="M -50 100 Q 150 180 200 80 T 450 120 L 450 600 L -50 600 Z" fill="white" />
-                    <path d="M -20 250 C 80 320 120 180 250 280 C 350 350 380 220 420 260 L 420 600 L -20 600 Z" fill="rgba(255,255,255,0.3)" />
-                    <line x1="50" y1="420" x2="350" y2="420" stroke="white" stroke-width="2" stroke-dasharray="4 4" />
-                    <line x1="50" y1="480" x2="350" y2="480" stroke="white" stroke-width="2" />
+                <!-- DIVISOR FLUIDO SVG ESTILO STITCH -->
+                <svg class="absolute right-0 top-0 bottom-0 h-full w-16 text-white dark:text-slate-900 z-20 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 600">
+                    <path d="M 100 0 C 20 150 80 300 10 450 L 0 450 L 0 600 L 100 600 Z" fill="currentColor" />
                 </svg>
 
                 <!-- Header de Marca -->
                 <div class="relative z-10">
-                    <div class="flex items-center gap-2.5 mb-5">
+                    <div class="flex items-center gap-2.5 mb-6">
                         <div class="bg-white text-amber-600 p-2.5 rounded-2xl shadow-md">
                             <i class="fa-solid fa-cubes text-2xl"></i>
                         </div>
                         <div>
-                            <h2 class="font-black text-xl leading-none">RoomLayout</h2>
-                            <p class="text-[10px] text-amber-100 font-bold tracking-wider uppercase mt-1">De la Idea al Espacio Organizado</p>
+                            <h2 class="font-black text-xl leading-none flex items-center gap-2">
+                                RoomLayout <span class="text-[9px] bg-amber-400/40 text-white px-1.5 py-0.5 rounded-md font-bold">LIGHT 3D</span>
+                            </h2>
+                            <p class="text-[10px] text-amber-100 font-bold tracking-wider uppercase mt-1">DE LA IDEA AL ESPACIO ORGANIZADO</p>
                         </div>
                     </div>
 
@@ -266,16 +276,10 @@
                     </p>
                 </div>
 
-                <!-- PREVIEW ILUSTRATIVO DE HABITACIÓN COMPACTA (Sustituye al ícono simple) -->
-                <div class="relative z-10 my-3 bg-amber-900/30 backdrop-blur-md rounded-3xl p-3.5 border border-white/20 shadow-xl overflow-hidden flex flex-col items-center justify-center">
-                    
-                    <div class="absolute top-2.5 left-3 bg-white/20 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[9px] font-extrabold tracking-wider uppercase text-amber-100 border border-white/30">
-                        <i class="fa-solid fa-sparkles text-amber-200"></i> Modelo Interactivo
-                    </div>
-
-                    <!-- ILUSTRACIÓN ISOMÉTRICA DE CUARTO COMPACTO (SVG VECTORES ADAPTADO A ROOMLAYOUT) -->
-                    <svg viewBox="0 0 300 240" class="w-full max-w-[200px] h-auto drop-shadow-2xl my-1">
-                        <!-- Estructura de Paredes & Piso -->
+                <!-- PREVIEW ILUSTRATIVO HABITACIÓN COMPACTA (SISTEMA DE STITCH) -->
+                <div class="relative z-10 my-auto flex items-center justify-center py-2">
+                    <svg viewBox="0 0 300 240" class="w-full max-w-[240px] h-auto drop-shadow-2xl">
+                        <!-- Estructura e Isometría -->
                         <path d="M 150 20 L 270 80 L 270 180 L 150 230 L 30 180 L 30 80 Z" fill="#f59e0b" opacity="0.15" />
                         <path d="M 30 80 L 150 140 L 150 230 L 30 180 Z" fill="#d97706" />
                         <path d="M 150 140 L 270 80 L 270 180 L 150 230 Z" fill="#b45309" />
@@ -292,61 +296,59 @@
                         <path d="M 70 125 L 90 115 L 90 135 L 70 145 Z" fill="#1e293b" />
                         <path d="M 72 126 L 88 118 L 88 132 L 72 140 Z" fill="#38bdf8" />
 
-                        <!-- Cama Compacta con Edredón Verde Menta -->
+                        <!-- Cama Compacta con Edredón Verde -->
                         <path d="M 125 120 L 165 100 L 165 130 L 125 150 Z" fill="#78350f" />
                         <path d="M 135 135 L 175 115 L 225 140 L 185 160 Z" fill="#ffffff" />
                         <path d="M 140 132 L 160 122 L 170 127 L 150 137 Z" fill="#fef3c7" />
                         <path d="M 150 142 L 185 125 L 225 145 L 190 162 Z" fill="#10b981" />
 
-                        <!-- Alfombra y Cuadros Decorativos -->
+                        <!-- Alfombra y Decoración -->
                         <path d="M 100 185 L 150 160 L 190 180 L 140 205 Z" fill="#fbbf24" opacity="0.8" />
                         <path d="M 70 85 L 85 78 L 85 98 L 70 105 Z" fill="#ffffff" opacity="0.8" />
                         <path d="M 95 72 L 115 62 L 115 82 L 95 92 Z" fill="#ffffff" opacity="0.8" />
                     </svg>
-
-                    <span class="text-[11px] font-bold text-amber-100">Previsualización de Espacio Compacto</span>
-                </div>
-
-                <!-- Métricas Locales Inferiores -->
-                <div class="grid grid-cols-3 gap-2 relative z-10">
-                    <div class="bg-black/20 backdrop-blur-xs p-2.5 rounded-2xl text-center border border-white/10">
-                        <div class="font-black text-base text-white">28+</div>
-                        <div class="text-[9px] font-bold text-amber-200 uppercase">Muebles</div>
-                    </div>
-                    <div class="bg-black/20 backdrop-blur-xs p-2.5 rounded-2xl text-center border border-white/10">
-                        <div class="font-black text-base text-white">0.20m</div>
-                        <div class="text-[9px] font-bold text-amber-200 uppercase">Ajuste Y</div>
-                    </div>
-                    <div class="bg-black/20 backdrop-blur-xs p-2.5 rounded-2xl text-center border border-white/10">
-                        <div class="font-black text-base text-white">100%</div>
-                        <div class="text-[9px] font-bold text-amber-200 uppercase">Local DB</div>
-                    </div>
                 </div>
             </div>
 
-            <!-- PANEL DERECHO: FORMULARIO SÓLIDO Y OPACO -->
+            <!-- PANEL DERECHO: FORMULARIO SÓLIDO Y LIMPIO -->
             <div class="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-between bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
                 <div>
-                    <!-- Header Formulario -->
+                    <!-- Header Formulario con Selectores de Idioma y Tema -->
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <h3 id="auth-title" class="text-2xl font-black text-slate-900 dark:text-white">Bienvenido de nuevo</h3>
                             <p id="auth-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Ingresa tus datos para acceder a RoomLayout.</p>
                         </div>
 
-                        <!-- Switch Modo Claro / Oscuro -->
-                        <button id="btn-modal-theme-toggle" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
-                            <span id="lbl-modal-theme">Modo Claro</span> <i class="fa-solid fa-sun text-amber-500"></i>
+                        <!-- Selector de Idioma e Selector de Tema -->
+                        <div class="flex items-center gap-2">
+                            <button id="modal-lang-toggle" onclick="document.getElementById('lang-toggle').click()" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                                <i class="fa-solid fa-globe text-amber-500"></i> ES
+                            </button>
+
+                            <button id="btn-modal-theme-toggle" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                                <span id="lbl-modal-theme">Modo Claro</span> <i class="fa-solid fa-sun text-amber-500"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pestañas de Cambio de Formulario Estilo Pill -->
+                    <div class="grid grid-cols-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-bold text-center mb-5">
+                        <button id="tab-login" class="py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold">
+                            <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                        </button>
+                        <button id="tab-register" class="py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold">
+                            <i class="fa-solid fa-user-plus"></i> Registrarse
                         </button>
                     </div>
 
-                    <!-- Formulario de Inicio de Sesión -->
+                    <!-- Formulario Iniciar Sesión -->
                     <form id="form-login" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Correo electrónico o Usuario</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Usuario o Correo Electrónico</label>
                             <div class="relative">
-                                <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                                <input id="login-user" type="text" required placeholder="usuario@correo.com" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
+                                <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                                <input id="login-user" type="text" required placeholder="ej. arquitecto@estudio3d.com" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
                             </div>
                         </div>
 
@@ -361,7 +363,7 @@
                         <div class="flex items-center justify-between text-xs font-medium pt-1">
                             <label class="flex items-center gap-2 text-slate-600 dark:text-slate-400 cursor-pointer select-none">
                                 <input id="chk-remember" type="checkbox" checked class="w-4 h-4 accent-amber-500 rounded-md">
-                                <span>Recordarme</span>
+                                <span>Recordarme en este navegador</span>
                             </label>
                             <a href="#" onclick="alert('Consulta con tu administrador local o crea una cuenta nueva.')" class="text-amber-600 dark:text-amber-400 hover:underline font-bold">¿Olvidaste tu contraseña?</a>
                         </div>
@@ -369,11 +371,11 @@
                         <div id="auth-error" class="text-red-500 text-xs font-semibold hidden bg-red-50 dark:bg-red-950/50 p-2.5 rounded-xl border border-red-200 dark:border-red-900/50 text-center"></div>
 
                         <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-extrabold py-3.5 rounded-2xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs">
-                            <span>Iniciar sesión</span> <i class="fa-solid fa-arrow-right"></i>
+                            <span>Entrar al Simulador</span> <i class="fa-solid fa-chevron-right"></i>
                         </button>
                     </form>
 
-                    <!-- Formulario de Registro de Cuenta -->
+                    <!-- Formulario Registro -->
                     <form id="form-register" class="space-y-3.5 hidden">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre de Usuario</label>
@@ -395,25 +397,18 @@
                         </button>
                     </form>
 
-                    <!-- Cambio entre Login y Registro -->
-                    <div class="text-center mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">
-                        <span id="txt-toggle-prompt">¿Aún no tienes una cuenta?</span>
-                        <button id="btn-switch-auth" class="text-amber-600 dark:text-amber-400 hover:underline font-bold ml-1">Crear cuenta</button>
-                    </div>
-
                     <div class="relative my-4 text-center">
                         <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
-                        <span class="relative bg-white dark:bg-slate-900 px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider">O continuar como</span>
+                        <span class="relative bg-white dark:bg-slate-900 px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider">O CONTINUAR COMO</span>
                     </div>
 
                     <button id="btn-guest-mode" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-2xl transition text-xs flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700">
-                        <i class="fa-solid fa-play"></i> Acceder en Modo Demo / Invitado
+                        <i class="fa-solid fa-play text-amber-500"></i> Acceder en Modo Demo / Invitado
                     </button>
                 </div>
 
                 <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex justify-between items-center font-medium">
                     <span>RoomLayout · Gestión Inteligente de Espacios</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-database text-amber-500"></i> IndexedDB</span>
                 </div>
             </div>
         </div>
