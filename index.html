@@ -242,16 +242,16 @@
         </aside>
     </div>
 
-    <!-- PANTALLA COMPLETA DE LOGIN STITCH - FONDO CON ÍCONOS CONTRASTADOS Y VISIBLES -->
+    <!-- PANTALLA COMPLETA DE LOGIN STITCH - FONDO CON ÍCONOS Y BORDE ONDULADO/WAVE -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-pattern-stitch p-4 md:p-8 flex items-center justify-center transition-colors duration-300">
         <div class="w-full max-w-5xl h-full max-h-[640px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-amber-200/80 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row relative">
             
-            <!-- PANEL IZQUIERDO: HERO BRANDING Y MODELO ISOMÉTRICO CON BORDE CURVO ORGÁNICO A RECTO -->
+            <!-- PANEL IZQUIERDO: HERO BRANDING Y MODELO ISOMÉTRICO -->
             <div class="w-full md:w-5/12 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-8 flex flex-col justify-between text-white relative overflow-hidden shadow-xl">
                 
-                <!-- DIVISOR FLUIDO SVG ESTILO STITCH -->
-                <svg class="absolute right-0 top-0 bottom-0 h-full w-16 text-white dark:text-slate-900 z-20 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 600">
-                    <path d="M 100 0 C 20 150 80 300 10 450 L 0 450 L 0 600 L 100 600 Z" fill="currentColor" />
+                <!-- DIVISOR SVG ONDULADO (WAVE) EN EL BORDE DERECHO -->
+                <svg class="absolute right-0 top-0 bottom-0 h-full w-20 text-white dark:text-slate-900 z-20 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 600">
+                    <path d="M 100 0 C 40 100 0 200 40 300 C 80 400 20 500 100 600 L 100 600 L 100 0 Z" fill="currentColor" />
                 </svg>
 
                 <!-- Header de Marca -->
@@ -276,7 +276,7 @@
                     </p>
                 </div>
 
-                <!-- PREVIEW ILUSTRATIVO HABITACIÓN COMPACTA (SISTEMA DE STITCH) -->
+                <!-- PREVIEW ILUSTRATIVO HABITACIÓN COMPACTA (SISTEMA STITCH CLEAN) -->
                 <div class="relative z-10 my-auto flex items-center justify-center py-2">
                     <svg viewBox="0 0 300 240" class="w-full max-w-[240px] h-auto drop-shadow-2xl">
                         <!-- Estructura e Isometría -->
@@ -320,7 +320,7 @@
                             <p id="auth-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Ingresa tus datos para acceder a RoomLayout.</p>
                         </div>
 
-                        <!-- Selector de Idioma e Selector de Tema -->
+                        <!-- Selector de Idioma y Selector de Tema -->
                         <div class="flex items-center gap-2">
                             <button id="modal-lang-toggle" onclick="document.getElementById('lang-toggle').click()" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                                 <i class="fa-solid fa-globe text-amber-500"></i> ES
