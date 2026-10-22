@@ -306,6 +306,9 @@ function initUI() {
             document.getElementById("theme-label").innerText = isDark ? i18n[window.currentLang].themeDark : i18n[window.currentLang].themeLight;
             document.getElementById("theme-icon").className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
             
+            const lblModalTheme = document.getElementById("lbl-modal-theme");
+            if (lblModalTheme) lblModalTheme.innerText = isDark ? "Modo Oscuro" : "Modo Claro";
+
             if (scene) {
                 scene.background = new THREE.Color(isDark ? 0x0f172a : 0xfef3c7);
             }

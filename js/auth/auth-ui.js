@@ -1,11 +1,13 @@
-// js/auth/auth-ui.js - Lógica de Interfaz del Modal de Autenticación y Persistencia Local
+// js/auth/auth-ui.js - Lógica de Autenticación, Transición de Formularios y Persistencia Local
 
 window.initAuthModal = function() {
     const authModal = document.getElementById("auth-modal");
-    const tabLogin = document.getElementById("tab-login");
-    const tabRegister = document.getElementById("tab-register");
     const formLogin = document.getElementById("form-login");
     const formRegister = document.getElementById("form-register");
+    const authTitle = document.getElementById("auth-title");
+    const authSubtitle = document.getElementById("auth-subtitle");
+    const btnSwitchAuth = document.getElementById("btn-switch-auth");
+    const txtTogglePrompt = document.getElementById("txt-toggle-prompt");
     const authError = document.getElementById("auth-error");
     const regError = document.getElementById("reg-error");
     const btnGuestMode = document.getElementById("btn-guest-mode");
@@ -15,22 +17,29 @@ window.initAuthModal = function() {
     const btnModalTheme = document.getElementById("btn-modal-theme-toggle");
     const lblModalTheme = document.getElementById("lbl-modal-theme");
 
-    // Reorganizar Pestañas Login / Registro
-    if (tabLogin && tabRegister) {
-        tabLogin.onclick = (e) => {
-            e.preventDefault();
-            tabLogin.className = "py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
-            tabRegister.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
-            formLogin.classList.remove("hidden");
-            formRegister.classList.add("hidden");
-        };
+    let isLoginView = true;
 
-        tabRegister.onclick = (e) => {
+    // Cambiar entre vista Iniciar Sesión y Registro
+    if (btnSwitchAuth) {
+        btnSwitchAuth.onclick = (e) => {
             e.preventDefault();
-            tabRegister.className = "py-2 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
-            tabLogin.className = "py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
-            formRegister.classList.remove("hidden");
-            formLogin.classList.add("hidden");
+            isLoginView = !isLoginView;
+
+            if (isLoginView) {
+                authTitle.innerText = "Bienvenido de nuevo";
+                authSubtitle.innerText = "Ingresa tus datos para acceder a RoomLayout.";
+                formLogin.classList.remove("hidden");
+                formRegister.classList.add("hidden");
+                txtTogglePrompt.innerText = "¿Aún no tienes una cuenta?";
+                btnSwitchAuth.innerText = "Crear cuenta";
+            } else {
+                authTitle.innerText = "Crea tu cuenta local";
+                authSubtitle.innerText = "Registra tus credenciales en la base de datos local.";
+                formRegister.classList.remove("hidden");
+                formLogin.classList.add("hidden");
+                txtTogglePrompt.innerText = "¿Ya tienes una cuenta?";
+                btnSwitchAuth.innerText = "Iniciar sesión";
+            }
         };
     }
 
@@ -71,7 +80,7 @@ window.initAuthModal = function() {
         }
     }
 
-    // Iniciar Sesión
+    // Formulario Iniciar Sesión
     if (formLogin) {
         formLogin.onsubmit = async (e) => {
             e.preventDefault();
@@ -81,7 +90,7 @@ window.initAuthModal = function() {
             const pass = document.getElementById("login-pass").value;
 
             try {
-                const user = await AuthService.login(emailOrUser, pass);
+                await AuthService.login(emailOrUser, pass);
                 updateUIState();
             } catch (err) {
                 authError.innerText = err.message;
@@ -90,7 +99,7 @@ window.initAuthModal = function() {
         };
     }
 
-    // Registrar Usuario Local
+    // Formulario Registrar Usuario
     if (formRegister) {
         formRegister.onsubmit = async (e) => {
             e.preventDefault();
@@ -101,7 +110,7 @@ window.initAuthModal = function() {
             const pass = document.getElementById("reg-pass").value;
 
             try {
-                const user = await AuthService.register(username, email, pass);
+                await AuthService.register(username, email, pass);
                 updateUIState();
             } catch (err) {
                 regError.innerText = err.message;
@@ -110,7 +119,7 @@ window.initAuthModal = function() {
         };
     }
 
-    // Modo Invitado / Demo
+    // Acceder como Invitado / Modo Demo
     if (btnGuestMode) {
         btnGuestMode.onclick = () => {
             const guestUser = { id: "guest", username: "Invitado Demo", email: "invitado@local" };
