@@ -57,7 +57,7 @@
                 <span id="lbl-room" class="text-amber-800 dark:text-amber-400">SALA:</span>
                 
                 <div class="flex items-center gap-1 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded-lg border border-amber-300/80 dark:border-slate-600 shadow-xs">
-                    <span class="text-[10px] text-slate-400 font-medium mr-0.5">Ancho</span>
+                    <span id="lbl-room-width" class="text-[10px] text-slate-400 font-medium mr-0.5">Ancho</span>
                     <button onclick="window.stepRoomDimension('room-width', -0.5)" class="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-amber-800 dark:text-amber-300 rounded font-bold transition flex items-center justify-center text-xs">-</button>
                     <input id="room-width" type="number" min="2" max="15" step="0.5" value="4.0" class="w-12 text-center font-extrabold text-amber-900 dark:text-amber-300 bg-transparent focus:outline-none">
                     <button onclick="window.stepRoomDimension('room-width', 0.5)" class="w-5 h-5 bg-amber-500 hover:bg-amber-600 text-white rounded font-bold transition flex items-center justify-center text-xs">+</button>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="flex items-center gap-1 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded-lg border border-amber-300/80 dark:border-slate-600 shadow-xs">
-                    <span class="text-[10px] text-slate-400 font-medium mr-0.5">Largo</span>
+                    <span id="lbl-room-length" class="text-[10px] text-slate-400 font-medium mr-0.5">Largo</span>
                     <button onclick="window.stepRoomDimension('room-length', -0.5)" class="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-amber-800 dark:text-amber-300 rounded font-bold transition flex items-center justify-center text-xs">-</button>
                     <input id="room-length" type="number" min="2" max="15" step="0.5" value="3.5" class="w-12 text-center font-extrabold text-amber-900 dark:text-amber-300 bg-transparent focus:outline-none">
                     <button onclick="window.stepRoomDimension('room-length', 0.5)" class="w-5 h-5 bg-amber-500 hover:bg-amber-600 text-white rounded font-bold transition flex items-center justify-center text-xs">+</button>
@@ -85,21 +85,21 @@
 
         <div class="flex items-center gap-2">
             <button id="btn-export-png" title="Tomar Captura Render HQ" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
-                <i class="fa-solid fa-camera"></i> <span>Render PNG</span>
+                <i class="fa-solid fa-camera"></i> <span id="txt-btn-render">Render PNG</span>
             </button>
 
             <button id="btn-save-project" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 shadow-xs">
-                <i class="fa-solid fa-floppy-disk"></i> <span>Guardar</span>
+                <i class="fa-solid fa-floppy-disk"></i> <span id="txt-btn-save">Guardar</span>
             </button>
             
             <button id="btn-my-projects" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1.5 border border-amber-300/60 dark:border-slate-700">
-                <i class="fa-solid fa-folder-open"></i> <span>Mis Diseños</span>
+                <i class="fa-solid fa-folder-open"></i> <span id="txt-btn-projects">Mis Diseños</span>
             </button>
 
             <!-- Usuario Activo y Salir -->
             <div id="user-info-badge" class="flex items-center gap-2 bg-amber-100/70 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-amber-300/60 dark:border-slate-700 text-xs font-bold text-amber-900 dark:text-amber-300">
                 <i class="fa-solid fa-circle-user text-amber-500"></i>
-                <span id="user-display-name">Usuario</span>
+                <span id="user-display-name">Invitado Demo</span>
                 <button id="btn-logout" title="Cerrar Sesión" onclick="localStorage.removeItem('roomlayout_session'); window.location.href='login.html';" class="text-slate-400 hover:text-red-500 ml-1 transition">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
@@ -140,7 +140,9 @@
         <main class="flex-1 relative bg-amber-50/30 dark:bg-slate-950/60 flex flex-col">
             <div class="absolute top-3 right-3 z-10 flex gap-2">
                 <button id="view-iso" class="bg-amber-500 text-white font-bold px-3 py-1 rounded-lg text-xs shadow-md hover:bg-amber-600 transition">ISO 3D</button>
-                <button id="view-top" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-300 dark:border-slate-700 font-bold px-3 py-1 rounded-lg text-xs shadow-xs hover:bg-amber-100 dark:hover:bg-slate-700 transition">PLANTA (TOP)</button>
+                <button id="view-top" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-300 dark:border-slate-700 font-bold px-3 py-1 rounded-lg text-xs shadow-xs hover:bg-amber-100 dark:hover:bg-slate-700 transition">
+                    <span id="txt-view-top">PLANTA (TOP)</span>
+                </button>
             </div>
 
             <div id="canvas-container" class="w-full h-full flex-1"></div>
@@ -165,7 +167,7 @@
             </div>
 
             <div id="inspector-content" class="text-xs text-slate-600 dark:text-slate-300">
-                <p class="text-slate-400 italic">Ningún objeto seleccionado.</p>
+                <p id="inspector-empty" class="text-slate-400 italic">Ningún objeto seleccionado.</p>
             </div>
 
             <div class="h-px bg-amber-200/60 dark:bg-slate-800"></div>
@@ -194,12 +196,12 @@
                         <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> ASISTENTE IA
                     </h3>
                     <button id="btn-analyze-ai" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow-xs flex items-center gap-1 active:scale-95">
-                        <span>ANALIZAR</span> <i class="fa-solid fa-rotate-right"></i>
+                        <span id="txt-btn-analyze">ANALIZAR</span> <i class="fa-solid fa-rotate-right"></i>
                     </button>
                 </div>
 
                 <div class="bg-amber-100/40 dark:bg-slate-800/50 p-2.5 rounded-xl border border-amber-200/60 dark:border-slate-700/50 flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300">Puntaje Eficiencia:</span>
+                    <span id="lbl-ai-score" class="text-[11px] font-bold text-slate-700 dark:text-slate-300">Puntaje Eficiencia:</span>
                     <span id="ai-score-badge" class="text-xs font-black px-2 py-0.5 rounded-md bg-emerald-500 text-white shadow-xs">100 / 100</span>
                 </div>
 
@@ -249,11 +251,10 @@
                 document.addEventListener('DOMContentLoaded', () => {
                     const userNameEl = document.getElementById('user-display-name');
                     if (userNameEl && sessionData.user) {
-                        userNameEl.innerText = sessionData.user;
+                        userNameEl.innerText = sessionData.user === 'Invitado Demo' ? (window.currentLang === 'en' ? 'Guest Demo' : 'Invitado Demo') : sessionData.user;
                     }
                 });
             } catch (e) {
-                // Compatibilidad en caso de texto plano
                 document.addEventListener('DOMContentLoaded', () => {
                     const userNameEl = document.getElementById('user-display-name');
                     if (userNameEl) userNameEl.innerText = sessionRaw;

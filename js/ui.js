@@ -7,18 +7,28 @@ const i18n = {
     es: {
         subtitle: "Simulador de Circulación e Incidencia Solar",
         room: "SALA:",
+        roomWidth: "Ancho",
+        roomLength: "Largo",
         hour: "HORA:",
+        btnRender: "Render PNG",
+        btnSave: "Guardar",
+        btnProjects: "Mis Diseños",
+        guestDemo: "Invitado Demo",
         themeLight: "Modo Claro",
         themeDark: "Modo Oscuro",
         simulate: "SIMULAR",
         catalog: "CATÁLOGO MOBILIARIO",
         searchPlaceholder: "Buscar muebles...",
+        viewTop: "PLANTA (TOP)",
         inspector: "INSPECTOR",
         subInspector: "Haz clic en un objeto o en la puerta para moverla.",
+        inspectorEmpty: "Ningún objeto seleccionado.",
         metrics: "MÉTRICAS DE ESPACIO",
         occupied: "OCUPADA",
         free: "LIBRE",
         diagTitle: "ASISTENTE IA",
+        btnAnalyze: "ANALIZAR",
+        lblAiScore: "Puntaje Eficiencia:",
         diagOk: "Distribución óptima sin conflictos.",
         freeFlow: "Flujo Libre",
         collision: "Colisión / Bloqueo",
@@ -27,18 +37,28 @@ const i18n = {
     en: {
         subtitle: "Circulation & Solar Impact Simulator",
         room: "ROOM:",
+        roomWidth: "Width",
+        roomLength: "Length",
         hour: "TIME:",
+        btnRender: "PNG Render",
+        btnSave: "Save",
+        btnProjects: "My Projects",
+        guestDemo: "Guest Demo",
         themeLight: "Light Mode",
         themeDark: "Dark Mode",
         simulate: "SIMULATE",
         catalog: "FURNITURE CATALOG",
         searchPlaceholder: "Search furniture...",
+        viewTop: "TOP VIEW",
         inspector: "INSPECTOR",
         subInspector: "Click on an object or the door to move it.",
+        inspectorEmpty: "No object selected.",
         metrics: "SPACE METRICS",
         occupied: "OCCUPIED",
         free: "FREE",
         diagTitle: "AI ASSISTANT",
+        btnAnalyze: "ANALYZE",
+        lblAiScore: "Efficiency Score:",
         diagOk: "Optimal layout with no conflicts.",
         freeFlow: "Free Flow",
         collision: "Collision / Block",
@@ -98,19 +118,20 @@ function initProjectsUI() {
 
     if (btnSave) {
         btnSave.onclick = async () => {
-            const name = prompt("Nombre de tu diseño:", "Mi Habitación 3D");
+            const promptMsg = window.currentLang === "en" ? "Name of your layout:" : "Nombre de tu diseño:";
+            const name = prompt(promptMsg, "My 3D Room");
             if (!name) return;
 
             try {
                 const sceneData = window.getSceneData();
                 if (typeof ProjectService !== "undefined") {
                     window.currentProjectId = await ProjectService.saveProject(name, sceneData.room, sceneData.items, window.currentProjectId);
-                    alert("¡Proyecto guardado exitosamente en tu base de datos local!");
+                    alert(window.currentLang === "en" ? "Project saved successfully!" : "¡Proyecto guardado exitosamente en tu base de datos local!");
                 } else {
-                    alert("¡Proyecto preparado localmente!");
+                    alert(window.currentLang === "en" ? "Project prepared locally!" : "¡Proyecto preparado localmente!");
                 }
             } catch (err) {
-                alert("Error al guardar el proyecto: " + err.message);
+                alert("Error: " + err.message);
             }
         };
     }
@@ -155,9 +176,9 @@ function initProjectsUI() {
                         window.loadSceneData(parsedData);
                     }
                     if (modalProjects) modalProjects.classList.add("hidden");
-                    alert("¡Diseño importado correctamente!");
+                    alert(window.currentLang === "en" ? "Layout imported successfully!" : "¡Diseño importado correctamente!");
                 } catch (err) {
-                    alert("Error al leer el archivo JSON.");
+                    alert(window.currentLang === "en" ? "Error reading JSON file." : "Error al leer el archivo JSON.");
                 }
             };
             reader.readAsText(file);
@@ -171,13 +192,14 @@ async function renderProjectsList() {
 
     try {
         if (typeof ProjectService === "undefined") {
-            container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">Base de datos local activa.</p>`;
+            container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">Local database active.</p>`;
             return;
         }
 
         const projects = await ProjectService.getUserProjects();
         if (projects.length === 0) {
-            container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">No tienes diseños guardados aún.</p>`;
+            const noProjectsMsg = window.currentLang === "en" ? "You don't have saved layouts yet." : "No tienes diseños guardados aún.";
+            container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">${noProjectsMsg}</p>`;
             return;
         }
 
@@ -187,15 +209,16 @@ async function renderProjectsList() {
             item.className = "bg-amber-50/80 dark:bg-slate-800/80 border border-amber-200/80 dark:border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs";
             
             const dateStr = new Date(p.updatedAt).toLocaleDateString();
+            const loadTxt = window.currentLang === "en" ? "Load" : "Cargar";
 
             item.innerHTML = `
                 <div>
                     <h4 class="font-bold text-amber-900 dark:text-amber-300 text-sm">${p.name}</h4>
-                    <p class="text-[10px] text-slate-500">${p.room.width}m × ${p.room.length}m | ${p.items.length} objetos | ${dateStr}</p>
+                    <p class="text-[10px] text-slate-500">${p.room.width}m × ${p.room.length}m | ${p.items.length} ${window.currentLang === "en" ? "items" : "objetos"} | ${dateStr}</p>
                 </div>
                 <div class="flex gap-1">
                     <button onclick="window.loadProject(${p.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg transition shadow-xs">
-                        Cargar
+                        ${loadTxt}
                     </button>
                     <button onclick="window.deleteProject(${p.id})" class="bg-red-500 hover:bg-red-600 text-white font-bold px-2 py-1 rounded-lg transition shadow-xs">
                         <i class="fa-solid fa-trash"></i>
@@ -205,7 +228,7 @@ async function renderProjectsList() {
             container.appendChild(item);
         });
     } catch (err) {
-        container.innerHTML = `<p class="text-red-500 text-xs text-center py-4">Error al cargar la lista.</p>`;
+        container.innerHTML = `<p class="text-red-500 text-xs text-center py-4">Error loading list.</p>`;
     }
 }
 
@@ -222,12 +245,13 @@ window.loadProject = async function(id) {
             if (modal) modal.classList.add("hidden");
         }
     } catch (err) {
-        alert("No se pudo cargar el proyecto.");
+        alert(window.currentLang === "en" ? "Could not load project." : "No se pudo cargar el proyecto.");
     }
 };
 
 window.deleteProject = async function(id) {
-    if (confirm("¿Estás seguro de eliminar este diseño?")) {
+    const confirmMsg = window.currentLang === "en" ? "Are you sure you want to delete this layout?" : "¿Estás seguro de eliminar este diseño?";
+    if (confirm(confirmMsg)) {
         if (typeof ProjectService !== "undefined") {
             await ProjectService.deleteProject(id);
             await renderProjectsList();
@@ -258,7 +282,7 @@ window.runAIDiagnostic = function() {
 
     if (analysis.conflicts.length === 0 && analysis.suggestions.length === 0) {
         diagBox.className = "flex-1 bg-emerald-50 dark:bg-slate-950 border border-emerald-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-emerald-800 dark:text-emerald-300 space-y-2";
-        diagBox.innerHTML = `<div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span id="diag-ok">${i18n[window.currentLang].diagOk}</span></div>`;
+        diagBox.innerHTML = `<div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span>${i18n[window.currentLang].diagOk}</span></div>`;
         return;
     }
 
@@ -299,6 +323,7 @@ function initUI() {
             updateLanguageTexts();
             if (typeof renderCatalog === "function") renderCatalog();
             if (typeof selectFurniture === "function" && typeof selectedMesh !== "undefined") selectFurniture(selectedMesh);
+            if (typeof window.runAIDiagnostic === "function") window.runAIDiagnostic();
         });
     }
 
@@ -396,15 +421,33 @@ function updateLanguageTexts() {
 
     setTxt("txt-subtitle", t.subtitle);
     setTxt("lbl-room", t.room);
+    setTxt("lbl-room-width", t.roomWidth);
+    setTxt("lbl-room-length", t.roomLength);
     setTxt("lbl-hour", t.hour);
+    setTxt("txt-btn-render", t.btnRender);
+    setTxt("txt-btn-save", t.btnSave);
+    setTxt("txt-btn-projects", t.btnProjects);
+
+    const userDisplay = document.getElementById("user-display-name");
+    if (userDisplay && (userDisplay.innerText === "Invitado Demo" || userDisplay.innerText === "Guest Demo")) {
+        userDisplay.innerText = t.guestDemo;
+    }
+
+    const isDark = document.documentElement.classList.contains("dark");
+    setTxt("theme-label", isDark ? t.themeDark : t.themeLight);
+
     setTxt("txt-simulate", t.simulate);
     setTxt("title-catalog", t.catalog);
+    setTxt("txt-view-top", t.viewTop);
     setTxt("title-inspector", t.inspector);
     setTxt("sub-inspector", t.subInspector);
+    setTxt("inspector-empty", t.inspectorEmpty);
     setTxt("title-metrics", t.metrics);
     setTxt("lbl-occupied", t.occupied);
     setTxt("lbl-free", t.free);
     setTxt("title-diag", t.diagTitle);
+    setTxt("txt-btn-analyze", t.btnAnalyze);
+    setTxt("lbl-ai-score", t.lblAiScore);
     setTxt("diag-ok", t.diagOk);
     setTxt("leg-free", t.freeFlow);
     setTxt("leg-collision", t.collision);
