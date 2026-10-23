@@ -71,14 +71,12 @@ window.stepRoomDimension = function(inputId, step) {
     }
 };
 
-// Función de Exportación PNG Render HQ
 function initExportPNG() {
     const btnExportPng = document.getElementById("btn-export-png");
     if (btnExportPng) {
         btnExportPng.onclick = () => {
             if (typeof renderer === "undefined" || !renderer) return;
 
-            // Renderizar la escena en el canvas antes de capturar
             renderer.render(scene, camera);
             const dataURL = renderer.domElement.toDataURL("image/png");
 
@@ -100,20 +98,17 @@ function initProjectsUI() {
 
     if (btnSave) {
         btnSave.onclick = async () => {
-            const user = AuthService.getCurrentUser();
-            if (!user) {
-                alert("Por favor inicia sesión para guardar tus proyectos.");
-                document.getElementById("auth-modal")?.classList.remove("hidden");
-                return;
-            }
-
             const name = prompt("Nombre de tu diseño:", "Mi Habitación 3D");
             if (!name) return;
 
             try {
                 const sceneData = window.getSceneData();
-                window.currentProjectId = await ProjectService.saveProject(name, sceneData.room, sceneData.items, window.currentProjectId);
-                alert("¡Proyecto guardado exitosamente en tu base de datos local!");
+                if (typeof ProjectService !== "undefined") {
+                    window.currentProjectId = await ProjectService.saveProject(name, sceneData.room, sceneData.items, window.currentProjectId);
+                    alert("¡Proyecto guardado exitosamente en tu base de datos local!");
+                } else {
+                    alert("¡Proyecto preparado localmente!");
+                }
             } catch (err) {
                 alert("Error al guardar el proyecto: " + err.message);
             }
@@ -122,23 +117,20 @@ function initProjectsUI() {
 
     if (btnMyProjects) {
         btnMyProjects.onclick = async () => {
-            const user = AuthService.getCurrentUser();
-            if (!user) {
-                alert("Por favor inicia sesión para ver tus diseños guardados.");
-                document.getElementById("auth-modal")?.classList.remove("hidden");
-                return;
-            }
             await renderProjectsList();
-            modalProjects.classList.remove("hidden");
+            if (modalProjects) modalProjects.classList.remove("hidden");
         };
     }
 
     if (btnCloseProjects) {
-        btnCloseProjects.onclick = () => modalProjects.classList.add("hidden");
+        btnCloseProjects.onclick = () => {
+            if (modalProjects) modalProjects.classList.add("hidden");
+        };
     }
 
     if (btnExportJson) {
         btnExportJson.onclick = () => {
+            if (typeof window.getSceneData !== "function") return;
             const data = window.getSceneData();
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             const url = URL.createObjectURL(blob);
@@ -159,8 +151,10 @@ function initProjectsUI() {
             reader.onload = (event) => {
                 try {
                     const parsedData = JSON.parse(event.target.result);
-                    window.loadSceneData(parsedData);
-                    modalProjects.classList.add("hidden");
+                    if (typeof window.loadSceneData === "function") {
+                        window.loadSceneData(parsedData);
+                    }
+                    if (modalProjects) modalProjects.classList.add("hidden");
                     alert("¡Diseño importado correctamente!");
                 } catch (err) {
                     alert("Error al leer el archivo JSON.");
@@ -176,6 +170,11 @@ async function renderProjectsList() {
     if (!container) return;
 
     try {
+        if (typeof ProjectService === "undefined") {
+            container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">Base de datos local activa.</p>`;
+            return;
+        }
+
         const projects = await ProjectService.getUserProjects();
         if (projects.length === 0) {
             container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">No tienes diseños guardados aún.</p>`;
@@ -212,11 +211,15 @@ async function renderProjectsList() {
 
 window.loadProject = async function(id) {
     try {
+        if (typeof ProjectService === "undefined") return;
         const project = await ProjectService.getProjectById(id);
         if (project) {
-            window.loadSceneData({ room: project.room, items: project.items });
+            if (typeof window.loadSceneData === "function") {
+                window.loadSceneData({ room: project.room, items: project.items });
+            }
             window.currentProjectId = project.id;
-            document.getElementById("projects-modal").classList.add("hidden");
+            const modal = document.getElementById("projects-modal");
+            if (modal) modal.classList.add("hidden");
         }
     } catch (err) {
         alert("No se pudo cargar el proyecto.");
@@ -225,8 +228,10 @@ window.loadProject = async function(id) {
 
 window.deleteProject = async function(id) {
     if (confirm("¿Estás seguro de eliminar este diseño?")) {
-        await ProjectService.deleteProject(id);
-        await renderProjectsList();
+        if (typeof ProjectService !== "undefined") {
+            await ProjectService.deleteProject(id);
+            await renderProjectsList();
+        }
     }
 };
 
@@ -253,7 +258,7 @@ window.runAIDiagnostic = function() {
 
     if (analysis.conflicts.length === 0 && analysis.suggestions.length === 0) {
         diagBox.className = "flex-1 bg-emerald-50 dark:bg-slate-950 border border-emerald-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-emerald-800 dark:text-emerald-300 space-y-2";
-        diagBox.innerHTML = `<div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span>${i18n[window.currentLang].diagOk}</span></div>`;
+        diagBox.innerHTML = `<div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span id="diag-ok">${i18n[window.currentLang].diagOk}</span></div>`;
         return;
     }
 
@@ -275,9 +280,6 @@ window.runAIDiagnostic = function() {
 };
 
 function initUI() {
-    if (typeof window.initAuthModal === "function") {
-        window.initAuthModal();
-    }
     initProjectsUI();
     initExportPNG();
 
@@ -292,10 +294,11 @@ function initUI() {
     if (langBtn) {
         langBtn.addEventListener("click", () => {
             window.currentLang = window.currentLang === "es" ? "en" : "es";
-            document.getElementById("lang-label").innerText = window.currentLang.toUpperCase();
+            const langLabel = document.getElementById("lang-label");
+            if (langLabel) langLabel.innerText = window.currentLang.toUpperCase();
             updateLanguageTexts();
             if (typeof renderCatalog === "function") renderCatalog();
-            if (typeof selectFurniture === "function") selectFurniture(selectedMesh);
+            if (typeof selectFurniture === "function" && typeof selectedMesh !== "undefined") selectFurniture(selectedMesh);
         });
     }
 
@@ -303,13 +306,13 @@ function initUI() {
     if (themeBtn) {
         themeBtn.addEventListener("click", () => {
             const isDark = document.documentElement.classList.toggle("dark");
-            document.getElementById("theme-label").innerText = isDark ? i18n[window.currentLang].themeDark : i18n[window.currentLang].themeLight;
-            document.getElementById("theme-icon").className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
+            const themeLabel = document.getElementById("theme-label");
+            const themeIcon = document.getElementById("theme-icon");
             
-            const lblModalTheme = document.getElementById("lbl-modal-theme");
-            if (lblModalTheme) lblModalTheme.innerText = isDark ? "Modo Oscuro" : "Modo Claro";
+            if (themeLabel) themeLabel.innerText = isDark ? i18n[window.currentLang].themeDark : i18n[window.currentLang].themeLight;
+            if (themeIcon) themeIcon.className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
 
-            if (scene) {
+            if (typeof scene !== "undefined" && scene) {
                 scene.background = new THREE.Color(isDark ? 0x0f172a : 0xfef3c7);
             }
         });
@@ -366,7 +369,8 @@ function initUI() {
             const mins = Math.round((val % 1) * 60);
             const formattedMins = mins < 10 ? `0${mins}` : mins;
             const formattedHours = hours < 10 ? `0${hours}` : hours;
-            document.getElementById("time-display").innerText = `${formattedHours}:${formattedMins}`;
+            const display = document.getElementById("time-display");
+            if (display) display.innerText = `${formattedHours}:${formattedMins}`;
             if (typeof updateSunPosition === "function") {
                 updateSunPosition(val);
             }

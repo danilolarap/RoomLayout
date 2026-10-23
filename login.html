@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomLayout LIGHT 3D - Iniciar Sesión</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        amber: {
+                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                            800: '#92400e', 900: '#78350f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons & Dexie.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+
+    <style>
+        .bg-pattern-stitch {
+            background-color: #fef3c7;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23b45309' fill-opacity='0.22'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .dark .bg-pattern-stitch {
+            background-color: #020617;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23fcd34d' fill-opacity='0.18'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-pattern-stitch min-h-screen flex items-center justify-center p-4 md:p-8 select-none transition-colors duration-300">
+
+    <div id="auth-container" class="w-full max-w-5xl h-full max-h-[660px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-amber-200/80 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row relative">
+        
+        <!-- PANEL IZQUIERDO -->
+        <div class="w-full md:w-5/12 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-8 flex flex-col justify-between text-white relative shadow-xl z-10">
+            <div class="relative z-10">
+                <div class="flex items-center gap-2.5 mb-6">
+                    <div class="bg-white text-amber-600 p-2.5 rounded-2xl shadow-md">
+                        <i class="fa-solid fa-cubes text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-black text-xl leading-none flex items-center gap-2">
+                            RoomLayout <span class="text-[9px] bg-amber-400/40 text-white px-1.5 py-0.5 rounded-md font-bold">LIGHT 3D</span>
+                        </h2>
+                        <p class="text-[10px] text-amber-100 font-bold tracking-wider uppercase mt-1" id="txt-brand-sub">DE LA IDEA AL ESPACIO ORGANIZADO</p>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl md:text-3xl font-black leading-tight tracking-tight mb-2" id="txt-hero-title">
+                    Diseño e interiorismo inteligente 3D
+                </h3>
+                <p class="text-amber-100 text-xs leading-relaxed font-medium" id="txt-hero-desc">
+                    Simula la circulación ergonómica, analiza la incidencia solar en tiempo real y guarda tus proyectos en tu base de datos local.
+                </p>
+            </div>
+
+            <!-- ILUSTRACIÓN 3D ISOMÉTRICA VECTORIAL -->
+            <div class="relative z-10 my-auto flex items-center justify-center py-4">
+                <svg viewBox="0 0 500 400" class="w-full max-w-[300px] h-auto drop-shadow-2xl transition-transform duration-300 hover:scale-105" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="250,50 60,160 60,330 250,220" fill="#d97706" />
+                    <polygon points="120,160 200,113 200,200 120,247" fill="#38bdf8" stroke="#ffffff" stroke-width="6" />
+                    <line x1="160" y1="136" x2="160" y2="223" stroke="#ffffff" stroke-width="4" />
+                    <polygon points="250,50 440,160 440,330 250,220" fill="#b45309" />
+                    <polygon points="330,195 400,235 400,320 330,280" fill="#78350f" stroke="#451a03" stroke-width="3" />
+                    <circle cx="342" cy="245" r="4" fill="#fbbf24" />
+                    <polygon points="250,220 60,330 250,400 440,330" fill="#fef3c7" />
+                    <polygon points="180,310 250,270 320,310 250,350" fill="#f59e0b" />
+                    <polygon points="250,235 340,285 290,315 200,265" fill="#15803d" />
+                    <polygon points="250,230 340,280 340,285 250,235" fill="#166534" />
+                    <polygon points="200,265 290,315 290,320 200,270" fill="#14532d" />
+                    <polygon points="230,240 260,257 245,266 215,249" fill="#fef08a" />
+                    <polygon points="100,270 170,230 200,248 130,288" fill="#92400e" />
+                    <polygon points="100,270 130,288 130,318 100,300" fill="#78350f" />
+                    <polygon points="130,288 200,248 200,278 130,318" fill="#451a03" />
+                    <polygon points="140,235 160,223 160,248 140,260" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO -->
+        <div class="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-between bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 z-0">
+            <div>
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 id="txt-welcome-title" class="text-2xl font-black text-slate-900 dark:text-white">Te damos la bienvenida</h3>
+                        <p id="txt-welcome-sub" class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Ingresa tus datos para acceder a RoomLayout.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button id="btn-lang" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                            <i class="fa-solid fa-globe text-amber-500"></i> <span id="lbl-lang">ES</span>
+                        </button>
+
+                        <button id="btn-theme" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                            <span id="lbl-theme">Modo Claro</span> <i class="fa-solid fa-sun text-amber-500" id="icon-theme"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PESTAÑAS CAMBIO LOGIN / REGISTRO -->
+                <div class="grid grid-cols-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-bold text-center mb-5">
+                    <button id="tab-login" type="button" class="py-2.5 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold">
+                        <i class="fa-solid fa-right-to-bracket"></i> <span id="lbl-tab-login">Iniciar Sesión</span>
+                    </button>
+                    <button id="tab-register" type="button" class="py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold">
+                        <i class="fa-solid fa-user-plus"></i> <span id="lbl-tab-reg">Registrarse</span>
+                    </button>
+                </div>
+
+                <!-- FORMULARIO 1: INICIAR SESIÓN -->
+                <form id="form-login" class="space-y-4">
+                    <div>
+                        <label id="lbl-user-login" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Usuario o Correo Electrónico</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                            <input id="login-user" type="text" required placeholder="ej. arquitecto@estudio3d.com" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label id="lbl-pass-login" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Contraseña</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                            <input id="login-pass" type="password" required placeholder="••••••••••••" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs font-medium pt-1">
+                        <label class="flex items-center gap-2 text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+                            <input id="chk-remember" type="checkbox" checked class="w-4 h-4 accent-amber-500 rounded-md">
+                            <span id="lbl-remember">Recordarme en este navegador</span>
+                        </label>
+                        <a href="#" onclick="alert('Contacta al administrador o regístrate nuevamente.')" class="text-amber-600 dark:text-amber-400 hover:underline font-bold" id="lbl-forgot">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <div id="login-msg" class="text-xs font-semibold hidden p-2.5 rounded-xl text-center"></div>
+
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-extrabold py-3.5 rounded-2xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs">
+                        <span id="btn-txt-login">Entrar al Simulador</span> <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </form>
+
+                <!-- FORMULARIO 2: REGISTRARSE -->
+                <form id="form-register" class="space-y-3.5 hidden">
+                    <div>
+                        <label id="lbl-reg-user" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre de Usuario</label>
+                        <input id="reg-user" type="text" required placeholder="Tu usuario" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
+                    </div>
+                    <div>
+                        <label id="lbl-reg-email" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Correo Electrónico</label>
+                        <input id="reg-email" type="email" required placeholder="usuario@correo.com" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
+                    </div>
+                    <div>
+                        <label id="lbl-reg-pass" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Contraseña</label>
+                        <input id="reg-pass" type="password" required placeholder="••••••••••••" class="w-full bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 transition">
+                    </div>
+
+                    <div id="reg-msg" class="text-xs font-semibold hidden p-2.5 rounded-xl text-center"></div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold py-3.5 rounded-2xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 text-xs">
+                        <span id="btn-txt-reg">Crear cuenta local</span> <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </form>
+
+                <div class="relative my-4 text-center">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
+                    <span class="relative bg-white dark:bg-slate-900 px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider" id="txt-or">O CONTINUAR COMO</span>
+                </div>
+
+                <button id="btn-guest" type="button" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-2xl transition text-xs flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-play text-amber-500"></i> <span id="btn-txt-guest">Acceder en Modo Demo / Invitado</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS Y LÓGICA DE INTERACCIÓN -->
+    <script src="js/auth/db.js"></script>
+    <script>
+        let currentLang = 'es';
+
+        const dict = {
+            es: {
+                brandSub: "DE LA IDEA AL ESPACIO ORGANIZADO",
+                heroTitle: "Diseño e interiorismo inteligente 3D",
+                heroDesc: "Simula la circulación ergonómica, analiza la incidencia solar en tiempo real y guarda tus proyectos en tu base de datos local.",
+                welcomeTitle: "Te damos la bienvenida",
+                welcomeTitleReg: "Regístrate",
+                welcomeSub: "Ingresa tus datos para acceder a RoomLayout.",
+                welcomeSubReg: "Registra tus credenciales en la base de datos local de tu navegador.",
+                themeLight: "Modo Claro",
+                themeDark: "Modo Oscuro",
+                tabLogin: "Iniciar Sesión",
+                tabReg: "Registrarse",
+                userLogin: "Usuario o Correo Electrónico",
+                passLogin: "Contraseña",
+                remember: "Recordarme en este navegador",
+                forgot: "¿Olvidaste tu contraseña?",
+                btnLogin: "Entrar al Simulador",
+                regUser: "Nombre de Usuario",
+                regEmail: "Correo Electrónico",
+                regPass: "Contraseña",
+                btnReg: "Crear cuenta local",
+                or: "O CONTINUAR COMO",
+                btnGuest: "Acceder en Modo Demo / Invitado"
+            },
+            en: {
+                brandSub: "FROM IDEA TO ORGANIZED SPACE",
+                heroTitle: "Smart 3D Interior Design",
+                heroDesc: "Simulate ergonomic circulation, analyze real-time sun impact, and save your projects in your local database.",
+                welcomeTitle: "Welcome",
+                welcomeTitleReg: "Register",
+                welcomeSub: "Enter your credentials to access RoomLayout.",
+                welcomeSubReg: "Save your credentials into your browser's local database.",
+                themeLight: "Light Mode",
+                themeDark: "Dark Mode",
+                tabLogin: "Sign In",
+                tabReg: "Register",
+                userLogin: "Username or Email",
+                passLogin: "Password",
+                remember: "Remember me in this browser",
+                forgot: "Forgot password?",
+                btnLogin: "Enter Simulator",
+                regUser: "Username",
+                regEmail: "Email Address",
+                regPass: "Password",
+                btnReg: "Create Local Account",
+                or: "OR CONTINUE AS",
+                btnGuest: "Access as Guest / Demo Mode"
+            }
+        };
+
+        function updateLang() {
+            const t = dict[currentLang];
+            const isReg = !document.getElementById('form-register').classList.contains('hidden');
+
+            document.getElementById('lbl-lang').innerText = currentLang.toUpperCase();
+            document.getElementById('txt-brand-sub').innerText = t.brandSub;
+            document.getElementById('txt-hero-title').innerText = t.heroTitle;
+            document.getElementById('txt-hero-desc').innerText = t.heroDesc;
+            document.getElementById('txt-welcome-title').innerText = isReg ? t.welcomeTitleReg : t.welcomeTitle;
+            document.getElementById('txt-welcome-sub').innerText = isReg ? t.welcomeSubReg : t.welcomeSub;
+            document.getElementById('lbl-tab-login').innerText = t.tabLogin;
+            document.getElementById('lbl-tab-reg').innerText = t.tabReg;
+            document.getElementById('lbl-user-login').innerText = t.userLogin;
+            document.getElementById('lbl-pass-login').innerText = t.passLogin;
+            document.getElementById('lbl-remember').innerText = t.remember;
+            document.getElementById('lbl-forgot').innerText = t.forgot;
+            document.getElementById('btn-txt-login').innerText = t.btnLogin;
+            document.getElementById('lbl-reg-user').innerText = t.regUser;
+            document.getElementById('lbl-reg-email').innerText = t.regEmail;
+            document.getElementById('lbl-reg-pass').innerText = t.regPass;
+            document.getElementById('btn-txt-reg').innerText = t.btnReg;
+            document.getElementById('txt-or').innerText = t.or;
+            document.getElementById('btn-txt-guest').innerText = t.btnGuest;
+
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('lbl-theme').innerText = isDark ? t.themeDark : t.themeLight;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnLang = document.getElementById('btn-lang');
+            const btnTheme = document.getElementById('btn-theme');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+            const btnGuest = document.getElementById('btn-guest');
+
+            btnLang.addEventListener('click', () => {
+                currentLang = currentLang === 'es' ? 'en' : 'es';
+                updateLang();
+            });
+
+            btnTheme.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                document.getElementById('icon-theme').className = isDark ? "fa-solid fa-moon text-amber-400" : "fa-solid fa-sun text-amber-500";
+                document.getElementById('lbl-theme').innerText = isDark ? dict[currentLang].themeDark : dict[currentLang].themeLight;
+            });
+
+            // PESTAÑA INICIAR SESIÓN
+            tabLogin.addEventListener('click', () => {
+                formLogin.classList.remove('hidden');
+                formRegister.classList.add('hidden');
+
+                tabLogin.className = "py-2.5 rounded-xl bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold border border-amber-200 dark:border-slate-700";
+                tabRegister.className = "py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
+
+                document.getElementById('txt-welcome-title').innerText = dict[currentLang].welcomeTitle;
+                document.getElementById('txt-welcome-sub').innerText = dict[currentLang].welcomeSub;
+            });
+
+            // PESTAÑA REGISTRARSE (ESTILO VERDE IGUAL A TU PRIMERA IMAGEN)
+            tabRegister.addEventListener('click', () => {
+                formRegister.classList.remove('hidden');
+                formLogin.classList.add('hidden');
+
+                tabRegister.className = "py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold";
+                tabLogin.className = "py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 font-bold";
+
+                document.getElementById('txt-welcome-title').innerText = dict[currentLang].welcomeTitleReg;
+                document.getElementById('txt-welcome-sub').innerText = dict[currentLang].welcomeSubReg;
+            });
+
+            formRegister.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('reg-user').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                const password = document.getElementById('reg-pass').value.trim();
+                const msgBox = document.getElementById('reg-msg');
+
+                if (!username || !email || !password) return;
+
+                try {
+                    if (typeof AuthService !== 'undefined') {
+                        await AuthService.register(username, email, password);
+                        msgBox.className = "text-xs font-semibold p-2.5 rounded-xl text-center bg-emerald-100 text-emerald-800 border border-emerald-300";
+                        msgBox.innerText = "¡Cuenta creada exitosamente! Redirigiendo...";
+                        msgBox.classList.remove('hidden');
+
+                        setTimeout(() => {
+                            localStorage.setItem('roomlayout_session', JSON.stringify({ user: username, mode: 'user' }));
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    } else {
+                        localStorage.setItem('roomlayout_session', JSON.stringify({ user: username, mode: 'user' }));
+                        window.location.href = 'index.html';
+                    }
+                } catch (err) {
+                    msgBox.className = "text-xs font-semibold p-2.5 rounded-xl text-center bg-red-100 text-red-700 border border-red-300";
+                    msgBox.innerText = err.message || "Error al registrar la cuenta.";
+                    msgBox.classList.remove('hidden');
+                }
+            });
+
+            formLogin.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const userVal = document.getElementById('login-user').value.trim();
+                const passVal = document.getElementById('login-pass').value.trim();
+                const msgBox = document.getElementById('login-msg');
+
+                try {
+                    if (typeof AuthService !== 'undefined') {
+                        const user = await AuthService.login(userVal, passVal);
+                        localStorage.setItem('roomlayout_session', JSON.stringify({ user: user.username, mode: 'user' }));
+                        window.location.href = 'index.html';
+                    } else {
+                        localStorage.setItem('roomlayout_session', JSON.stringify({ user: userVal, mode: 'user' }));
+                        window.location.href = 'index.html';
+                    }
+                } catch (err) {
+                    msgBox.className = "text-xs font-semibold p-2.5 rounded-xl text-center bg-red-100 text-red-700 border border-red-300";
+                    msgBox.innerText = err.message || "Usuario o contraseña incorrectos.";
+                    msgBox.classList.remove('hidden');
+                }
+            });
+
+            btnGuest.addEventListener('click', () => {
+                localStorage.setItem('roomlayout_session', JSON.stringify({ user: 'Invitado Demo', mode: 'guest' }));
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>
