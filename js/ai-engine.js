@@ -1,7 +1,10 @@
-// js/ai-engine.js - Motor Local de Análisis Inteligente de Espacios 3D
+// js/ai-engine.js - Motor Local de Análisis Inteligente de Espacios 3D (Soporte Bilingüe ES/EN)
 
 window.AIEngine = {
     analyzeScene: function() {
+        const lang = window.currentLang || "es";
+        const isEn = lang === "en";
+
         const roomW = parseFloat(document.getElementById("room-width")?.value) || 4.0;
         const roomL = parseFloat(document.getElementById("room-length")?.value) || 3.5;
         const halfW = roomW / 2;
@@ -20,7 +23,11 @@ window.AIEngine = {
         };
 
         if (typeof activeItems === "undefined" || activeItems.length === 0) {
-            results.suggestions.push("La habitación está vacía. Agrega muebles para iniciar la evaluación.");
+            results.suggestions.push(
+                isEn 
+                    ? "The room is empty. Add furniture to start evaluation." 
+                    : "La habitación está vacía. Agrega muebles para iniciar la evaluación."
+            );
             return results;
         }
 
@@ -39,9 +46,19 @@ window.AIEngine = {
 
             totalFurnitureArea += (w * l);
 
+            // Obtener el nombre del objeto según el idioma actual
+            let nameStr = isEn ? "Item" : "Objeto";
+            if (data.name) {
+                if (typeof data.name === "object") {
+                    nameStr = data.name[lang] || data.name.es || data.name.en || nameStr;
+                } else if (typeof data.name === "string") {
+                    nameStr = data.name;
+                }
+            }
+
             items.push({
                 group: group,
-                name: data.name?.es || data.id || "Objeto",
+                name: nameStr,
                 id: data.id || "",
                 box: box,
                 pos: group.position.clone(),
@@ -63,21 +80,22 @@ window.AIEngine = {
             if (item.box.min.x < -halfW - margin || item.box.max.x > halfW + margin ||
                 item.box.min.z < -halfL - margin || item.box.max.z > halfL + margin) {
                 results.score -= 20;
-                results.conflicts.push(`"${item.name}" sobrepasa los límites de la habitación.`);
+                results.conflicts.push(
+                    isEn 
+                        ? `"${item.name}" exceeds the room boundaries.` 
+                        : `"${item.name}" sobrepasa los límites de la habitación.`
+                );
             }
         });
 
         // 3. REGLA 2: Verificar si un objeto está FLOTANDO en el aire sin soporte
         items.forEach(item => {
-            // Si está elevado del suelo y no es un objeto diseñado para ir colgado en la pared
             if (item.pos.y > 0.1 && !item.isWallItem) {
                 let supported = false;
 
-                // Buscar si existe un objeto soporte debajo (escritorio, mesa de noche, mueble TV, etc.)
                 for (let other of items) {
                     if (other === item) continue;
 
-                    // Comprobar si el objeto proyectado en XZ cae dentro del área del soporte
                     const isOverlappingXZ = (
                         item.box.min.x < other.box.max.x &&
                         item.box.max.x > other.box.min.x &&
@@ -85,7 +103,6 @@ window.AIEngine = {
                         item.box.max.z > other.box.min.z
                     );
 
-                    // Verificar si la base del objeto está apoyada cerca de la superficie superior del soporte
                     const isSupportedVertically = Math.abs(item.box.min.y - other.box.max.y) < 0.15 || item.pos.y >= (other.h * 0.7);
 
                     if (isOverlappingXZ && isSupportedVertically) {
@@ -96,7 +113,11 @@ window.AIEngine = {
 
                 if (!supported) {
                     results.score -= 15;
-                    results.conflicts.push(`"${item.name}" está flotando en el aire sin un mueble o superficie que lo sostenga.`);
+                    results.conflicts.push(
+                        isEn 
+                            ? `"${item.name}" is floating in the air without a supporting surface.` 
+                            : `"${item.name}" está flotando en el aire sin un mueble o superficie que lo sostenga.`
+                    );
                 }
             }
         });
@@ -107,20 +128,21 @@ window.AIEngine = {
                 const itemA = items[i];
                 const itemB = items[j];
 
-                // Excepción 1: Ventanas contiguas o unidas (no cuentan como colisión)
                 if (itemA.id.includes("ventana") && itemB.id.includes("ventana")) continue;
 
-                // Excepción 2: Un objeto apoyado encima de otro en Y (apilamiento permitido)
                 const isStacked = (itemA.box.min.y >= itemB.box.max.y - 0.05) || (itemB.box.min.y >= itemA.box.max.y - 0.05);
                 if (isStacked) continue;
 
-                // Reducir ligeramente la caja de colisión 3D para evitar rozamiento suave de bordes
                 const boxA = itemA.box.clone().expandByScalar(-0.03);
                 const boxB = itemB.box.clone().expandByScalar(-0.03);
 
                 if (boxA.intersectsBox(boxB)) {
                     results.score -= 20;
-                    results.conflicts.push(`Colisión e incrustación detectada entre "${itemA.name}" y "${itemB.name}".`);
+                    results.conflicts.push(
+                        isEn 
+                            ? `Collision detected between "${itemA.name}" and "${itemB.name}".` 
+                            : `Colisión e incrustación detectada entre "${itemA.name}" y "${itemB.name}".`
+                    );
                 }
             }
         }
@@ -132,14 +154,22 @@ window.AIEngine = {
             items.forEach(item => {
                 if (doorBox.intersectsBox(item.box)) {
                     results.score -= 25;
-                    results.conflicts.push(`"${item.name}" bloquea el área de apertura de la puerta.`);
+                    results.conflicts.push(
+                        isEn 
+                            ? `"${item.name}" blocks the door opening area.` 
+                            : `"${item.name}" bloquea el área de apertura de la puerta.`
+                    );
                 }
             });
         }
 
-        // 6. Sugerencias Ergonómicas Opcionales
+        // 6. Sugerencias Ergonómicas
         if (results.metrics.occupancyPercentage > 45) {
-            results.suggestions.push(`La habitación está bastante llena (${results.metrics.occupancyPercentage}%). Intenta liberar zonas de paso.`);
+            results.suggestions.push(
+                isEn 
+                    ? `The room is quite full (${results.metrics.occupancyPercentage}%). Try clearing walkway areas.` 
+                    : `La habitación está bastante llena (${results.metrics.occupancyPercentage}%). Intenta liberar zonas de paso.`
+            );
         }
 
         results.score = Math.max(0, Math.min(100, results.score));
