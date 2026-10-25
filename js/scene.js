@@ -69,7 +69,14 @@ function initScene() {
 }
 
 function updateRoomDimensions(width, length) {
-    if (roomMesh) scene.remove(roomMesh);
+    if (roomMesh) {
+        roomMesh.traverse(child => {
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) child.material.forEach(material => material.dispose());
+            else child.material?.dispose();
+        });
+        scene.remove(roomMesh);
+    }
 
     const group = new THREE.Group();
 
