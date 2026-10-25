@@ -489,6 +489,8 @@ function onPointerMove(event) {
             snapX = Math.max(minAllowedX, Math.min(maxAllowedX, snapX));
             snapZ = Math.max(minAllowedZ, Math.min(maxAllowedZ, snapZ));
 
+            if (snapX === draggedObject.position.x && snapZ === draggedObject.position.z) return;
+
             draggedObject.position.x = snapX;
             draggedObject.position.z = snapZ;
             updateFurnitureFootprint(draggedObject);
