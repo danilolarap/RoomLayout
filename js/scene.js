@@ -43,6 +43,7 @@ function initScene() {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
+    controls.addEventListener("change", updateSmartWallOpacity);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
@@ -509,7 +510,6 @@ function onPointerUp() {
 
 function animate() {
     requestAnimationFrame(animate);
-    updateSmartWallOpacity();
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
 }
