@@ -31,38 +31,67 @@
     <style>
         .bg-pattern-stitch {
             background-color: #fef3c7;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23b45309' fill-opacity='0.22'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 80 80'%3E%3Cg fill='%23b45309' fill-opacity='0.13'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 88px 88px;
         }
         .dark .bg-pattern-stitch {
             background-color: #020617;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23fcd34d' fill-opacity='0.18'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 80 80'%3E%3Cg fill='%23fcd34d' fill-opacity='0.10'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 88px 88px;
+        }
+        .auth-shell {
+            border-color: rgba(255,255,255,.8);
+            box-shadow: 0 32px 90px -38px rgba(69,26,3,.48), 0 12px 30px -20px rgba(120,53,15,.32);
+        }
+        .auth-visual {
+            isolation: isolate;
+            background-image: radial-gradient(circle at 78% 14%, rgba(255,251,235,.26), transparent 28%), linear-gradient(145deg,#f59e0b 0%,#d97706 52%,#92400e 100%);
+        }
+        .auth-visual::before,.auth-visual::after {
+            content:"";position:absolute;z-index:-1;border:1px solid rgba(255,251,235,.18);border-radius:999px;pointer-events:none;
+        }
+        .auth-visual::before { width:330px;height:330px;right:-170px;top:90px; }
+        .auth-visual::after { width:250px;height:250px;right:-130px;top:130px; }
+        .hero-kicker { letter-spacing:.16em; }
+        .hero-highlight { color:#fef3c7;text-shadow:0 8px 30px rgba(69,26,3,.22); }
+        .auth-input { box-shadow:inset 0 1px 2px rgba(15,23,42,.025); }
+        .auth-input:focus { box-shadow:0 0 0 4px rgba(245,158,11,.14); }
+        .auth-panel input:not([type="checkbox"]) { border-radius:16px; }
+        .auth-panel input:not([type="checkbox"]):focus { border-color:#f59e0b; }
+        .auth-panel label { letter-spacing:.01em; }
+        @media (prefers-reduced-motion: reduce) {
+            *,*::before,*::after { scroll-behavior:auto !important;transition-duration:.01ms !important;animation-duration:.01ms !important; }
         }
     </style>
 </head>
-<body class="bg-pattern-stitch min-h-screen flex items-center justify-center p-4 md:p-8 select-none transition-colors duration-300">
+<body class="bg-pattern-stitch min-h-screen flex items-start md:items-center justify-center p-3 md:p-8 select-none transition-colors duration-300">
 
-    <div id="auth-container" class="w-full max-w-5xl h-full max-h-[660px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-amber-200/80 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row relative">
+    <div id="auth-container" class="auth-shell w-full max-w-6xl min-h-[calc(100vh-1.5rem)] md:min-h-[680px] md:max-h-[780px] bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] border dark:border-slate-800 overflow-hidden flex flex-col md:flex-row relative">
         
         <!-- PANEL IZQUIERDO -->
-        <div class="w-full md:w-5/12 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-8 flex flex-col justify-between text-white relative shadow-xl z-10">
+        <div class="auth-visual w-full md:w-5/12 p-6 sm:p-8 md:p-9 flex flex-col justify-between text-white relative shadow-xl z-10 overflow-hidden">
             <div class="relative z-10">
-                <div class="flex items-center gap-2.5 mb-6">
-                    <div class="bg-white text-amber-600 p-2.5 rounded-2xl shadow-md">
+                <div class="flex items-center gap-3 mb-7">
+                    <div class="bg-white text-amber-600 p-3 rounded-2xl shadow-lg shadow-amber-950/15 ring-1 ring-white/60">
                         <i class="fa-solid fa-cubes text-2xl"></i>
                     </div>
                     <div>
-                        <h2 class="font-black text-xl leading-none flex items-center gap-2">
+                        <h2 class="font-black text-xl leading-none flex items-center gap-2 tracking-tight">
                             RoomLayout <span class="text-[9px] bg-amber-400/40 text-white px-1.5 py-0.5 rounded-md font-bold">LIGHT 3D</span>
                         </h2>
-                        <p class="text-[10px] text-amber-100 font-bold tracking-wider uppercase mt-1" id="txt-brand-sub">DE LA IDEA AL ESPACIO ORGANIZADO</p>
+                        <p class="text-[9px] text-amber-100/90 font-bold tracking-[0.14em] uppercase mt-1.5" id="txt-brand-sub">ESTUDIO DE DISEÑO ESPACIAL</p>
                     </div>
                 </div>
 
-                <h3 class="text-2xl md:text-3xl font-black leading-tight tracking-tight mb-2" id="txt-hero-title">
-                    Diseño e interiorismo inteligente 3D
+                <div class="hero-kicker inline-flex items-center gap-2 text-[9px] font-extrabold uppercase text-amber-100/90 mb-3">
+                    <span class="w-6 h-px bg-amber-200/80"></span><span id="txt-hero-kicker">DISE&Ntilde;A &middot; PRUEBA &middot; ORGANIZA</span>
+                </div>
+                <h3 class="text-3xl sm:text-4xl md:text-[2.65rem] font-black leading-[1.02] tracking-[-0.045em] mb-3">
+                    <span id="txt-hero-title">El desorden</span><br>
+                    <span id="txt-hero-highlight" class="hero-highlight">organiz&aacute;ndose.</span>
                 </h3>
-                <p class="text-amber-100 text-xs leading-relaxed font-medium" id="txt-hero-desc">
-                    Simula la circulación ergonómica, analiza la incidencia solar en tiempo real y guarda tus proyectos en tu base de datos local.
+                <p class="text-amber-50/90 text-xs leading-relaxed font-medium max-w-sm" id="txt-hero-desc">
+                    Convierte ideas sueltas en espacios que funcionan. Diseña, mueve y encuentra el lugar ideal para cada mueble.
                 </p>
             </div>
 
@@ -141,7 +170,7 @@
         </div>
 
         <!-- PANEL DERECHO -->
-        <div class="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-between bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 z-0">
+        <div class="auth-panel w-full md:w-7/12 p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col justify-center bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 z-0">
             <div>
                 <div class="flex justify-between items-start mb-6">
                     <div>
@@ -244,9 +273,11 @@
 
         const dict = {
             es: {
-                brandSub: "DE LA IDEA AL ESPACIO ORGANIZADO",
-                heroTitle: "Diseño e interiorismo inteligente 3D",
-                heroDesc: "Simula la circulación ergonómica, analiza la incidencia solar en tiempo real y guarda tus proyectos en tu base de datos local.",
+                brandSub: "ROOMLAYOUT - ESTUDIO ESPACIAL",
+                heroTitle: "El desorden",
+                heroHighlight: "organiz\u00e1ndose.",
+                heroKicker: "DISE\u00d1A \u00b7 PRUEBA \u00b7 ORGANIZA",
+                heroDesc: "Convierte ideas sueltas en espacios que funcionan. Dise\u00f1a, mueve y encuentra el lugar ideal para cada mueble.",
                 welcomeTitle: "Te damos la bienvenida",
                 welcomeTitleReg: "Regístrate",
                 welcomeSub: "Ingresa tus datos para acceder a RoomLayout.",
@@ -268,9 +299,11 @@
                 btnGuest: "Acceder en Modo Demo / Invitado"
             },
             en: {
-                brandSub: "FROM IDEA TO ORGANIZED SPACE",
-                heroTitle: "Smart 3D Interior Design",
-                heroDesc: "Simulate ergonomic circulation, analyze real-time sun impact, and save your projects in your local database.",
+                brandSub: "ROOMLAYOUT - SPATIAL DESIGN STUDIO",
+                heroTitle: "A little chaos",
+                heroHighlight: "finding its place.",
+                heroKicker: "DESIGN - PLACE - REFINE",
+                heroDesc: "Turn loose ideas into spaces that work. Design, move things around, and find the right place for every piece.",
                 welcomeTitle: "Welcome",
                 welcomeTitleReg: "Register",
                 welcomeSub: "Enter your credentials to access RoomLayout.",
@@ -300,6 +333,8 @@
             document.getElementById('lbl-lang').innerText = currentLang.toUpperCase();
             document.getElementById('txt-brand-sub').innerText = t.brandSub;
             document.getElementById('txt-hero-title').innerText = t.heroTitle;
+            document.getElementById('txt-hero-highlight').innerText = t.heroHighlight;
+            document.getElementById('txt-hero-kicker').innerText = t.heroKicker;
             document.getElementById('txt-hero-desc').innerText = t.heroDesc;
             document.getElementById('txt-welcome-title').innerText = isReg ? t.welcomeTitleReg : t.welcomeTitle;
             document.getElementById('txt-welcome-sub').innerText = isReg ? t.welcomeSubReg : t.welcomeSub;
@@ -422,6 +457,8 @@
                 localStorage.setItem('roomlayout_session', JSON.stringify({ user: 'Invitado Demo', mode: 'guest' }));
                 window.location.href = 'index.html';
             });
+
+            updateLang();
         });
     </script>
 </body>
