@@ -50,8 +50,7 @@ function initScene() {
 
     sunLight = new THREE.DirectionalLight(0xfffbde, 1.4);
     sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = 2048;
-    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.mapSize.set(1024, 1024);
     scene.add(sunLight);
 
     updateRoomDimensions(4.0, 3.5);
