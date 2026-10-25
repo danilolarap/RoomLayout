@@ -4,6 +4,8 @@ let scene, camera, renderer, controls;
 let roomMesh, sunLight;
 let activeItems = [];
 let selectedMesh = null;
+let footprintGroup = null;
+let footprintSource = null;
 
 let isDragging = false;
 let draggedObject = null;
@@ -70,19 +72,28 @@ function updateRoomDimensions(width, length) {
 
     const group = new THREE.Group();
 
-    const floorTexture = TextureFactory.parquetFloor();
-    floorTexture.repeat.set(width, length);
-
     const floorGeo = new THREE.PlaneGeometry(width, length);
-    const floorMat = new THREE.MeshStandardMaterial({ map: floorTexture, roughness: 0.5, side: THREE.DoubleSide });
+    const floorMat = new THREE.MeshStandardMaterial({
+        color: document.documentElement.classList.contains("dark") ? 0x1e293b : 0xfffbeb,
+        roughness: 0.82,
+        side: THREE.DoubleSide
+    });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     group.add(floor);
 
-    const grid = new THREE.GridHelper(Math.max(width, length), Math.max(width, length) * 10, 0xf59e0b, 0x94a3b8);
-    grid.position.y = 0.01;
+    const gridSize = Math.ceil(Math.max(width, length) / 0.25) * 0.25;
+    const grid = new THREE.GridHelper(gridSize, Math.round(gridSize / 0.25), 0xd97706, 0xd6c7a1);
+    grid.position.y = 0.012;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.42;
     group.add(grid);
+
+    footprintGroup = new THREE.Group();
+    footprintGroup.position.y = 0.018;
+    footprintGroup.visible = false;
+    group.add(footprintGroup);
 
     const wallHeight = 2.2;
 
@@ -102,6 +113,67 @@ function updateRoomDimensions(width, length) {
 
     roomMesh = group;
     scene.add(roomMesh);
+    if (selectedMesh) updateFurnitureFootprint(selectedMesh);
+}
+
+function updateFurnitureFootprint(item) {
+    if (!footprintGroup || !item || item.userData?.isDoor) {
+        if (footprintGroup) footprintGroup.visible = false;
+        footprintSource = null;
+        return;
+    }
+
+    const width = Math.max(0.05, Number(item.userData?.w) || 1);
+    const length = Math.max(0.05, Number(item.userData?.l) || 1);
+    const gridSize = 0.25;
+    const columns = Math.max(1, Math.ceil(width / gridSize));
+    const rows = Math.max(1, Math.ceil(length / gridSize));
+
+    if (footprintSource !== item) {
+        while (footprintGroup.children.length) {
+            const child = footprintGroup.children[0];
+            footprintGroup.remove(child);
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) child.material.forEach(material => material.dispose());
+            else child.material?.dispose();
+        }
+
+        const cellWidth = width / columns;
+        const cellLength = length / rows;
+        const fillMaterial = new THREE.MeshBasicMaterial({
+            color: 0xf59e0b,
+            transparent: true,
+            opacity: 0.20,
+            depthWrite: false,
+            side: THREE.DoubleSide
+        });
+        const cellGeometry = new THREE.PlaneGeometry(cellWidth * 0.88, cellLength * 0.88);
+        for (let column = 0; column < columns; column++) {
+            for (let row = 0; row < rows; row++) {
+                const cell = new THREE.Mesh(cellGeometry, fillMaterial);
+                cell.rotation.x = -Math.PI / 2;
+                cell.position.set(
+                    -width / 2 + cellWidth * (column + 0.5),
+                    0,
+                    -length / 2 + cellLength * (row + 0.5)
+                );
+                footprintGroup.add(cell);
+            }
+        }
+
+        const outline = new THREE.LineSegments(
+            new THREE.EdgesGeometry(new THREE.BoxGeometry(width, 0.001, length)),
+            new THREE.LineBasicMaterial({ color: 0xb45309, transparent: true, opacity: 0.9 })
+        );
+        outline.position.y = 0.001;
+        footprintGroup.add(outline);
+        footprintSource = item;
+    }
+
+    footprintGroup.position.x = item.position.x;
+    footprintGroup.position.z = item.position.z;
+    footprintGroup.rotation.y = item.rotation.y;
+    footprintGroup.visible = true;
 }
 
 function updateSmartWallOpacity() {
@@ -234,6 +306,7 @@ window.addFurnitureToScene = function(item) {
     scene.add(furnitureGroup);
     activeItems.push(furnitureGroup);
     if (typeof selectFurniture === "function") selectFurniture(furnitureGroup);
+    updateFurnitureFootprint(furnitureGroup);
     if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
@@ -257,6 +330,11 @@ window.updateMetrics = function() {
     if (typeof window.runAIDiagnostic === "function") {
         window.runAIDiagnostic();
     }
+};
+
+window.refreshFurnitureFootprint = function(item = selectedMesh) {
+    if (footprintSource !== item) footprintSource = null;
+    updateFurnitureFootprint(item);
 };
 
 window.getSceneData = function() {
@@ -368,6 +446,7 @@ function onPointerDown(event) {
         controls.enabled = false;
 
         if (typeof selectFurniture === "function") selectFurniture(draggedObject);
+        updateFurnitureFootprint(draggedObject);
 
         if (raycaster.ray.intersectPlane(dragPlane, planeIntersection)) {
             dragOffset.copy(draggedObject.position).sub(planeIntersection);
@@ -410,6 +489,7 @@ function onPointerMove(event) {
 
             draggedObject.position.x = snapX;
             draggedObject.position.z = snapZ;
+            updateFurnitureFootprint(draggedObject);
 
             if (typeof selectFurniture === "function") selectFurniture(draggedObject);
             if (typeof window.updateMetrics === "function") window.updateMetrics();
@@ -422,6 +502,7 @@ function onPointerUp() {
         isDragging = false;
         draggedObject = null;
         controls.enabled = true;
+        if (selectedMesh) updateFurnitureFootprint(selectedMesh);
     }
 }
 

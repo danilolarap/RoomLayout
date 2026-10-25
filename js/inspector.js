@@ -163,6 +163,8 @@ window.rotateSelected = function(angle) {
     if (!selectedMesh.userData) selectedMesh.userData = {};
     selectedMesh.userData.rotationY = selectedMesh.rotation.y;
 
+    if (typeof window.refreshFurnitureFootprint === "function") window.refreshFurnitureFootprint(selectedMesh);
+
     if (typeof window.updateMetrics === "function") {
         window.updateMetrics();
     }
