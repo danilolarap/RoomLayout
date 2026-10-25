@@ -404,10 +404,13 @@ function initUI() {
 
     const searchInput = document.getElementById("search-catalog");
     if (searchInput) {
+        let searchRenderTimer;
         searchInput.addEventListener("input", (e) => {
-            if (typeof renderCatalog === "function") {
-                renderCatalog(e.target.value);
-            }
+            const query = e.target.value;
+            clearTimeout(searchRenderTimer);
+            searchRenderTimer = setTimeout(() => {
+                if (typeof renderCatalog === "function") renderCatalog(query);
+            }, 120);
         });
     }
 }
