@@ -59,8 +59,45 @@
         .auth-panel input:not([type="checkbox"]) { border-radius:16px; }
         .auth-panel input:not([type="checkbox"]):focus { border-color:#f59e0b; }
         .auth-panel label { letter-spacing:.01em; }
+        .preview-bed,.preview-desk,.preview-chair { transform-box:fill-box;transform-origin:center;animation-duration:16s;animation-timing-function:cubic-bezier(.45,0,.2,1);animation-iteration-count:infinite; }
+        .preview-bed { animation-name:bed-layout-cycle; }
+        .preview-desk { animation-name:desk-layout-cycle; }
+        .preview-chair { animation-name:chair-layout-cycle; }
+        .preview-symbol { opacity:0;transform-box:fill-box;transform-origin:center;animation:layout-symbol-cycle 12s linear infinite; }
+        .preview-symbol-1 { animation-delay:0s; }
+        .preview-symbol-2 { animation-delay:-9s; }
+        .preview-symbol-3 { animation-delay:-6s; }
+        .preview-symbol-4 { animation-delay:-3s; }
+        @keyframes bed-layout-cycle {
+            0%,12%,100% { transform:translate(0,0); }
+            25%,37% { transform:translate(-8px,4px); }
+            50%,62% { transform:translate(-3px,-6px); }
+            75%,87% { transform:translate(7px,2px); }
+        }
+        @keyframes desk-layout-cycle {
+            0%,12%,100% { transform:translate(0,0); }
+            25%,37% { transform:translate(4px,-3px); }
+            50%,62% { transform:translate(-7px,4px); }
+            75%,87% { transform:translate(3px,5px); }
+        }
+        @keyframes chair-layout-cycle {
+            0%,12%,100% { transform:translate(0,0); }
+            25%,37% { transform:translate(-6px,4px); }
+            50%,62% { transform:translate(5px,-4px); }
+            75%,87% { transform:translate(-2px,5px); }
+        }
+        @keyframes layout-symbol-cycle {
+            0% { opacity:0;transform:scale(.7); }
+            5%,20% { opacity:1;transform:scale(1); }
+            25%,100% { opacity:0;transform:scale(.7); }
+        }
+        .auth-visual:hover .preview-bed,.auth-visual:hover .preview-desk,.auth-visual:hover .preview-chair,.auth-visual:hover .preview-symbol { animation-play-state:paused; }
+        .page-hidden .preview-bed,.page-hidden .preview-desk,.page-hidden .preview-chair,.page-hidden .preview-symbol { animation-play-state:paused; }
         @media (prefers-reduced-motion: reduce) {
             *,*::before,*::after { scroll-behavior:auto !important;transition-duration:.01ms !important;animation-duration:.01ms !important; }
+            .preview-bed,.preview-desk,.preview-chair,.preview-symbol { animation:none !important; }
+            .preview-symbol { opacity:0 !important; }
+            .preview-symbol-1 { opacity:1 !important; }
         }
     </style>
 </head>
@@ -132,6 +169,7 @@
                     <path d="m190 296 74-42m-59 51 74-42m-59 51 74-42m-59 51 74-42" stroke="#fcd34d" stroke-width="2" opacity=".75"/>
 
                     <!-- Bed with pillows and blanket -->
+                    <g class="preview-bed">
                     <polygon points="99,242 177,197 274,253 195,299" fill="#78350f"/>
                     <polygon points="99,230 177,185 274,241 195,287" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
                     <polygon points="99,230 195,287 195,299 99,242" fill="#92400e"/>
@@ -142,8 +180,10 @@
                     <polygon points="120,221 151,203 176,217 145,235" fill="#fff" stroke="#e2e8f0" stroke-width="1.5"/>
                     <polygon points="153,202 176,189 201,203 178,216" fill="#fff" stroke="#e2e8f0" stroke-width="1.5"/>
                     <path d="M111 239v17m150-11v17" stroke="#451a03" stroke-width="5" stroke-linecap="round"/>
+                    </g>
 
                     <!-- Desk, drawers and computer -->
+                    <g class="preview-desk">
                     <polygon points="270,208 328,174 383,206 325,240" fill="#b45309"/>
                     <polygon points="270,208 325,240 325,250 270,218" fill="#78350f"/>
                     <polygon points="325,240 383,206 383,216 325,250" fill="#92400e"/>
@@ -153,11 +193,26 @@
                     <polygon points="326,208 331,205 331,219 326,222" fill="#334155"/>
                     <polygon points="315,224 333,214 350,224 332,234" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
                     <path d="m323 224 9 5" stroke="#94a3b8" stroke-width="1.5"/>
+                    </g>
 
                     <!-- Chair -->
+                    <g class="preview-chair">
                     <polygon points="354,255 377,242 399,255 376,269" fill="#1e293b"/>
                     <polygon points="357,230 378,218 397,229 376,242" fill="#334155" stroke="#fbbf24" stroke-width="2"/>
                     <path d="m360 235 1 22m34-24v21m-18 15v17m-15-8 31-18m-31 18 31 0" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Live layout indicator: X, circle, square and triangle -->
+                    <g class="layout-indicator" aria-hidden="true">
+                        <rect x="326" y="40" width="104" height="34" rx="10" fill="#fff7ed" fill-opacity=".94" stroke="#fcd34d" stroke-width="1.5"/>
+                        <g class="preview-symbol preview-symbol-1" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"><path d="m336 50 11 11m0-11-11 11"/></g>
+                        <circle class="preview-symbol preview-symbol-2" cx="341.5" cy="55.5" r="6" fill="none" stroke="#d97706" stroke-width="2.5"/>
+                        <rect class="preview-symbol preview-symbol-3" x="336" y="50" width="11" height="11" rx="1.5" fill="none" stroke="#d97706" stroke-width="2.5"/>
+                        <path class="preview-symbol preview-symbol-4" d="m341.5 48.5 7 13h-14z" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M356 50h62M356 55h42" stroke="#d6b98c" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="414" cy="63" r="2.5" fill="#10b981"/>
+                        <path d="M362 62h32" stroke="#d6b98c" stroke-width="2" stroke-linecap="round"/>
+                    </g>
 
                     <!-- Pendant light and floor dimension accents -->
                     <path d="M250 31v30" stroke="#b45309" stroke-width="2" opacity=".7"/>
@@ -456,6 +511,10 @@
             btnGuest.addEventListener('click', () => {
                 localStorage.setItem('roomlayout_session', JSON.stringify({ user: 'Invitado Demo', mode: 'guest' }));
                 window.location.href = 'index.html';
+            });
+
+            document.addEventListener('visibilitychange', () => {
+                document.body.classList.toggle('page-hidden', document.hidden);
             });
 
             updateLang();
