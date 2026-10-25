@@ -16,6 +16,7 @@ const planeIntersection = new THREE.Vector3();
 const dragOffset = new THREE.Vector3();
 
 let isSimulating = false;
+let animationFrameId = null;
 
 function initScene() {
     const container = document.getElementById("canvas-container");
@@ -523,10 +524,19 @@ function onPointerUp() {
 }
 
 function animate() {
-    requestAnimationFrame(animate);
+    if (document.hidden) {
+        animationFrameId = null;
+        return;
+    }
+
+    animationFrameId = requestAnimationFrame(animate);
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
 }
+
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && !animationFrameId) animate();
+});
 
 function onWindowResize() {
     const container = document.getElementById("canvas-container");
