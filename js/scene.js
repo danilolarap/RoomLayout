@@ -150,18 +150,24 @@ function updateFurnitureFootprint(item) {
             side: THREE.DoubleSide
         });
         const cellGeometry = new THREE.PlaneGeometry(cellWidth * 0.88, cellLength * 0.88);
+        const cellCount = columns * rows;
+        const cells = new THREE.InstancedMesh(cellGeometry, fillMaterial, cellCount);
+        const cellTransform = new THREE.Object3D();
+        let cellIndex = 0;
         for (let column = 0; column < columns; column++) {
             for (let row = 0; row < rows; row++) {
-                const cell = new THREE.Mesh(cellGeometry, fillMaterial);
-                cell.rotation.x = -Math.PI / 2;
-                cell.position.set(
+                cellTransform.position.set(
                     -width / 2 + cellWidth * (column + 0.5),
                     0,
                     -length / 2 + cellLength * (row + 0.5)
                 );
-                footprintGroup.add(cell);
+                cellTransform.rotation.set(-Math.PI / 2, 0, 0);
+                cellTransform.updateMatrix();
+                cells.setMatrixAt(cellIndex++, cellTransform.matrix);
             }
         }
+        cells.instanceMatrix.needsUpdate = true;
+        footprintGroup.add(cells);
 
         const outline = new THREE.LineSegments(
             new THREE.EdgesGeometry(new THREE.BoxGeometry(width, 0.001, length)),
