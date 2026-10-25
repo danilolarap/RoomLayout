@@ -2,6 +2,9 @@
 
 function selectFurniture(meshGroup) {
     selectedMesh = meshGroup;
+    if (typeof window.refreshFurnitureFootprint === "function") {
+        window.refreshFurnitureFootprint(meshGroup);
+    }
     const content = document.getElementById("inspector-content");
     if (!content) return;
 
