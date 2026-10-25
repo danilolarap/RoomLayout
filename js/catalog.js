@@ -73,6 +73,7 @@ function renderCatalog(filterQuery = "") {
     if (!container) return;
     container.innerHTML = "";
 
+    const catalogContent = document.createDocumentFragment();
     let totalItems = 0;
     const query = filterQuery.toLowerCase().trim();
 
@@ -91,7 +92,7 @@ function renderCatalog(filterQuery = "") {
         const catHeader = document.createElement("div");
         catHeader.className = "font-bold text-amber-800 dark:text-amber-400 mt-3 mb-1.5 text-[11px] uppercase tracking-wider border-b border-amber-200 dark:border-slate-700/60 pb-0.5";
         catHeader.innerText = categoryName;
-        container.appendChild(catHeader);
+        catalogContent.appendChild(catHeader);
 
         const grid = document.createElement("div");
         grid.className = "grid grid-cols-2 gap-2";
@@ -116,8 +117,10 @@ function renderCatalog(filterQuery = "") {
             grid.appendChild(card);
         });
 
-        container.appendChild(grid);
+        catalogContent.appendChild(grid);
     });
+
+    container.appendChild(catalogContent);
 
     if (countBadge) {
         countBadge.innerText = `${totalItems} items`;
