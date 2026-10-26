@@ -549,6 +549,16 @@ function createDetailedFurniture(item) {
         centerSeam.position.set(0, h * 0.3, l * 0.39);
         group.add(centerSeam);
     }
++    if (id === "caminadora") {
+        for (let mark = -1; mark <= 1; mark++) {
+            const beltMark = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.008, l * 0.62), Materials.chromeMetal);
+            beltMark.position.set(mark * w * 0.22, 0.133, 0);
+            group.add(beltMark);
+        }
+        const consoleDisplay = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, 0.055, 0.012), Materials.glassWindow);
+        consoleDisplay.position.set(0, h * 0.9, -l * 0.25 + 0.16);
+        group.add(consoleDisplay);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
