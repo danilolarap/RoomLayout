@@ -416,6 +416,11 @@ function createDetailedFurniture(item) {
             group.add(stud);
         });
     }
++    if (id === "cama_sencilla") {
+        const foldedThrow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.68, h * 0.025, l * 0.12), Materials.amberFabric);
+        foldedThrow.position.set(0, h * 0.67, l * 0.37);
+        group.add(foldedThrow);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
