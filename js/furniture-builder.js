@@ -403,12 +403,12 @@ function createDetailedFurniture(item) {
         group.add(body);
     }
 
-+    if (id === "cama_king") {
+    if (id === "cama_king") {
         const footRunner = new THREE.Mesh(new THREE.BoxGeometry(w * 0.94, h * 0.025, l * 0.1), Materials.amberFabric);
         footRunner.position.set(0, h * 0.67, l * 0.39);
         group.add(footRunner);
     }
-+    if (id === "cama_queen") {
+    if (id === "cama_queen") {
         const headboardStud = new THREE.SphereGeometry(0.025, 6, 5);
         [-1, 1].forEach(side => {
             const stud = new THREE.Mesh(headboardStud, Materials.goldMetal);
@@ -416,12 +416,12 @@ function createDetailedFurniture(item) {
             group.add(stud);
         });
     }
-+    if (id === "cama_sencilla") {
+    if (id === "cama_sencilla") {
         const foldedThrow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.68, h * 0.025, l * 0.12), Materials.amberFabric);
         foldedThrow.position.set(0, h * 0.67, l * 0.37);
         group.add(foldedThrow);
     }
-+    if (id === "mesa_noche") {
+    if (id === "mesa_noche") {
         const footGeometry = new THREE.CylinderGeometry(0.025, 0.035, 0.07, 5);
         [-1, 1].forEach(xSide => [-1, 1].forEach(zSide => {
             const foot = new THREE.Mesh(footGeometry, Materials.goldMetal);
@@ -429,22 +429,22 @@ function createDetailedFurniture(item) {
             group.add(foot);
         }));
     }
-+    if (id === "armario_doble") {
+    if (id === "armario_doble") {
         const mirror = new THREE.Mesh(new THREE.BoxGeometry(w * 0.22, h * 0.62, 0.008), Materials.chromeMetal);
         mirror.position.set(-w * 0.22, h * 0.54, l / 2 + 0.025);
         group.add(mirror);
     }
-+    if (id === "armario_3p") {
+    if (id === "armario_3p") {
         const centerInlay = new THREE.Mesh(new THREE.BoxGeometry(w * 0.012, h * 0.84, 0.008), Materials.goldMetal);
         centerInlay.position.set(0, h / 2, l / 2 + 0.025);
         group.add(centerInlay);
     }
-+    if (id === "armario_4p") {
+    if (id === "armario_4p") {
         const crownRail = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.035, 0.025), Materials.goldMetal);
         crownRail.position.set(0, h * 0.91, l / 2 + 0.025);
         group.add(crownRail);
     }
-+    if (id === "escritorio_l") {
+    if (id === "escritorio_l") {
         const drawerUnit = new THREE.Mesh(new THREE.BoxGeometry(w * 0.22, h * 0.26, l * 0.24), Materials.darkNogal);
         drawerUnit.position.set(w * 0.29, h * 0.61, -l * 0.25);
         group.add(drawerUnit);
@@ -452,7 +452,7 @@ function createDetailedFurniture(item) {
         drawerPull.position.set(w * 0.29, h * 0.64, -l * 0.25 + l * 0.12);
         group.add(drawerPull);
     }
-+    if (id === "escritorio_recto") {
+    if (id === "escritorio_recto") {
         const drawerUnit = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, h * 0.22, l * 0.55), Materials.darkNogal);
         drawerUnit.position.set(-w * 0.22, h * 0.63, 0);
         group.add(drawerUnit);
@@ -460,7 +460,7 @@ function createDetailedFurniture(item) {
         drawerPull.position.set(-w * 0.22, h * 0.66, l * 0.28);
         group.add(drawerPull);
     }
-+    if (id === "silla_ergonomica") {
+    if (id === "silla_ergonomica") {
         const lumbarPad = new THREE.Mesh(new THREE.BoxGeometry(w * 0.52, h * 0.12, 0.065), Materials.blueFabric);
         lumbarPad.position.set(0, 0.79, -l * 0.32);
         group.add(lumbarPad);
@@ -470,7 +470,7 @@ function createDetailedFurniture(item) {
             group.add(arm);
         });
     }
-+    if (id === "laptop") {
+    if (id === "laptop") {
         const keyGeometry = new THREE.BoxGeometry(w * 0.11, 0.008, l * 0.055);
         for (let row = 0; row < 2; row++) {
             for (let column = 0; column < 4; column++) {
@@ -483,7 +483,7 @@ function createDetailedFurniture(item) {
         trackpad.position.set(0, 0.018, l * 0.24);
         group.add(trackpad);
     }
-+    if (id === "pc_torre") {
+    if (id === "pc_torre") {
         const fanRing = new THREE.TorusGeometry(Math.min(h, l) * 0.22, 0.012, 4, 8);
         [-0.13, 0.13].forEach(offsetZ => {
             const fan = new THREE.Mesh(fanRing, Materials.skyAccent || Materials.chromeMetal);
@@ -496,7 +496,7 @@ function createDetailedFurniture(item) {
         powerButton.position.set(w / 2 + 0.018, h * 0.88, l * 0.32);
         group.add(powerButton);
     }
-+    if (id === "monitor") {
+    if (id === "monitor") {
         const webcam = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 5), Materials.chromeMetal);
         webcam.position.set(0, h * 0.925, 0.018);
         group.add(webcam);
@@ -504,7 +504,7 @@ function createDetailedFurniture(item) {
         statusLight.position.set(w * 0.44, h * 0.29, 0.018);
         group.add(statusLight);
     }
-+    if (id === "mouse") {
+    if (id === "mouse") {
         const wheel = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.018, 0.035), Materials.chromeMetal);
         wheel.position.set(0, 0.029, -l * 0.12);
         group.add(wheel);
@@ -512,7 +512,7 @@ function createDetailedFurniture(item) {
         buttonSeam.position.set(0, 0.027, -0.025);
         group.add(buttonSeam);
     }
-+    if (id === "mueble_tv_grande") {
+    if (id === "mueble_tv_grande") {
         [-1, 0, 1].forEach(slot => {
             const drawer = new THREE.Mesh(new THREE.BoxGeometry(w * 0.24, h * 0.22, 0.018), Materials.cherryWood);
             drawer.position.set(slot * w * 0.29, h * 0.39, l / 2 + 0.012);
@@ -522,14 +522,14 @@ function createDetailedFurniture(item) {
             group.add(pull);
         });
     }
-+    if (id === "mueble_tv") {
+    if (id === "mueble_tv") {
         for (let slat = 0; slat < 4; slat++) {
             const grille = new THREE.Mesh(new THREE.BoxGeometry(w * 0.36, 0.012, 0.014), Materials.goldMetal);
             grille.position.set(0, h * (0.25 + slat * 0.1), l / 2 + 0.012);
             group.add(grille);
         }
     }
-+    if (id === "sofa_1p") {
+    if (id === "sofa_1p") {
         const accentPillow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, h * 0.2, l * 0.18), Materials.amberFabric);
         accentPillow.position.set(w * 0.23, h * 0.57, -l * 0.29);
         accentPillow.rotation.z = -0.12;
@@ -538,7 +538,7 @@ function createDetailedFurniture(item) {
         piping.position.set(0, h * 0.42, l * 0.37);
         group.add(piping);
     }
-+    if (id === "sofa_2p") {
+    if (id === "sofa_2p") {
         [-1, 1].forEach(side => {
             const accentPillow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.19, h * 0.18, l * 0.16), Materials.amberFabric);
             accentPillow.position.set(side * w * 0.29, h * 0.57, -l * 0.29);
@@ -549,7 +549,7 @@ function createDetailedFurniture(item) {
         centerSeam.position.set(0, h * 0.3, l * 0.39);
         group.add(centerSeam);
     }
-+    if (id === "caminadora") {
+    if (id === "caminadora") {
         for (let mark = -1; mark <= 1; mark++) {
             const beltMark = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.008, l * 0.62), Materials.chromeMetal);
             beltMark.position.set(mark * w * 0.22, 0.133, 0);
@@ -559,7 +559,7 @@ function createDetailedFurniture(item) {
         consoleDisplay.position.set(0, h * 0.9, -l * 0.25 + 0.16);
         group.add(consoleDisplay);
     }
-+    if (id === "barra_pared") {
+    if (id === "barra_pared") {
         [-1, 1].forEach(side => {
             const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.029, 0.029, 0.16, 6), Materials.darkPlastic);
             grip.rotation.z = Math.PI / 2;
@@ -571,7 +571,7 @@ function createDetailedFurniture(item) {
         centerSleeve.position.set(0, h * 0.8, l * 0.8);
         group.add(centerSleeve);
     }
-+    if (id === "rack_mancuernas") {
+    if (id === "rack_mancuernas") {
         const endCapGeometry = new THREE.CylinderGeometry(0.065, 0.065, 0.045, 6);
         for (let level = 0; level < 2; level++) {
             const posY = h * 0.39 + level * (h * 0.4);
@@ -584,7 +584,7 @@ function createDetailedFurniture(item) {
             }
         }
     }
-+    if (id === "banco_plano") {
+    if (id === "banco_plano") {
         [-1, 1].forEach(side => {
             const seam = new THREE.Mesh(new THREE.BoxGeometry(w * 0.72, 0.008, 0.012), Materials.chromeMetal);
             seam.position.set(side * w * 0.08, h + 0.002, 0);
@@ -594,7 +594,7 @@ function createDetailedFurniture(item) {
         sideBadge.position.set(w * 0.48, h * 0.78, l * 0.25);
         group.add(sideBadge);
     }
-+    if (id === "reloj_pared") {
+    if (id === "reloj_pared") {
         for (let mark = 0; mark < 12; mark++) {
             const angle = (mark / 12) * Math.PI * 2;
             const major = mark % 3 === 0;
@@ -606,7 +606,7 @@ function createDetailedFurniture(item) {
             group.add(tick);
         }
     }
-+    if (id === "reloj_mesa") {
+    if (id === "reloj_mesa") {
         const crownButton = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.025, 6), Materials.goldMetal);
         crownButton.position.set(0, h + 0.012, 0);
         group.add(crownButton);
@@ -614,7 +614,7 @@ function createDetailedFurniture(item) {
         minuteAccent.position.set(0, h * 0.22, l / 2 + 0.012);
         group.add(minuteAccent);
     }
-+    if (id === "ventana_cuadrada") {
+    if (id === "ventana_cuadrada") {
         const mullionMaterial = Materials.whiteFrame;
         const verticalBar = new THREE.Mesh(new THREE.BoxGeometry(0.025, h * 0.84, 0.025), mullionMaterial);
         verticalBar.position.set(0, h / 2, 0.022);
@@ -623,7 +623,7 @@ function createDetailedFurniture(item) {
         crossbar.position.set(0, h * 0.52, 0.022);
         group.add(crossbar);
     }
-+    if (id === "ventana_rect") {
+    if (id === "ventana_rect") {
         [-1, 1].forEach(side => {
             const mullion = new THREE.Mesh(new THREE.BoxGeometry(0.022, h * 0.82, 0.024), Materials.whiteFrame);
             mullion.position.set(side * w * 0.24, h / 2, 0.021);
@@ -633,7 +633,7 @@ function createDetailedFurniture(item) {
         transom.position.set(0, h * 0.68, 0.021);
         group.add(transom);
     }
-+    if (id === "ventana_circular") {
+    if (id === "ventana_circular") {
         const spokeGeometry = new THREE.BoxGeometry(w * 0.82, 0.022, 0.025);
         const horizontalSpoke = new THREE.Mesh(spokeGeometry, Materials.whiteFrame);
         horizontalSpoke.position.set(0, h / 2, 0.022);
@@ -643,7 +643,7 @@ function createDetailedFurniture(item) {
         verticalSpoke.position.set(0, h / 2, 0.022);
         group.add(verticalSpoke);
     }
-+    if (id === "ventana_esquina") {
+    if (id === "ventana_esquina") {
         const backCrossbar = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, 0.025, 0.03), Materials.whiteFrame);
         backCrossbar.position.set(0, h * 0.58, -l / 2);
         group.add(backCrossbar);
