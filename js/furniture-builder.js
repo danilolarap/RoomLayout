@@ -606,6 +606,14 @@ function createDetailedFurniture(item) {
             group.add(tick);
         }
     }
++    if (id === "reloj_mesa") {
+        const crownButton = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.025, 6), Materials.goldMetal);
+        crownButton.position.set(0, h + 0.012, 0);
+        group.add(crownButton);
+        const minuteAccent = new THREE.Mesh(new THREE.BoxGeometry(w * 0.08, 0.012, 0.012), Materials.amberFabric);
+        minuteAccent.position.set(0, h * 0.22, l / 2 + 0.012);
+        group.add(minuteAccent);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
