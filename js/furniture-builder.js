@@ -792,6 +792,11 @@ function createDetailedFurniture(item) {
         const diffuser = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, 0.018, 6), Materials.whiteSheet);
         diffuser.position.y = h * 0.81;
         group.add(diffuser);
+
+        const shadeRim = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.012, 4, 6), Materials.goldMetal);
+        shadeRim.rotation.x = Math.PI / 2;
+        shadeRim.position.y = h * 0.81;
+        group.add(shadeRim);
     }
     if (id === "espejo_cuerpo") {
         const frame = new THREE.Mesh(new THREE.BoxGeometry(w, h, l * 0.7), Materials.darkNogal);
@@ -801,6 +806,12 @@ function createDetailedFurniture(item) {
         const mirrorFace = new THREE.Mesh(new THREE.BoxGeometry(w * 0.82, h * 0.91, 0.008), Materials.glassWindow);
         mirrorFace.position.set(0, h * 0.52, l * 0.36);
         group.add(mirrorFace);
+
+        const innerBezel = new THREE.Mesh(new THREE.BoxGeometry(w * 0.86, h * 0.94, 0.006), Materials.goldMetal);
+        innerBezel.position.set(0, h * 0.52, l * 0.345);
+        group.add(innerBezel);
+
+        mirrorFace.position.z = l * 0.36 + 0.006;
 
         const topAccent = new THREE.Mesh(new THREE.BoxGeometry(w * 0.86, 0.025, 0.012), Materials.goldMetal);
         topAccent.position.set(0, h * 0.96, l * 0.39);
