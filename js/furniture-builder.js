@@ -951,6 +951,11 @@ function createDetailedFurniture(item) {
         const diffuser = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.2, w * 0.4, 0.014, 6), Materials.whiteSheet);
         diffuser.position.y = h * 0.61;
         group.add(diffuser);
+
+        const shadeTrim = new THREE.Mesh(new THREE.TorusGeometry(w * 0.43, 0.009, 4, 6), Materials.goldMetal);
+        shadeTrim.rotation.x = Math.PI / 2;
+        shadeTrim.position.y = h * 0.61;
+        group.add(shadeTrim);
     }
     if (id === "zapatero") {
         [-1, 1].forEach(side => {
@@ -976,6 +981,12 @@ function createDetailedFurniture(item) {
         const topShelf = new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, l), Materials.darkNogal);
         topShelf.position.y = h - 0.02;
         group.add(topShelf);
+
+        [-1, 1].forEach(side => {
+            const cornerCap = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.055, 0.055), Materials.goldMetal);
+            cornerCap.position.set(side * (w / 2 - 0.025), h - 0.025, l / 2 - 0.025);
+            group.add(cornerCap);
+        });
     }
     group.traverse(child => {
         if (child.isMesh) {
