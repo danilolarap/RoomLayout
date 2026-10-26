@@ -269,10 +269,10 @@ function addDefaultDoor(rw, rl) {
 function updateSunPosition(hour) {
     if (!sunLight) return;
     const angle = ((hour - 6) / 12) * Math.PI;
-    const radius = 10;
+    const radius = 7;
     sunLight.position.x = Math.cos(angle) * radius;
-    sunLight.position.y = Math.sin(angle) * radius;
-    sunLight.position.z = 5;
+    sunLight.position.y = 1.8 + Math.sin(angle) * 5.2;
+    sunLight.position.z = 3.5;
     if (sunVisual) sunVisual.position.copy(sunLight.position);
 }
 
