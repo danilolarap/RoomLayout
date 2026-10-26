@@ -782,6 +782,25 @@ function createDetailedFurniture(item) {
         diffuser.position.y = h * 0.81;
         group.add(diffuser);
     }
+    if (id === "espejo_cuerpo") {
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(w, h, l * 0.7), Materials.darkNogal);
+        frame.position.y = h / 2;
+        group.add(frame);
+
+        const mirrorFace = new THREE.Mesh(new THREE.BoxGeometry(w * 0.82, h * 0.91, 0.008), Materials.glassWindow);
+        mirrorFace.position.set(0, h * 0.52, l * 0.36);
+        group.add(mirrorFace);
+
+        const topAccent = new THREE.Mesh(new THREE.BoxGeometry(w * 0.86, 0.025, 0.012), Materials.goldMetal);
+        topAccent.position.set(0, h * 0.96, l * 0.39);
+        group.add(topAccent);
+
+        [-1, 1].forEach(side => {
+            const foot = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.12, 0.07), Materials.darkNogal);
+            foot.position.set(side * w * 0.34, 0.06, 0);
+            group.add(foot);
+        });
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;
