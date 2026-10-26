@@ -11,11 +11,6 @@ const TextureFactory = {
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 512, 512);
 
-        ctx.fillStyle = "rgba(0,0,0,0.04)";
-        for (let i = 0; i < 200; i++) {
-            ctx.fillRect(0, Math.random() * 512, 512, Math.random() * 2 + 1);
-        }
-
         const texture = new THREE.CanvasTexture(canvas);
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
