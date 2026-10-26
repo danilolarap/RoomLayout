@@ -838,10 +838,17 @@ function createDetailedFurniture(item) {
 
         const leafGeometry = new THREE.IcosahedronGeometry(0.15, 0);
         [[0, 0.72, 0], [-0.1, 0.62, 0.04], [0.1, 0.64, -0.03], [0, 0.58, -0.11]].forEach((position, index) => {
-            const leaf = new THREE.Mesh(leafGeometry, index % 2 ? Materials.emeraldFabric : Materials.blueFabric);
+            const leaf = new THREE.Mesh(leafGeometry, Materials.emeraldFabric);
             leaf.scale.set(1, 0.72, 0.82);
             leaf.position.set(...position);
             group.add(leaf);
+        });
+
+        [[-0.08, 0.56, 0.03], [0.08, 0.58, -0.04]].forEach(([x, y, z]) => {
+            const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.014, 0.22, 5), Materials.oakWood);
+            branch.position.set(x / 2, y, z / 2);
+            branch.rotation.z = x < 0 ? -0.48 : 0.48;
+            group.add(branch);
         });
 
         const potBand = new THREE.Mesh(new THREE.TorusGeometry(w * 0.32, 0.012, 4, 6), Materials.goldMetal);
@@ -864,6 +871,12 @@ function createDetailedFurniture(item) {
             motif.position.set(stripe * w * 0.22, 0.02, 0);
             motif.rotation.y = Math.PI / 4;
             group.add(motif);
+        }
+
+        for (let fringe = -3; fringe <= 3; fringe++) {
+            const tassel = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.012, 0.055), Materials.amberFabric);
+            tassel.position.set(fringe * w * 0.12, 0.009, -l * 0.51);
+            group.add(tassel);
         }
     }
     if (id === "cesto_ropa") {
