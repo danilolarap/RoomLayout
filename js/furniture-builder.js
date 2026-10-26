@@ -559,6 +559,18 @@ function createDetailedFurniture(item) {
         consoleDisplay.position.set(0, h * 0.9, -l * 0.25 + 0.16);
         group.add(consoleDisplay);
     }
++    if (id === "barra_pared") {
+        [-1, 1].forEach(side => {
+            const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.029, 0.029, 0.16, 6), Materials.darkPlastic);
+            grip.rotation.z = Math.PI / 2;
+            grip.position.set(side * w * 0.37, h * 0.8, l * 0.8);
+            group.add(grip);
+        });
+        const centerSleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, w * 0.28, 6), Materials.goldMetal);
+        centerSleeve.rotation.z = Math.PI / 2;
+        centerSleeve.position.set(0, h * 0.8, l * 0.8);
+        group.add(centerSleeve);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
