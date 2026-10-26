@@ -45,30 +45,42 @@ El proyecto combina una escena creada con Three.js, un catálogo de objetos low-
 
 ## Estructura del Proyecto
 
-```text
+~~~text
 RoomLayout/
-├── css/
-│   └── styles.css              # Estilos personalizados
-├── js/
-│   ├── auth/
-│   │   ├── auth-ui.js          # Interfaz de autenticación
-│   │   └── db.js               # Usuarios y diseños en IndexedDB
-│   ├── ai-engine.js            # Análisis de distribución
-│   ├── app.js                  # Textos y controles de la interfaz
-│   ├── catalog.js              # Catálogo y tarjetas de muebles
-│   ├── furniture-builder.js    # Geometría low-poly de los objetos
-│   ├── inspector.js            # Edición de objetos seleccionados
-│   ├── main.js                 # Inicialización y eventos principales
-│   ├── materials.js            # Materiales y texturas procedurales
-│   ├── scene.js                # Escena, cámara, luz solar y controles 3D
-│   └── ui.js                   # Interfaz, proyectos e internacionalización
-├── index.html                  # Simulador RoomLayout
-├── login.html                  # Acceso, registro y modo invitado
-├── LICENSE                     # Licencia MIT
-├── README.md                   # Documentación del repositorio
-└── vercel.json                 # Configuración de alojamiento estático
-```
-
+  css/
+    styles.css                 Estilos personalizados del simulador
+    login.css                  Estilos de acceso y registro
+  js/
+    auth/
+      db.js                    Usuarios y proyectos en IndexedDB
+      login.js                 Interacciones de acceso y registro
+      session-guard.js         Proteccion de la pagina del simulador
+    furniture/details/
+      architecture.js          Detalles de ventanas y relojes
+      bedroom-storage.js       Detalles de camas y almacenamiento
+      decor.js                 Detalles de decoracion y textiles
+      fitness.js               Detalles de equipo de ejercicio
+      living-room.js           Detalles de muebles de sala
+      workspace.js             Detalles de oficina y electronica
+    projects/
+      projects-ui.js           Guardado, carga e importacion de proyectos
+    legacy/
+      app.js                   Punto de entrada anterior, no cargado
+      auth-ui.js               Interfaz de autenticacion anterior, no cargada
+    ai-engine.js               Analisis de distribucion
+    catalog.js                 Catalogo y tarjetas de muebles
+    furniture-builder.js       Modelos base de los objetos
+    inspector.js               Edicion de objetos seleccionados
+    main.js                    Inicializacion de la aplicacion
+    materials.js               Materiales y texturas procedurales
+    scene.js                   Escena, camara, luz y controles 3D
+    ui.js                      Interfaz, diagnosticos e idiomas
+  index.html                   Simulador RoomLayout
+  login.html                   Acceso, registro y modo invitado
+  LICENSE
+  README.md
+  vercel.json
+~~~
 ---
 
 ## Instalación y Uso
