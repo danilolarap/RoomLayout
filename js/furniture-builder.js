@@ -403,6 +403,11 @@ function createDetailedFurniture(item) {
         group.add(body);
     }
 
++    if (id === "cama_king") {
+        const footRunner = new THREE.Mesh(new THREE.BoxGeometry(w * 0.94, h * 0.025, l * 0.1), Materials.amberFabric);
+        footRunner.position.set(0, h * 0.67, l * 0.39);
+        group.add(footRunner);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
