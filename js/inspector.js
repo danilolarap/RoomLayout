@@ -31,13 +31,10 @@ function selectFurniture(meshGroup) {
 
     const currentY = selectedMesh.position.y;
 
-    // Obtener el color HEX actual del objeto
-    let currentColorHex = "#2563eb"; // Valor por defecto
-    selectedMesh.traverse(child => {
-        if (child.isMesh && child.material && child.material.color) {
-            currentColorHex = "#" + child.material.color.getHexString();
-        }
-    });
+    // Mostrar el color personalizado guardado o el color base del catálogo.
+    const currentColorHex = d.customColor || (d.color
+        ? `#${new THREE.Color(d.color).getHexString()}`
+        : "#d97706");
 
     const lblWidth = isEn ? "Width:" : "Ancho:";
     const lblLength = isEn ? "Length:" : "Largo:";
@@ -62,7 +59,7 @@ function selectFurniture(meshGroup) {
             <div>
                 <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">${lblColor}</label>
                 <div class="flex items-center gap-2 bg-amber-50/80 dark:bg-slate-800 p-1.5 rounded-xl border border-amber-200/80 dark:border-slate-700">
-                    <input type="color" id="picker-color" value="${currentColorHex}" onchange="window.changeSelectedColor(this.value)" class="w-8 h-8 rounded-lg cursor-pointer border-0 bg-transparent">
+                    <input type="color" id="picker-color" value="${currentColorHex}" oninput="window.changeSelectedColor(this.value)" class="w-10 h-10 rounded-lg cursor-pointer border-0 bg-transparent">
                     <span class="text-[11px] font-mono text-slate-600 dark:text-slate-300 font-bold" id="lbl-color-hex">${currentColorHex.toUpperCase()}</span>
                 </div>
             </div>
@@ -111,14 +108,34 @@ function selectFurniture(meshGroup) {
 window.changeSelectedColor = function(hexColor) {
     if (!selectedMesh) return;
 
+    const protectedMaterials = typeof Materials === "undefined" ? [] : [
+        Materials.chromeMetal,
+        Materials.goldMetal,
+        Materials.tvScreen,
+        Materials.glassWindow,
+        Materials.whiteSheet,
+        Materials.skyAccent
+    ].filter(Boolean);
+
     selectedMesh.traverse(child => {
-        if (child.isMesh && child.material) {
-            // No cambiar el color a vidrios de pantalla ni espejos
-            if (typeof Materials !== "undefined" && child.material !== Materials.tvScreen && child.material !== Materials.glassWindow) {
-                child.material = child.material.clone();
-                child.material.color.set(hexColor);
-            }
-        }
+        if (!child.isMesh || !child.material) return;
+
+        const recolorMaterial = material => {
+            if (!material?.color || protectedMaterials.includes(material)) return material;
+
+            // Clonar una sola vez para no alterar materiales compartidos ni perder texturas.
+            if (!child.userData.colorBaseMaterial) child.userData.colorBaseMaterial = material;
+            const baseMaterial = child.userData.colorBaseMaterial;
+            if (protectedMaterials.includes(baseMaterial)) return baseMaterial;
+
+            if (material === baseMaterial) material = baseMaterial.clone();
+            material.color.set(hexColor);
+            return material;
+        };
+
+        child.material = Array.isArray(child.material)
+            ? child.material.map(recolorMaterial)
+            : recolorMaterial(child.material);
     });
 
     if (!selectedMesh.userData) selectedMesh.userData = {};
