@@ -496,6 +496,14 @@ function createDetailedFurniture(item) {
         powerButton.position.set(w / 2 + 0.018, h * 0.88, l * 0.32);
         group.add(powerButton);
     }
++    if (id === "monitor") {
+        const webcam = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 5), Materials.chromeMetal);
+        webcam.position.set(0, h * 0.925, 0.018);
+        group.add(webcam);
+        const statusLight = new THREE.Mesh(new THREE.SphereGeometry(0.012, 5, 4), Materials.emeraldFabric);
+        statusLight.position.set(w * 0.44, h * 0.29, 0.018);
+        group.add(statusLight);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
