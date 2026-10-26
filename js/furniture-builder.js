@@ -429,6 +429,11 @@ function createDetailedFurniture(item) {
             group.add(foot);
         }));
     }
++    if (id === "armario_doble") {
+        const mirror = new THREE.Mesh(new THREE.BoxGeometry(w * 0.22, h * 0.62, 0.008), Materials.chromeMetal);
+        mirror.position.set(-w * 0.22, h * 0.54, l / 2 + 0.025);
+        group.add(mirror);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
