@@ -42,6 +42,7 @@ const FURNITURE_CATALOG = [
         category: { es: "Fitness & Ejercicio", en: "Fitness & Workout" },
         items: [
             { id: "caminadora", name: { es: "Caminadora Eléctrica", en: "Treadmill" }, w: 0.8, l: 1.6, h: 1.3, color: 0x111827, icon: "fa-person-walking" },
+            { id: "mat_yoga", name: { es: "Mat de Yoga", en: "Yoga Mat" }, w: 0.65, l: 1.7, h: 0.025, color: 0x374151, icon: "fa-person-praying" },
             { id: "barra_pared", name: { es: "Barra Dominadas (Pared)", en: "Wall Pull-Up Bar" }, w: 1.0, l: 0.5, h: 0.4, color: 0x1f2937, icon: "fa-dumbbell" },
             { id: "rack_mancuernas", name: { es: "Rack Mancuernas", en: "Dumbbell Rack" }, w: 1.1, l: 0.5, h: 0.8, color: 0xd97706, icon: "fa-dumbbell" },
             { id: "banco_plano", name: { es: "Banco Plano", en: "Flat Bench" }, w: 1.2, l: 0.45, h: 0.4, color: 0xb45309, icon: "fa-cubes" }

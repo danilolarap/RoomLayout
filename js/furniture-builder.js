@@ -417,7 +417,7 @@ function createDetailedFurniture(item) {
 
     } else if (![
         "comoda", "librero", "lampara_pie", "espejo_cuerpo", "planta_interior",
-        "alfombra", "cesto_ropa", "cortinas", "lampara_mesa", "zapatero"
+        "alfombra", "mat_yoga", "cesto_ropa", "cortinas", "lampara_mesa", "zapatero"
     ].includes(id)) {
         const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), Materials.oakWood);
         body.position.y = h / 2;
@@ -878,6 +878,16 @@ function createDetailedFurniture(item) {
             tassel.position.set(fringe * w * 0.12, 0.009, -l * 0.51);
             group.add(tassel);
         }
+    }
+    if (id === "mat_yoga") {
+        const mat = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), Materials.darkPlastic);
+        mat.position.y = h / 2;
+        group.add(mat);
+
+        const rolledEnd = new THREE.Mesh(new THREE.CylinderGeometry(h / 2, h / 2, w, 8), Materials.darkPlastic);
+        rolledEnd.rotation.z = Math.PI / 2;
+        rolledEnd.position.set(0, h, -l * 0.46);
+        group.add(rolledEnd);
     }
     if (id === "cesto_ropa") {
         const basket = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.4, w * 0.32, h * 0.78, 8, 1, true), Materials.oakWood);
