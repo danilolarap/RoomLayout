@@ -890,6 +890,14 @@ function createDetailedFurniture(item) {
             group.add(weaveBand);
         }
 
+        for (let slat = 0; slat < 8; slat++) {
+            const angle = (slat / 8) * Math.PI * 2;
+            const weave = new THREE.Mesh(new THREE.BoxGeometry(0.012, h * 0.62, 0.012), Materials.cherryWood);
+            weave.position.set(Math.cos(angle) * w * 0.34, h * 0.43, Math.sin(angle) * l * 0.34);
+            weave.rotation.y = -angle;
+            group.add(weave);
+        }
+
         const rim = new THREE.Mesh(new THREE.TorusGeometry(w * 0.4, 0.018, 4, 8), Materials.darkNogal);
         rim.position.y = h * 0.82;
         group.add(rim);
@@ -906,7 +914,7 @@ function createDetailedFurniture(item) {
             group.add(panel);
 
             for (let pleat = -1; pleat <= 1; pleat++) {
-                const fold = new THREE.Mesh(new THREE.BoxGeometry(0.012, h * 0.88, 0.01), Materials.goldMetal);
+                const fold = new THREE.Mesh(new THREE.BoxGeometry(0.016, h * 0.88, 0.01), Materials.emeraldFabric);
                 fold.position.set(side * w * 0.27 + pleat * w * 0.12, h / 2, l * 0.22);
                 group.add(fold);
             }

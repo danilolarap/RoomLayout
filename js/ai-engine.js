@@ -65,7 +65,7 @@ window.AIEngine = {
                 w: w,
                 h: h,
                 l: l,
-                isWallItem: data.id?.includes("ventana") || data.id === "reloj_pared" || data.id === "barra_pared",
+                isWallItem: data.id?.includes("ventana") || data.id === "reloj_pared" || data.id === "barra_pared" || data.id === "cortinas",
                 isSurfaceItem: ["laptop", "pc_torre", "monitor", "mouse", "reloj_mesa"].includes(data.id)
             });
         });
