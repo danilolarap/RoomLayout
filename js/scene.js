@@ -1,7 +1,7 @@
 // js/scene.js - Escena 3D, Cámaras, Luces y Transparencia Inteligente
 
 let scene, camera, renderer, controls;
-let roomMesh, sunLight;
+let roomMesh, sunLight, sunVisual;
 let activeItems = [];
 let selectedMesh = null;
 let footprintGroup = null;
@@ -55,6 +55,26 @@ function initScene() {
     sunLight.shadow.bias = -0.00015;
     sunLight.shadow.normalBias = 0.02;
     scene.add(sunLight);
+
+    sunVisual = new THREE.Group();
+    const sunHalo = new THREE.Mesh(
+        new THREE.SphereGeometry(0.52, 16, 12),
+        new THREE.MeshBasicMaterial({
+            color: 0xffb52e,
+            transparent: true,
+            opacity: 0.2,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            toneMapped: false
+        })
+    );
+    const sunCore = new THREE.Mesh(
+        new THREE.SphereGeometry(0.32, 16, 12),
+        new THREE.MeshBasicMaterial({ color: 0xffe58a, toneMapped: false })
+    );
+    sunVisual.add(sunHalo, sunCore);
+    sunVisual.renderOrder = 1;
+    scene.add(sunVisual);
 
     updateRoomDimensions(4.0, 3.5);
     updateSunPosition(15.5);
@@ -253,6 +273,7 @@ function updateSunPosition(hour) {
     sunLight.position.x = Math.cos(angle) * radius;
     sunLight.position.y = Math.sin(angle) * radius;
     sunLight.position.z = 5;
+    if (sunVisual) sunVisual.position.copy(sunLight.position);
 }
 
 window.setCameraView = function(viewType) {
