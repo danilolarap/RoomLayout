@@ -107,19 +107,18 @@ function updateRoomDimensions(width, length) {
     group.add(footprintGroup);
 
     const wallHeight = 2.2;
-    const wallClearance = 0.02;
 
     // Paredes inteligentes con transparencia dinámica
     const backWallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
     const backWall = new THREE.Mesh(new THREE.PlaneGeometry(width, wallHeight), backWallMat);
-    backWall.position.set(0, wallHeight / 2, -length / 2 - wallClearance);
+    backWall.position.set(0, wallHeight / 2, -length / 2);
     backWall.userData = { isWall: true, axis: "z", dir: -1 };
     group.add(backWall);
 
     const leftWallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
     const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(length, wallHeight), leftWallMat);
     leftWall.rotation.y = Math.PI / 2;
-    leftWall.position.set(-width / 2 - wallClearance, wallHeight / 2, 0);
+    leftWall.position.set(-width / 2, wallHeight / 2, 0);
     leftWall.userData = { isWall: true, axis: "x", dir: -1 };
     group.add(leftWall);
 
