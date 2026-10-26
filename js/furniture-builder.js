@@ -614,6 +614,15 @@ function createDetailedFurniture(item) {
         minuteAccent.position.set(0, h * 0.22, l / 2 + 0.012);
         group.add(minuteAccent);
     }
++    if (id === "ventana_cuadrada") {
+        const mullionMaterial = Materials.whiteFrame;
+        const verticalBar = new THREE.Mesh(new THREE.BoxGeometry(0.025, h * 0.84, 0.025), mullionMaterial);
+        verticalBar.position.set(0, h / 2, 0.022);
+        group.add(verticalBar);
+        const crossbar = new THREE.Mesh(new THREE.BoxGeometry(w * 0.84, 0.025, 0.025), mullionMaterial);
+        crossbar.position.set(0, h * 0.52, 0.022);
+        group.add(crossbar);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
