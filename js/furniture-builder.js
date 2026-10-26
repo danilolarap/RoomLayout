@@ -529,6 +529,15 @@ function createDetailedFurniture(item) {
             group.add(grille);
         }
     }
++    if (id === "sofa_1p") {
+        const accentPillow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, h * 0.2, l * 0.18), Materials.amberFabric);
+        accentPillow.position.set(w * 0.23, h * 0.57, -l * 0.29);
+        accentPillow.rotation.z = -0.12;
+        group.add(accentPillow);
+        const piping = new THREE.Mesh(new THREE.BoxGeometry(w * 0.78, 0.012, 0.012), Materials.amberFabric);
+        piping.position.set(0, h * 0.42, l * 0.37);
+        group.add(piping);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
