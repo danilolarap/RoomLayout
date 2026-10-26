@@ -594,6 +594,18 @@ function createDetailedFurniture(item) {
         sideBadge.position.set(w * 0.48, h * 0.78, l * 0.25);
         group.add(sideBadge);
     }
++    if (id === "reloj_pared") {
+        for (let mark = 0; mark < 12; mark++) {
+            const angle = (mark / 12) * Math.PI * 2;
+            const major = mark % 3 === 0;
+            const tick = new THREE.Mesh(
+                new THREE.BoxGeometry(major ? 0.018 : 0.01, major ? 0.045 : 0.026, 0.008),
+                Materials.goldMetal
+            );
+            tick.position.set(Math.sin(angle) * w * 0.36, h / 2 + Math.cos(angle) * h * 0.36, 0.027);
+            group.add(tick);
+        }
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
