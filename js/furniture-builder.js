@@ -522,6 +522,13 @@ function createDetailedFurniture(item) {
             group.add(pull);
         });
     }
++    if (id === "mueble_tv") {
+        for (let slat = 0; slat < 4; slat++) {
+            const grille = new THREE.Mesh(new THREE.BoxGeometry(w * 0.36, 0.012, 0.014), Materials.goldMetal);
+            grille.position.set(0, h * (0.25 + slat * 0.1), l / 2 + 0.012);
+            group.add(grille);
+        }
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
