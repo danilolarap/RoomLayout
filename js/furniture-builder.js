@@ -512,6 +512,16 @@ function createDetailedFurniture(item) {
         buttonSeam.position.set(0, 0.027, -0.025);
         group.add(buttonSeam);
     }
++    if (id === "mueble_tv_grande") {
+        [-1, 0, 1].forEach(slot => {
+            const drawer = new THREE.Mesh(new THREE.BoxGeometry(w * 0.24, h * 0.22, 0.018), Materials.cherryWood);
+            drawer.position.set(slot * w * 0.29, h * 0.39, l / 2 + 0.012);
+            group.add(drawer);
+            const pull = new THREE.Mesh(new THREE.BoxGeometry(w * 0.07, 0.012, 0.012), Materials.goldMetal);
+            pull.position.set(slot * w * 0.29, h * 0.4, l / 2 + 0.025);
+            group.add(pull);
+        });
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
