@@ -104,15 +104,27 @@ function updateRoomDimensions(width, length) {
     const group = new THREE.Group();
 
     const floorGeo = new THREE.PlaneGeometry(width, length);
+    const floorColor = document.documentElement.classList.contains("dark") ? 0x1e293b : 0xfffbeb;
     const floorMat = new THREE.MeshStandardMaterial({
-        color: document.documentElement.classList.contains("dark") ? 0x1e293b : 0xfffbeb,
+        color: floorColor,
         roughness: 0.82,
-        side: THREE.DoubleSide
+        side: THREE.FrontSide
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     group.add(floor);
+
+    // La cara inferior es decorativa y no recibe sombras para evitar shadow acne al orbitar bajo el piso.
+    const floorUnderside = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, length),
+        new THREE.MeshBasicMaterial({ color: floorColor, side: THREE.BackSide })
+    );
+    floorUnderside.rotation.x = -Math.PI / 2;
+    floorUnderside.position.y = -0.002;
+    floorUnderside.receiveShadow = false;
+    floorUnderside.castShadow = false;
+    group.add(floorUnderside);
 
     const gridSize = Math.ceil(Math.max(width, length) / 0.25) * 0.25;
     const grid = new THREE.GridHelper(gridSize, Math.round(gridSize / 0.25), 0xd97706, 0xd6c7a1);
