@@ -623,6 +623,16 @@ function createDetailedFurniture(item) {
         crossbar.position.set(0, h * 0.52, 0.022);
         group.add(crossbar);
     }
++    if (id === "ventana_rect") {
+        [-1, 1].forEach(side => {
+            const mullion = new THREE.Mesh(new THREE.BoxGeometry(0.022, h * 0.82, 0.024), Materials.whiteFrame);
+            mullion.position.set(side * w * 0.24, h / 2, 0.021);
+            group.add(mullion);
+        });
+        const transom = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, 0.022, 0.024), Materials.whiteFrame);
+        transom.position.set(0, h * 0.68, 0.021);
+        group.add(transom);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
