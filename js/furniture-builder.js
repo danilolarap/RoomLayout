@@ -460,6 +460,16 @@ function createDetailedFurniture(item) {
         drawerPull.position.set(-w * 0.22, h * 0.66, l * 0.28);
         group.add(drawerPull);
     }
++    if (id === "silla_ergonomica") {
+        const lumbarPad = new THREE.Mesh(new THREE.BoxGeometry(w * 0.52, h * 0.12, 0.065), Materials.blueFabric);
+        lumbarPad.position.set(0, 0.79, -l * 0.32);
+        group.add(lumbarPad);
+        [-1, 1].forEach(side => {
+            const arm = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.035, l * 0.42), Materials.blackMetal);
+            arm.position.set(side * w * 0.38, 0.58, -l * 0.04);
+            group.add(arm);
+        });
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
