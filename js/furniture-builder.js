@@ -452,6 +452,14 @@ function createDetailedFurniture(item) {
         drawerPull.position.set(w * 0.29, h * 0.64, -l * 0.25 + l * 0.12);
         group.add(drawerPull);
     }
++    if (id === "escritorio_recto") {
+        const drawerUnit = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, h * 0.22, l * 0.55), Materials.darkNogal);
+        drawerUnit.position.set(-w * 0.22, h * 0.63, 0);
+        group.add(drawerUnit);
+        const drawerPull = new THREE.Mesh(new THREE.BoxGeometry(w * 0.16, 0.018, 0.012), Materials.goldMetal);
+        drawerPull.position.set(-w * 0.22, h * 0.66, l * 0.28);
+        group.add(drawerPull);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
