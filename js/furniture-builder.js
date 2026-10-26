@@ -408,6 +408,14 @@ function createDetailedFurniture(item) {
         footRunner.position.set(0, h * 0.67, l * 0.39);
         group.add(footRunner);
     }
++    if (id === "cama_queen") {
+        const headboardStud = new THREE.SphereGeometry(0.025, 6, 5);
+        [-1, 1].forEach(side => {
+            const stud = new THREE.Mesh(headboardStud, Materials.goldMetal);
+            stud.position.set(side * w * 0.32, h * 0.88, -l / 2 + 0.09);
+            group.add(stud);
+        });
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
