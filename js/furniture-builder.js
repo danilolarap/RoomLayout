@@ -571,6 +571,19 @@ function createDetailedFurniture(item) {
         centerSleeve.position.set(0, h * 0.8, l * 0.8);
         group.add(centerSleeve);
     }
++    if (id === "rack_mancuernas") {
+        const endCapGeometry = new THREE.CylinderGeometry(0.065, 0.065, 0.045, 6);
+        for (let level = 0; level < 2; level++) {
+            const posY = h * 0.39 + level * (h * 0.4);
+            for (let d = 0; d < 3; d++) {
+                const posX = -w * 0.3 + d * (w * 0.3);
+                const endCap = new THREE.Mesh(endCapGeometry, Materials.amberFabric);
+                endCap.rotation.z = Math.PI / 2;
+                endCap.position.set(posX + 0.105, posY + 0.04, 0);
+                group.add(endCap);
+            }
+        }
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
