@@ -863,6 +863,35 @@ function createDetailedFurniture(item) {
         towel.position.set(0, h * 0.84, 0);
         group.add(towel);
     }
+    if (id === "cortinas") {
+        const curtainPanelGeometry = new THREE.BoxGeometry(w * 0.44, h * 0.94, l * 0.42);
+        [-1, 1].forEach(side => {
+            const panel = new THREE.Mesh(curtainPanelGeometry, Materials.amberFabric);
+            panel.position.set(side * w * 0.27, h / 2, 0);
+            group.add(panel);
+
+            for (let pleat = -1; pleat <= 1; pleat++) {
+                const fold = new THREE.Mesh(new THREE.BoxGeometry(0.012, h * 0.88, 0.01), Materials.goldMetal);
+                fold.position.set(side * w * 0.27 + pleat * w * 0.12, h / 2, l * 0.22);
+                group.add(fold);
+            }
+
+            const tieback = new THREE.Mesh(new THREE.BoxGeometry(w * 0.42, 0.025, l * 0.5), Materials.darkNogal);
+            tieback.position.set(side * w * 0.27, h * 0.54, l * 0.16);
+            group.add(tieback);
+        });
+
+        const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, w * 1.08, 6), Materials.darkNogal);
+        rod.rotation.z = Math.PI / 2;
+        rod.position.set(0, h * 0.98, 0);
+        group.add(rod);
+
+        [-1, 1].forEach(side => {
+            const finial = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 5), Materials.goldMetal);
+            finial.position.set(side * w * 0.56, h * 0.98, 0);
+            group.add(finial);
+        });
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;

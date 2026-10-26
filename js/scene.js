@@ -311,6 +311,8 @@ window.addFurnitureToScene = function(item) {
     const id = item.id || "";
     if (id === "laptop" || id === "pc_torre" || id === "monitor" || id === "mouse" || id === "reloj_mesa") {
         initialY = 0.75;
+    } else if (id === "cortinas") {
+        initialY = 0.4;
     } else if (id.includes("ventana") || id === "reloj_pared" || id === "barra_pared") {
         initialY = 1.0;
     }
