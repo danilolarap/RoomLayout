@@ -64,18 +64,33 @@ const FURNITURE_CATALOG = [
         ]
     },
     {
-        category: { es: "Organizaci\u00f3n y Confort", en: "Storage & Comfort" },
+        category: { es: "Organizaci\u00f3n y Almacenamiento", en: "Storage & Organization" },
         items: [
             { id: "comoda", name: { es: "C\u00f3moda", en: "Dresser" }, w: 1.2, l: 0.45, h: 0.9, color: 0x92400e, icon: "fa-box-archive" },
             { id: "librero", name: { es: "Librero", en: "Bookcase" }, w: 0.8, l: 0.3, h: 1.8, color: 0x78350f, icon: "fa-book" },
+            { id: "zapatero", name: { es: "Zapatero", en: "Shoe Rack" }, w: 0.8, l: 0.3, h: 0.9, color: 0x78350f, icon: "fa-shoe-prints" },
+            { id: "cesto_ropa", name: { es: "Cesto de Ropa", en: "Laundry Basket" }, w: 0.4, l: 0.4, h: 0.6, color: 0x92400e, icon: "fa-basket-shopping" }
+        ]
+    },
+    {
+        category: { es: "Iluminaci\u00f3n", en: "Lighting" },
+        items: [
             { id: "lampara_pie", name: { es: "L\u00e1mpara de Pie", en: "Floor Lamp" }, w: 0.35, l: 0.35, h: 1.6, color: 0xf59e0b, icon: "fa-lightbulb" },
+            { id: "lampara_mesa", name: { es: "L\u00e1mpara de Mesa", en: "Table Lamp" }, w: 0.25, l: 0.25, h: 0.45, color: 0xfbbf24, icon: "fa-lightbulb" }
+        ]
+    },
+    {
+        category: { es: "Plantas y Decoraci\u00f3n", en: "Plants & Decor" },
+        items: [
             { id: "espejo_cuerpo", name: { es: "Espejo de Cuerpo Entero", en: "Full-Length Mirror" }, w: 0.6, l: 0.05, h: 1.7, color: 0x38bdf8, icon: "fa-clone" },
-            { id: "planta_interior", name: { es: "Planta de Interior", en: "Indoor Plant" }, w: 0.45, l: 0.45, h: 1.0, color: 0x059669, icon: "fa-seedling" },
+            { id: "planta_interior", name: { es: "Planta de Interior", en: "Indoor Plant" }, w: 0.45, l: 0.45, h: 1.0, color: 0x059669, icon: "fa-seedling" }
+        ]
+    },
+    {
+        category: { es: "Alfombras y Cortinas", en: "Rugs & Curtains" },
+        items: [
             { id: "alfombra", name: { es: "Alfombra", en: "Area Rug" }, w: 1.6, l: 2.0, h: 0.03, color: 0xd97706, icon: "fa-rug" },
-            { id: "cesto_ropa", name: { es: "Cesto de Ropa", en: "Laundry Basket" }, w: 0.4, l: 0.4, h: 0.6, color: 0x92400e, icon: "fa-basket-shopping" },
-            { id: "cortinas", name: { es: "Cortinas", en: "Curtains" }, w: 1.4, l: 0.08, h: 1.8, color: 0xf59e0b, icon: "fa-scroll" },
-            { id: "lampara_mesa", name: { es: "L\u00e1mpara de Mesa", en: "Table Lamp" }, w: 0.25, l: 0.25, h: 0.45, color: 0xfbbf24, icon: "fa-lightbulb" },
-            { id: "zapatero", name: { es: "Zapatero", en: "Shoe Rack" }, w: 0.8, l: 0.3, h: 0.9, color: 0x78350f, icon: "fa-shoe-prints" }
+            { id: "cortinas", name: { es: "Cortinas", en: "Curtains" }, w: 1.4, l: 0.08, h: 1.8, color: 0xf59e0b, icon: "fa-scroll" }
         ]
     }
 ];
@@ -126,7 +141,7 @@ function renderCatalog(filterQuery = "") {
 
             card.innerHTML = `
                 <div class="text-amber-600 dark:text-amber-400 mb-1 text-lg"><i class="fa-solid ${item.icon}"></i></div>
-                <div class="font-bold text-slate-800 dark:text-slate-100 text-[11px] truncate">${displayName}</div>
+                <div class="font-bold text-slate-800 dark:text-slate-100 text-[11px] leading-tight whitespace-normal break-words">${displayName}</div>
                 <div class="text-[10px] text-amber-700/70 dark:text-slate-400 mt-0.5 font-medium">${item.w}m × ${item.l}m</div>
             `;
             grid.appendChild(card);
