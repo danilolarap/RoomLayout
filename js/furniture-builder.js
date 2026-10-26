@@ -434,6 +434,11 @@ function createDetailedFurniture(item) {
         mirror.position.set(-w * 0.22, h * 0.54, l / 2 + 0.025);
         group.add(mirror);
     }
++    if (id === "armario_3p") {
+        const centerInlay = new THREE.Mesh(new THREE.BoxGeometry(w * 0.012, h * 0.84, 0.008), Materials.goldMetal);
+        centerInlay.position.set(0, h / 2, l / 2 + 0.025);
+        group.add(centerInlay);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
