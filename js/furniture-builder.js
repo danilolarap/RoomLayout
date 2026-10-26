@@ -421,6 +421,14 @@ function createDetailedFurniture(item) {
         foldedThrow.position.set(0, h * 0.67, l * 0.37);
         group.add(foldedThrow);
     }
++    if (id === "mesa_noche") {
+        const footGeometry = new THREE.CylinderGeometry(0.025, 0.035, 0.07, 5);
+        [-1, 1].forEach(xSide => [-1, 1].forEach(zSide => {
+            const foot = new THREE.Mesh(footGeometry, Materials.goldMetal);
+            foot.position.set(xSide * w * 0.4, 0.035, zSide * l * 0.4);
+            group.add(foot);
+        }));
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
