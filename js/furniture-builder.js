@@ -909,6 +909,31 @@ function createDetailedFurniture(item) {
         diffuser.position.y = h * 0.61;
         group.add(diffuser);
     }
+    if (id === "zapatero") {
+        [-1, 1].forEach(side => {
+            const support = new THREE.Mesh(new THREE.BoxGeometry(0.04, h, l), Materials.darkNogal);
+            support.position.set(side * (w / 2 - 0.02), h / 2, 0);
+            group.add(support);
+        });
+
+        for (let shelfIndex = 0; shelfIndex < 3; shelfIndex++) {
+            const shelfY = h * (0.12 + shelfIndex * 0.31);
+            const shelf = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.035, l), Materials.oakWood);
+            shelf.position.set(0, shelfY, 0);
+            group.add(shelf);
+
+            for (let shoeIndex = 0; shoeIndex < 3; shoeIndex++) {
+                const shoe = new THREE.Mesh(new THREE.BoxGeometry(w * 0.18, 0.07, l * 0.34), Materials.blackLeather);
+                shoe.position.set(-w * 0.29 + shoeIndex * w * 0.29, shelfY + 0.055, l * 0.08);
+                shoe.rotation.y = shoeIndex % 2 ? 0.08 : -0.08;
+                group.add(shoe);
+            }
+        }
+
+        const topShelf = new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, l), Materials.darkNogal);
+        topShelf.position.y = h - 0.02;
+        group.add(topShelf);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;

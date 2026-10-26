@@ -74,7 +74,8 @@ const FURNITURE_CATALOG = [
             { id: "alfombra", name: { es: "Alfombra", en: "Area Rug" }, w: 1.6, l: 2.0, h: 0.03, color: 0xd97706, icon: "fa-rug" },
             { id: "cesto_ropa", name: { es: "Cesto de Ropa", en: "Laundry Basket" }, w: 0.4, l: 0.4, h: 0.6, color: 0x92400e, icon: "fa-basket-shopping" },
             { id: "cortinas", name: { es: "Cortinas", en: "Curtains" }, w: 1.4, l: 0.08, h: 1.8, color: 0xf59e0b, icon: "fa-scroll" },
-            { id: "lampara_mesa", name: { es: "L\u00e1mpara de Mesa", en: "Table Lamp" }, w: 0.25, l: 0.25, h: 0.45, color: 0xfbbf24, icon: "fa-lightbulb" }
+            { id: "lampara_mesa", name: { es: "L\u00e1mpara de Mesa", en: "Table Lamp" }, w: 0.25, l: 0.25, h: 0.45, color: 0xfbbf24, icon: "fa-lightbulb" },
+            { id: "zapatero", name: { es: "Zapatero", en: "Shoe Rack" }, w: 0.8, l: 0.3, h: 0.9, color: 0x78350f, icon: "fa-shoe-prints" }
         ]
     }
 ];
