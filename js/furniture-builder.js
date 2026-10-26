@@ -826,6 +826,24 @@ function createDetailedFurniture(item) {
         potBand.position.y = 0.25;
         group.add(potBand);
     }
+    if (id === "alfombra") {
+        const rug = new THREE.Mesh(new THREE.BoxGeometry(w, 0.018, l), Materials.amberFabric);
+        rug.position.y = 0.009;
+        group.add(rug);
+
+        [-1, 1].forEach(side => {
+            const border = new THREE.Mesh(new THREE.BoxGeometry(w * 0.92, 0.006, 0.018), Materials.goldMetal);
+            border.position.set(0, 0.02, side * l * 0.46);
+            group.add(border);
+        });
+
+        for (let stripe = -1; stripe <= 1; stripe++) {
+            const motif = new THREE.Mesh(new THREE.BoxGeometry(w * 0.42, 0.006, 0.012), Materials.cherryWood);
+            motif.position.set(stripe * w * 0.22, 0.02, 0);
+            motif.rotation.y = Math.PI / 4;
+            group.add(motif);
+        }
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;

@@ -70,7 +70,8 @@ const FURNITURE_CATALOG = [
             { id: "librero", name: { es: "Librero", en: "Bookcase" }, w: 0.8, l: 0.3, h: 1.8, color: 0x78350f, icon: "fa-book" },
             { id: "lampara_pie", name: { es: "L\u00e1mpara de Pie", en: "Floor Lamp" }, w: 0.35, l: 0.35, h: 1.6, color: 0xf59e0b, icon: "fa-lightbulb" },
             { id: "espejo_cuerpo", name: { es: "Espejo de Cuerpo Entero", en: "Full-Length Mirror" }, w: 0.6, l: 0.05, h: 1.7, color: 0x38bdf8, icon: "fa-mirror" },
-            { id: "planta_interior", name: { es: "Planta de Interior", en: "Indoor Plant" }, w: 0.45, l: 0.45, h: 1.0, color: 0x059669, icon: "fa-seedling" }
+            { id: "planta_interior", name: { es: "Planta de Interior", en: "Indoor Plant" }, w: 0.45, l: 0.45, h: 1.0, color: 0x059669, icon: "fa-seedling" },
+            { id: "alfombra", name: { es: "Alfombra", en: "Area Rug" }, w: 1.6, l: 2.0, h: 0.03, color: 0xd97706, icon: "fa-rug" }
         ]
     }
 ];
