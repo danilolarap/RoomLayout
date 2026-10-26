@@ -74,6 +74,7 @@ const Materials = {
     blackLeather: new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.3, metalness: 0.2 }),
     blackMetal: new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.3, metalness: 0.8 }),
     chromeMetal: new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.1, metalness: 0.95 }),
+    skyAccent: new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x075985, emissiveIntensity: 0.35, roughness: 0.35, metalness: 0.25 }),
     goldMetal: new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 }),
     tvScreen: new THREE.MeshStandardMaterial({ color: 0x030712, roughness: 0.1, metalness: 0.9 }),
     glassWindow: new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45, roughness: 0.1, side: THREE.DoubleSide }),

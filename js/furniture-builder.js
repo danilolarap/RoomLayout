@@ -255,8 +255,26 @@ function createDetailedFurniture(item) {
         group.add(caseBody);
 
         const glassPanel = new THREE.Mesh(new THREE.BoxGeometry(0.01, h * 0.9, l * 0.85), Materials.glassWindow);
-        glassPanel.position.set(w / 2 + 0.005, h / 2, 0);
+        glassPanel.position.set(w / 2 + 0.012, h / 2, 0);
+        glassPanel.userData.noShadow = true;
         group.add(glassPanel);
+
+        const frontPanel = new THREE.Mesh(new THREE.BoxGeometry(w * 0.78, h * 0.82, 0.008), Materials.darkPlastic);
+        frontPanel.position.set(0, h / 2, l / 2 + 0.004);
+        frontPanel.userData.noShadow = true;
+        group.add(frontPanel);
+
+        const frontAccent = new THREE.Mesh(new THREE.BoxGeometry(w * 0.045, h * 0.62, 0.006), Materials.skyAccent);
+        frontAccent.position.set(-w * 0.31, h * 0.51, l / 2 + 0.011);
+        frontAccent.userData.noShadow = true;
+        group.add(frontAccent);
+
+        for (let vent = 0; vent < 3; vent++) {
+            const grille = new THREE.Mesh(new THREE.BoxGeometry(w * 0.2, 0.008, 0.006), Materials.blackMetal);
+            grille.position.set(w * 0.27, h * (0.57 - vent * 0.045), l / 2 + 0.011);
+            grille.userData.noShadow = true;
+            group.add(grille);
+        }
 
     } else if (id === "monitor") {
         const standBase = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.2, w * 0.2, 0.015, 16), Materials.blackMetal);
@@ -480,16 +498,58 @@ function createDetailedFurniture(item) {
         group.add(trackpad);
     }
     if (id === "pc_torre") {
-        const fanRing = new THREE.TorusGeometry(Math.min(h, l) * 0.22, 0.012, 4, 8);
-        [-0.13, 0.13].forEach(offsetZ => {
-            const fan = new THREE.Mesh(fanRing, Materials.skyAccent || Materials.chromeMetal);
-            fan.rotation.y = Math.PI / 2;
-            fan.position.set(w / 2 + 0.018, h * 0.56, offsetZ);
-            group.add(fan);
+        const fanRadius = Math.min(h, l) * 0.145;
+        const bladeShape = new THREE.Shape();
+        bladeShape.moveTo(fanRadius * 0.16, fanRadius * 0.04);
+        bladeShape.lineTo(fanRadius * 0.62, fanRadius * 0.08);
+        bladeShape.lineTo(fanRadius * 0.54, fanRadius * 0.24);
+        bladeShape.lineTo(fanRadius * 0.24, fanRadius * 0.34);
+        bladeShape.closePath();
+        const bladeGeometry = new THREE.ShapeGeometry(bladeShape);
+
+        [-l * 0.245, l * 0.245].forEach(offsetZ => {
+            const fanAssembly = new THREE.Group();
+            fanAssembly.rotation.y = Math.PI / 2;
+            fanAssembly.position.set(w / 2 + 0.015, h * 0.56, offsetZ);
+
+            const outerRim = new THREE.Mesh(
+                new THREE.TorusGeometry(fanRadius, 0.006, 4, 8),
+                Materials.blackMetal
+            );
+            outerRim.userData.noShadow = true;
+            fanAssembly.add(outerRim);
+
+            const lightRing = new THREE.Mesh(
+                new THREE.TorusGeometry(fanRadius * 0.78, 0.003, 4, 8),
+                Materials.skyAccent
+            );
+            lightRing.position.z = 0.002;
+            lightRing.userData.noShadow = true;
+            fanAssembly.add(lightRing);
+
+            for (let bladeIndex = 0; bladeIndex < 5; bladeIndex++) {
+                const blade = new THREE.Mesh(bladeGeometry, Materials.skyAccent);
+                blade.rotation.z = (bladeIndex * Math.PI * 2) / 5;
+                blade.position.z = 0.004;
+                blade.userData.noShadow = true;
+                fanAssembly.add(blade);
+            }
+
+            const hub = new THREE.Mesh(
+                new THREE.CylinderGeometry(fanRadius * 0.2, fanRadius * 0.2, 0.01, 6),
+                Materials.goldMetal
+            );
+            hub.rotation.x = Math.PI / 2;
+            hub.position.z = 0.006;
+            hub.userData.noShadow = true;
+            fanAssembly.add(hub);
+            group.add(fanAssembly);
         });
-        const powerButton = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.012, 8), Materials.goldMetal);
-        powerButton.rotation.z = Math.PI / 2;
-        powerButton.position.set(w / 2 + 0.018, h * 0.88, l * 0.32);
+
+        const powerButton = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.01, 8), Materials.goldMetal);
+        powerButton.rotation.x = Math.PI / 2;
+        powerButton.position.set(w * 0.28, h * 0.84, l / 2 + 0.012);
+        powerButton.userData.noShadow = true;
         group.add(powerButton);
     }
     if (id === "monitor") {
