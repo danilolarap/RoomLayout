@@ -483,6 +483,19 @@ function createDetailedFurniture(item) {
         trackpad.position.set(0, 0.018, l * 0.24);
         group.add(trackpad);
     }
++    if (id === "pc_torre") {
+        const fanRing = new THREE.TorusGeometry(Math.min(h, l) * 0.22, 0.012, 4, 8);
+        [-0.13, 0.13].forEach(offsetZ => {
+            const fan = new THREE.Mesh(fanRing, Materials.skyAccent || Materials.chromeMetal);
+            fan.rotation.y = Math.PI / 2;
+            fan.position.set(w / 2 + 0.018, h * 0.56, offsetZ);
+            group.add(fan);
+        });
+        const powerButton = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.012, 8), Materials.goldMetal);
+        powerButton.rotation.z = Math.PI / 2;
+        powerButton.position.set(w / 2 + 0.018, h * 0.88, l * 0.32);
+        group.add(powerButton);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
