@@ -13,6 +13,9 @@ const i18n = {
         btnRender: "Render PNG",
         btnSave: "Guardar",
         btnProjects: "Mis Diseños",
+        projectsModalTitle: "Mis Diseños Guardados",
+        exportJson: "Exportar JSON",
+        importJson: "Importar",
         guestDemo: "Invitado Demo",
         themeLight: "Modo Claro",
         themeDark: "Modo Oscuro",
@@ -43,6 +46,9 @@ const i18n = {
         btnRender: "PNG Render",
         btnSave: "Save",
         btnProjects: "My Projects",
+        projectsModalTitle: "My Saved Designs",
+        exportJson: "Export JSON",
+        importJson: "Import",
         guestDemo: "Guest Demo",
         themeLight: "Light Mode",
         themeDark: "Dark Mode",
@@ -192,7 +198,8 @@ async function renderProjectsList() {
 
     try {
         if (typeof ProjectService === "undefined") {
-            container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">Local database active.</p>`;
+            const localDatabaseMsg = window.currentLang === "en" ? "Local database active." : "Base de datos local activa.";
+            container.innerHTML = `<p class="text-slate-400 italic text-xs text-center py-4">${localDatabaseMsg}</p>`;
             return;
         }
 
@@ -228,7 +235,8 @@ async function renderProjectsList() {
             container.appendChild(item);
         });
     } catch (err) {
-        container.innerHTML = `<p class="text-red-500 text-xs text-center py-4">Error loading list.</p>`;
+        const errorMsg = window.currentLang === "en" ? "Error loading list." : "Error al cargar la lista.";
+        container.innerHTML = `<p class="text-red-500 text-xs text-center py-4">${errorMsg}</p>`;
     }
 }
 
@@ -430,6 +438,9 @@ function updateLanguageTexts() {
     setTxt("txt-btn-render", t.btnRender);
     setTxt("txt-btn-save", t.btnSave);
     setTxt("txt-btn-projects", t.btnProjects);
+    setTxt("txt-projects-modal-title", t.projectsModalTitle);
+    setTxt("txt-export-json", t.exportJson);
+    setTxt("txt-import-json", t.importJson);
 
     const userDisplay = document.getElementById("user-display-name");
     if (userDisplay && (userDisplay.innerText === "Invitado Demo" || userDisplay.innerText === "Guest Demo")) {
@@ -458,4 +469,7 @@ function updateLanguageTexts() {
 
     const searchInput = document.getElementById("search-catalog");
     if (searchInput) searchInput.placeholder = t.searchPlaceholder;
+
+    const projectsModal = document.getElementById("projects-modal");
+    if (projectsModal && !projectsModal.classList.contains("hidden")) renderProjectsList();
 }
