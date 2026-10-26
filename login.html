@@ -28,78 +28,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
 
-    <style>
-        .bg-pattern-stitch {
-            background-color: #fef3c7;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 80 80'%3E%3Cg fill='%23b45309' fill-opacity='0.13'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
-            background-size: 88px 88px;
-        }
-        .dark .bg-pattern-stitch {
-            background-color: #020617;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 80 80'%3E%3Cg fill='%23fcd34d' fill-opacity='0.10'%3E%3Cpath d='M10 15 h16 v8 h-16 z M8 23 h20 v3 h-20 z M10 26 h3 v6 h-3 z M23 26 h3 v6 h-3 z'/%3E%3Cpath d='M52 12 h10 v8 h-10 z M52 20 h10 v2 h-10 z M54 22 h2 v8 h-2 z M58 22 h2 v8 h-2 z'/%3E%3Cpath d='M12 50 h14 v14 h-14 z M14 52 h10 v10 h-10 z M19 52 h1 v10 h-1 z M14 57 h10 v1 h-10 z'/%3E%3Cpath d='M48 50 h18 v6 h-18 z M46 54 h2 v10 h-2 z M66 54 h2 v10 h-2 z M48 58 h18 v4 h-18 z'/%3E%3C/g%3E%3C/svg%3E");
-            background-size: 88px 88px;
-        }
-        .auth-shell {
-            border-color: rgba(255,255,255,.8);
-            box-shadow: 0 32px 90px -38px rgba(69,26,3,.48), 0 12px 30px -20px rgba(120,53,15,.32);
-        }
-        .auth-visual {
-            isolation: isolate;
-            background-image: radial-gradient(circle at 78% 14%, rgba(255,251,235,.26), transparent 28%), linear-gradient(145deg,#f59e0b 0%,#d97706 52%,#92400e 100%);
-        }
-        .auth-visual::before,.auth-visual::after {
-            content:"";position:absolute;z-index:-1;border:1px solid rgba(255,251,235,.18);border-radius:999px;pointer-events:none;
-        }
-        .auth-visual::before { width:330px;height:330px;right:-170px;top:90px; }
-        .auth-visual::after { width:250px;height:250px;right:-130px;top:130px; }
-        .hero-kicker { letter-spacing:.16em; }
-        .hero-highlight { color:#fef3c7;text-shadow:0 8px 30px rgba(69,26,3,.22); }
-        .auth-input { box-shadow:inset 0 1px 2px rgba(15,23,42,.025); }
-        .auth-input:focus { box-shadow:0 0 0 4px rgba(245,158,11,.14); }
-        .auth-panel input:not([type="checkbox"]) { border-radius:16px; }
-        .auth-panel input:not([type="checkbox"]):focus { border-color:#f59e0b; }
-        .auth-panel label { letter-spacing:.01em; }
-        .preview-bed,.preview-desk,.preview-chair { transform-box:fill-box;transform-origin:center;animation-duration:16s;animation-timing-function:cubic-bezier(.45,0,.2,1);animation-iteration-count:infinite; }
-        .preview-bed { animation-name:bed-layout-cycle; }
-        .preview-desk { animation-name:desk-layout-cycle; }
-        .preview-chair { animation-name:chair-layout-cycle; }
-        .preview-symbol { opacity:0;transform-box:fill-box;transform-origin:center;animation:layout-symbol-cycle 12s linear infinite; }
-        .preview-symbol-1 { animation-delay:0s; }
-        .preview-symbol-2 { animation-delay:-9s; }
-        .preview-symbol-3 { animation-delay:-6s; }
-        .preview-symbol-4 { animation-delay:-3s; }
-        @keyframes bed-layout-cycle {
-            0%,12%,100% { transform:translate(0,0); }
-            25%,37% { transform:translate(-8px,4px); }
-            50%,62% { transform:translate(-3px,-6px); }
-            75%,87% { transform:translate(7px,2px); }
-        }
-        @keyframes desk-layout-cycle {
-            0%,12%,100% { transform:translate(0,0); }
-            25%,37% { transform:translate(4px,-3px); }
-            50%,62% { transform:translate(-7px,4px); }
-            75%,87% { transform:translate(3px,5px); }
-        }
-        @keyframes chair-layout-cycle {
-            0%,12%,100% { transform:translate(0,0); }
-            25%,37% { transform:translate(-6px,4px); }
-            50%,62% { transform:translate(5px,-4px); }
-            75%,87% { transform:translate(-2px,5px); }
-        }
-        @keyframes layout-symbol-cycle {
-            0% { opacity:0;transform:scale(.7); }
-            5%,20% { opacity:1;transform:scale(1); }
-            25%,100% { opacity:0;transform:scale(.7); }
-        }
-        .auth-visual:hover .preview-bed,.auth-visual:hover .preview-desk,.auth-visual:hover .preview-chair,.auth-visual:hover .preview-symbol { animation-play-state:paused; }
-        .page-hidden .preview-bed,.page-hidden .preview-desk,.page-hidden .preview-chair,.page-hidden .preview-symbol { animation-play-state:paused; }
-        @media (prefers-reduced-motion: reduce) {
-            *,*::before,*::after { scroll-behavior:auto !important;transition-duration:.01ms !important;animation-duration:.01ms !important; }
-            .preview-bed,.preview-desk,.preview-chair,.preview-symbol { animation:none !important; }
-            .preview-symbol { opacity:0 !important; }
-            .preview-symbol-1 { opacity:1 !important; }
-        }
-    </style>
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body class="bg-pattern-stitch min-h-screen flex items-start md:items-center justify-center p-3 md:p-8 select-none transition-colors duration-300">
 
