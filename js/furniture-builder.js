@@ -643,6 +643,14 @@ function createDetailedFurniture(item) {
         verticalSpoke.position.set(0, h / 2, 0.022);
         group.add(verticalSpoke);
     }
++    if (id === "ventana_esquina") {
+        const backCrossbar = new THREE.Mesh(new THREE.BoxGeometry(w * 0.9, 0.025, 0.03), Materials.whiteFrame);
+        backCrossbar.position.set(0, h * 0.58, -l / 2);
+        group.add(backCrossbar);
+        const sideCrossbar = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.025, l * 0.9), Materials.whiteFrame);
+        sideCrossbar.position.set(-w / 2, h * 0.58, 0);
+        group.add(sideCrossbar);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
