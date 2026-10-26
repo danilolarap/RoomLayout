@@ -440,11 +440,6 @@ function createDetailedFurniture(item) {
         centerInlay.userData.noShadow = true;
         group.add(centerInlay);
     }
-    if (id === "armario_4p") {
-        const crownRail = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.035, 0.025), Materials.goldMetal);
-        crownRail.position.set(0, h * 0.91, l / 2 + 0.025);
-        group.add(crownRail);
-    }
     if (id === "escritorio_l") {
         const drawerUnit = new THREE.Mesh(new THREE.BoxGeometry(w * 0.22, h * 0.26, l * 0.24), Materials.darkNogal);
         drawerUnit.position.set(w * 0.29, h * 0.61, -l * 0.25);
