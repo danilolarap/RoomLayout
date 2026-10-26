@@ -584,6 +584,16 @@ function createDetailedFurniture(item) {
             }
         }
     }
++    if (id === "banco_plano") {
+        [-1, 1].forEach(side => {
+            const seam = new THREE.Mesh(new THREE.BoxGeometry(w * 0.72, 0.008, 0.012), Materials.chromeMetal);
+            seam.position.set(side * w * 0.08, h + 0.002, 0);
+            group.add(seam);
+        });
+        const sideBadge = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.035, 0.012), Materials.amberFabric);
+        sideBadge.position.set(w * 0.48, h * 0.78, l * 0.25);
+        group.add(sideBadge);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
