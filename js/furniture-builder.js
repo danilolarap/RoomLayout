@@ -42,7 +42,7 @@ function createDetailedFurniture(item) {
         for (let i = 0; i < numDoors; i++) {
             const posX = -w * 0.48 + doorW / 2 + i * doorW;
             const door = new THREE.Mesh(new THREE.BoxGeometry(doorW * 0.96, h * 0.94, 0.02), Materials.darkNogal);
-            door.position.set(posX, h / 2, l / 2 + 0.01);
+            door.position.set(posX, h / 2, l / 2 + 0.022);
             group.add(door);
 
             const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.22, 12), Materials.chromeMetal);
@@ -437,6 +437,7 @@ function createDetailedFurniture(item) {
     if (id === "armario_3p") {
         const centerInlay = new THREE.Mesh(new THREE.BoxGeometry(w * 0.012, h * 0.84, 0.008), Materials.goldMetal);
         centerInlay.position.set(0, h / 2, l / 2 + 0.025);
+        centerInlay.userData.noShadow = true;
         group.add(centerInlay);
     }
     if (id === "armario_4p") {
@@ -653,8 +654,8 @@ function createDetailedFurniture(item) {
     }
     group.traverse(child => {
         if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
+            child.castShadow = !child.userData?.noShadow;
+            child.receiveShadow = !child.userData?.noShadow;
         }
     });
 
