@@ -439,6 +439,11 @@ function createDetailedFurniture(item) {
         centerInlay.position.set(0, h / 2, l / 2 + 0.025);
         group.add(centerInlay);
     }
++    if (id === "armario_4p") {
+        const crownRail = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.035, 0.025), Materials.goldMetal);
+        crownRail.position.set(0, h * 0.91, l / 2 + 0.025);
+        group.add(crownRail);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
