@@ -733,6 +733,38 @@ function createDetailedFurniture(item) {
             group.add(foot);
         }));
     }
+    if (id === "librero") {
+        const sidePanelGeometry = new THREE.BoxGeometry(0.045, h, l);
+        [-1, 1].forEach(side => {
+            const panel = new THREE.Mesh(sidePanelGeometry, Materials.darkNogal);
+            panel.position.set(side * (w / 2 - 0.0225), h / 2, 0);
+            group.add(panel);
+        });
+
+        const backPanel = new THREE.Mesh(new THREE.BoxGeometry(w * 0.94, h * 0.96, 0.018), Materials.cherryWood);
+        backPanel.position.set(0, h / 2, -l / 2 + 0.009);
+        group.add(backPanel);
+
+        for (let shelfIndex = 0; shelfIndex <= 4; shelfIndex++) {
+            const shelfY = h * (0.08 + shelfIndex * 0.18);
+            const shelf = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.035, l * 0.98), Materials.oakWood);
+            shelf.position.set(0, shelfY, 0);
+            group.add(shelf);
+
+            if (shelfIndex < 4) {
+                for (let bookIndex = 0; bookIndex < 3; bookIndex++) {
+                    const bookWidth = w * 0.13;
+                    const bookHeight = h * (0.09 + (bookIndex % 2) * 0.025);
+                    const book = new THREE.Mesh(
+                        new THREE.BoxGeometry(bookWidth, bookHeight, l * 0.62),
+                        [Materials.blueFabric, Materials.amberFabric, Materials.emeraldFabric][bookIndex]
+                    );
+                    book.position.set(-w * 0.3 + bookIndex * w * 0.16, shelfY + bookHeight / 2 + 0.02, l * 0.08);
+                    group.add(book);
+                }
+            }
+        }
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;
