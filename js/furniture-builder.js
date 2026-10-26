@@ -504,6 +504,14 @@ function createDetailedFurniture(item) {
         statusLight.position.set(w * 0.44, h * 0.29, 0.018);
         group.add(statusLight);
     }
++    if (id === "mouse") {
+        const wheel = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.018, 0.035), Materials.chromeMetal);
+        wheel.position.set(0, 0.029, -l * 0.12);
+        group.add(wheel);
+        const buttonSeam = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.013, 0.06), Materials.darkPlastic);
+        buttonSeam.position.set(0, 0.027, -0.025);
+        group.add(buttonSeam);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
