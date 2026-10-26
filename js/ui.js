@@ -1,7 +1,7 @@
 // js/ui.js - Manejo de la Interfaz General, Idiomas, Exportación PNG y Proyectos
 
 window.currentLang = "es";
-window.currentProjectId = null;
+
 
 const i18n = {
     es: {
