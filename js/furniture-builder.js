@@ -538,6 +538,17 @@ function createDetailedFurniture(item) {
         piping.position.set(0, h * 0.42, l * 0.37);
         group.add(piping);
     }
++    if (id === "sofa_2p") {
+        [-1, 1].forEach(side => {
+            const accentPillow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.19, h * 0.18, l * 0.16), Materials.amberFabric);
+            accentPillow.position.set(side * w * 0.29, h * 0.57, -l * 0.29);
+            accentPillow.rotation.z = side * -0.1;
+            group.add(accentPillow);
+        });
+        const centerSeam = new THREE.Mesh(new THREE.BoxGeometry(0.012, h * 0.18, 0.012), Materials.darkNogal);
+        centerSeam.position.set(0, h * 0.3, l * 0.39);
+        group.add(centerSeam);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
