@@ -881,14 +881,14 @@ function createDetailedFurniture(item) {
             group.add(tieback);
         });
 
-        const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, w * 1.08, 6), Materials.darkNogal);
+        const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, w * 0.94, 6), Materials.darkNogal);
         rod.rotation.z = Math.PI / 2;
         rod.position.set(0, h * 0.98, 0);
         group.add(rod);
 
         [-1, 1].forEach(side => {
             const finial = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 5), Materials.goldMetal);
-            finial.position.set(side * w * 0.56, h * 0.98, 0);
+            finial.position.set(side * w * 0.47, h * 0.98, 0);
             group.add(finial);
         });
     }
