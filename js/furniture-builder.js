@@ -470,6 +470,19 @@ function createDetailedFurniture(item) {
             group.add(arm);
         });
     }
++    if (id === "laptop") {
+        const keyGeometry = new THREE.BoxGeometry(w * 0.11, 0.008, l * 0.055);
+        for (let row = 0; row < 2; row++) {
+            for (let column = 0; column < 4; column++) {
+                const key = new THREE.Mesh(keyGeometry, Materials.blackMetal);
+                key.position.set(-w * 0.3 + column * w * 0.2, 0.018, l * 0.06 + row * l * 0.09);
+                group.add(key);
+            }
+        }
+        const trackpad = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, 0.004, l * 0.14), Materials.chromeMetal);
+        trackpad.position.set(0, 0.018, l * 0.24);
+        group.add(trackpad);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
