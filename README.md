@@ -1,62 +1,105 @@
 # RoomLayout
 
-**El desorden organizándose.** RoomLayout es un simulador web para planear habitaciones en 3D, acomodar muebles y observar cómo cambia la iluminación solar a lo largo del día.
+## Descripción General
 
-## Funciones
+RoomLayout es una aplicación web interactiva para planear y visualizar habitaciones en 3D. Su interfaz permite distribuir muebles, ajustar su posición y acabados, y observar la incidencia de la luz solar en distintos momentos del día.
 
-- Vista 3D interactiva y vista superior de la habitación.
-- Catálogo de muebles organizado por categorías.
-- Colocación, movimiento, rotación y ajuste de altura de los objetos.
-- Personalización de color con vista previa en tiempo real.
-- Simulación de la trayectoria solar y de las sombras.
-- Indicadores de espacio y análisis de distribución.
-- Interfaz en español e inglés.
-- Guardado y carga de diseños, además de importación y exportación JSON.
+El proyecto combina una escena creada con Three.js, un catálogo de objetos low-poly y herramientas para guardar, cargar y exportar diseños. La interfaz está disponible en español e inglés.
 
-## Ejecutar localmente
+**Eslogan:** El desorden organizándose.
 
-El proyecto no necesita instalar dependencias ni compilarse. Desde la carpeta del proyecto, inicia un servidor estático:
+---
 
-```powershell
-python -m http.server 8000
-```
+## Características Técnicas
 
-Abre [http://localhost:8000](http://localhost:8000). La página principal conduce al inicio de sesión; también puedes entrar en modo invitado.
+* **Visualización 3D y edición de espacios:**
+  * Escena interactiva con vistas isométrica y superior.
+  * Ajuste del ancho y largo de la habitación.
+  * Colocación, desplazamiento, rotación y elevación de los muebles.
+  * Modelos low-poly y materiales con texturas procedurales.
+* **Catálogo de mobiliario:**
+  * Objetos distribuidos en categorías como dormitorio, oficina, fitness, iluminación, almacenamiento, plantas y decoración.
+  * Búsqueda de objetos y dimensiones visibles en sus tarjetas.
+* **Personalización:**
+  * Cambio de color en tiempo real para las superficies principales, conservando texturas y acabados como metales, cristales y pantallas.
+* **Luz solar y análisis del espacio:**
+  * Simulación horaria con una esfera solar sincronizada con la luz direccional y sus sombras.
+  * Métricas de área ocupada y libre.
+  * Análisis de colisiones, circulación y posibles problemas de distribución.
+* **Proyectos e idioma:**
+  * Guardado local de usuarios y diseños mediante IndexedDB.
+  * Importación y exportación de diseños en formato JSON.
+  * Interfaz traducible entre español e inglés y temas claro y oscuro.
 
-Three.js, OrbitControls, Tailwind CSS, Font Awesome y Dexie se cargan desde CDN, por lo que se necesita conexión a internet para cargar esas bibliotecas.
+---
 
-## Publicar en Vercel
+## Tecnologías Utilizadas
 
-1. Importa `danilolarap/RoomLayout` desde GitHub en Vercel.
-2. Selecciona **Other** como framework preset.
-3. Deja vacíos el comando de build y el directorio de salida: el sitio sirve directamente los archivos estáticos del repositorio.
-4. Despliega el proyecto. La configuración de `vercel.json` habilita URLs limpias y cabeceras básicas para las respuestas.
+* **Motor 3D:** Three.js r128, WebGL, `OrbitControls` y sombras `PCFSoftShadowMap`.
+* **Interfaz:** HTML5, CSS3, Tailwind CSS y Font Awesome.
+* **Almacenamiento local:** Dexie.js sobre IndexedDB y `localStorage` para la sesión del navegador.
+* **Lógica de la aplicación:** JavaScript del lado del cliente.
+* **Bibliotecas externas:** se cargan desde CDN; se requiere conexión a internet para utilizarlas.
 
-## Datos del navegador
+---
 
-Las cuentas y los diseños se almacenan en IndexedDB en el navegador actual. No hay un servicio de cuentas ni sincronización entre dispositivos configurado en este proyecto; exporta tus diseños a JSON para conservarlos o moverlos.
-
-## Estructura
+## Estructura del Proyecto
 
 ```text
 RoomLayout/
-├── index.html            # Simulador 3D
-├── login.html            # Inicio de sesión y modo invitado
-├── css/styles.css        # Estilos adicionales
+├── css/
+│   └── styles.css              # Estilos personalizados
 ├── js/
-│   ├── auth/             # Base local de cuentas y proyectos
-│   ├── catalog.js        # Catálogo y render de tarjetas
-│   ├── furniture-builder.js # Geometría low-poly de los muebles
-│   ├── materials.js      # Materiales y texturas
-│   ├── scene.js          # Escena 3D, controles y luz solar
-│   ├── inspector.js      # Edición del objeto seleccionado
-│   ├── ai-engine.js      # Análisis de distribución
-│   ├── ui.js             # Interfaz, traducciones y proyectos
-│   └── main.js           # Inicialización de la aplicación
-├── LICENSE
-└── vercel.json
+│   ├── auth/
+│   │   ├── auth-ui.js          # Interfaz de autenticación
+│   │   └── db.js               # Usuarios y diseños en IndexedDB
+│   ├── ai-engine.js            # Análisis de distribución
+│   ├── app.js                  # Textos y controles de la interfaz
+│   ├── catalog.js              # Catálogo y tarjetas de muebles
+│   ├── furniture-builder.js    # Geometría low-poly de los objetos
+│   ├── inspector.js            # Edición de objetos seleccionados
+│   ├── main.js                 # Inicialización y eventos principales
+│   ├── materials.js            # Materiales y texturas procedurales
+│   ├── scene.js                # Escena, cámara, luz solar y controles 3D
+│   └── ui.js                   # Interfaz, proyectos e internacionalización
+├── index.html                  # Simulador RoomLayout
+├── login.html                  # Acceso, registro y modo invitado
+├── LICENSE                     # Licencia MIT
+├── README.md                   # Documentación del repositorio
+└── vercel.json                 # Configuración de alojamiento estático
 ```
+
+---
+
+## Instalación y Uso
+
+1. Clonar el repositorio:
+
+   ```bash
+   git clone https://github.com/danilolarap/RoomLayout.git
+   cd RoomLayout
+   ```
+
+2. Iniciar un servidor estático desde la carpeta del proyecto:
+
+   ```bash
+   python -m http.server 8000
+   ```
+
+3. Abrir [http://localhost:8000](http://localhost:8000) en el navegador. La página principal conduce a `login.html`, donde puedes iniciar sesión, crear una cuenta local o entrar como invitado.
+
+No se requiere instalación de paquetes ni un paso de compilación. Para desplegar en Vercel, importa el repositorio y selecciona **Other** como preset; deja vacíos los comandos de build y el directorio de salida. La configuración estática se encuentra en `vercel.json`.
+
+### Almacenamiento
+
+Las cuentas y los proyectos se guardan en el almacenamiento local del navegador y no se sincronizan entre dispositivos. Usa la exportación JSON para guardar una copia o trasladar un diseño.
+
+---
+
+## Autor
+
+Desarrollado por [Danilo Lara](https://github.com/danilolarap).
 
 ## Licencia
 
-Este proyecto se distribuye bajo la licencia MIT. Consulta [LICENSE](LICENSE).
+Este proyecto se distribuye bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para ver sus términos.
