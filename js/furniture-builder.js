@@ -844,6 +844,25 @@ function createDetailedFurniture(item) {
             group.add(motif);
         }
     }
+    if (id === "cesto_ropa") {
+        const basket = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.4, w * 0.32, h * 0.78, 8, 1, true), Materials.oakWood);
+        basket.position.y = h * 0.43;
+        group.add(basket);
+
+        for (let band = 0; band < 3; band++) {
+            const weaveBand = new THREE.Mesh(new THREE.TorusGeometry(w * (0.34 + band * 0.025), 0.009, 4, 8), Materials.darkNogal);
+            weaveBand.position.y = h * (0.2 + band * 0.2);
+            group.add(weaveBand);
+        }
+
+        const rim = new THREE.Mesh(new THREE.TorusGeometry(w * 0.4, 0.018, 4, 8), Materials.darkNogal);
+        rim.position.y = h * 0.82;
+        group.add(rim);
+
+        const towel = new THREE.Mesh(new THREE.BoxGeometry(w * 0.46, h * 0.12, l * 0.32), Materials.whiteSheet);
+        towel.position.set(0, h * 0.84, 0);
+        group.add(towel);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;
