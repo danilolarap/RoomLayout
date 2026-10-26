@@ -633,6 +633,16 @@ function createDetailedFurniture(item) {
         transom.position.set(0, h * 0.68, 0.021);
         group.add(transom);
     }
++    if (id === "ventana_circular") {
+        const spokeGeometry = new THREE.BoxGeometry(w * 0.82, 0.022, 0.025);
+        const horizontalSpoke = new THREE.Mesh(spokeGeometry, Materials.whiteFrame);
+        horizontalSpoke.position.set(0, h / 2, 0.022);
+        group.add(horizontalSpoke);
+        const verticalSpoke = new THREE.Mesh(spokeGeometry, Materials.whiteFrame);
+        verticalSpoke.rotation.z = Math.PI / 2;
+        verticalSpoke.position.set(0, h / 2, 0.022);
+        group.add(verticalSpoke);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = true;
