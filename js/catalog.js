@@ -73,7 +73,8 @@ const FURNITURE_CATALOG = [
             { id: "planta_interior", name: { es: "Planta de Interior", en: "Indoor Plant" }, w: 0.45, l: 0.45, h: 1.0, color: 0x059669, icon: "fa-seedling" },
             { id: "alfombra", name: { es: "Alfombra", en: "Area Rug" }, w: 1.6, l: 2.0, h: 0.03, color: 0xd97706, icon: "fa-rug" },
             { id: "cesto_ropa", name: { es: "Cesto de Ropa", en: "Laundry Basket" }, w: 0.4, l: 0.4, h: 0.6, color: 0x92400e, icon: "fa-basket-shopping" },
-            { id: "cortinas", name: { es: "Cortinas", en: "Curtains" }, w: 1.4, l: 0.08, h: 1.8, color: 0xf59e0b, icon: "fa-scroll" }
+            { id: "cortinas", name: { es: "Cortinas", en: "Curtains" }, w: 1.4, l: 0.08, h: 1.8, color: 0xf59e0b, icon: "fa-scroll" },
+            { id: "lampara_mesa", name: { es: "L\u00e1mpara de Mesa", en: "Table Lamp" }, w: 0.25, l: 0.25, h: 0.45, color: 0xfbbf24, icon: "fa-lightbulb" }
         ]
     }
 ];

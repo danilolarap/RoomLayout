@@ -892,6 +892,23 @@ function createDetailedFurniture(item) {
             group.add(finial);
         });
     }
+    if (id === "lampara_mesa") {
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.4, w * 0.46, 0.035, 6), Materials.darkNogal);
+        base.position.y = 0.0175;
+        group.add(base);
+
+        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.022, h * 0.48, 6), Materials.goldMetal);
+        stem.position.y = h * 0.3;
+        group.add(stem);
+
+        const shade = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.22, w * 0.46, h * 0.34, 6), Materials.amberFabric);
+        shade.position.y = h * 0.78;
+        group.add(shade);
+
+        const diffuser = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.2, w * 0.4, 0.014, 6), Materials.whiteSheet);
+        diffuser.position.y = h * 0.61;
+        group.add(diffuser);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;
