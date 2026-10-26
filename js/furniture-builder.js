@@ -707,6 +707,32 @@ function createDetailedFurniture(item) {
         sideCrossbar.position.set(-w / 2, h * 0.58, 0);
         group.add(sideCrossbar);
     }
+    if (id === "comoda") {
+        const carcass = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.86, l), Materials.oakWood);
+        carcass.position.y = h * 0.43;
+        group.add(carcass);
+
+        const top = new THREE.Mesh(new THREE.BoxGeometry(w * 1.04, h * 0.06, l * 1.04), Materials.darkNogal);
+        top.position.y = h * 0.89;
+        group.add(top);
+
+        for (let drawerIndex = 0; drawerIndex < 3; drawerIndex++) {
+            const drawerY = h * (0.18 + drawerIndex * 0.23);
+            const drawer = new THREE.Mesh(new THREE.BoxGeometry(w * 0.84, h * 0.17, 0.018), Materials.cherryWood);
+            drawer.position.set(0, drawerY, l / 2 + 0.01);
+            group.add(drawer);
+
+            const pull = new THREE.Mesh(new THREE.SphereGeometry(0.022, 6, 5), Materials.goldMetal);
+            pull.position.set(0, drawerY, l / 2 + 0.025);
+            group.add(pull);
+        }
+
+        [-1, 1].forEach(xSide => [-1, 1].forEach(zSide => {
+            const foot = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.08, 0.055), Materials.darkNogal);
+            foot.position.set(xSide * w * 0.42, 0.04, zSide * l * 0.38);
+            group.add(foot);
+        }));
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;

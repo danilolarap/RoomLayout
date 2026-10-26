@@ -62,6 +62,12 @@ const FURNITURE_CATALOG = [
             { id: "ventana_circular", name: { es: "Ventana Circular", en: "Circular Window" }, w: 0.9, l: 0.1, h: 0.9, color: 0x38bdf8, icon: "fa-circle-dot" },
             { id: "ventana_esquina", name: { es: "Ventanal de Esquina L", en: "Corner L-Window" }, w: 1.2, l: 1.2, h: 1.4, color: 0x38bdf8, icon: "fa-border-all" }
         ]
+    },
+    {
+        category: { es: "Organizaci\u00f3n y Confort", en: "Storage & Comfort" },
+        items: [
+            { id: "comoda", name: { es: "C\u00f3moda", en: "Dresser" }, w: 1.2, l: 0.45, h: 0.9, color: 0x92400e, icon: "fa-box-archive" }
+        ]
     }
 ];
 
