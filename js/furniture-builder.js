@@ -415,7 +415,10 @@ function createDetailedFurniture(item) {
         display.position.set(0, h / 2, l / 2 + 0.005);
         group.add(display);
 
-    } else {
+    } else if (![
+        "comoda", "librero", "lampara_pie", "espejo_cuerpo", "planta_interior",
+        "alfombra", "cesto_ropa", "cortinas", "lampara_mesa", "zapatero"
+    ].includes(id)) {
         const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, l), Materials.oakWood);
         body.position.y = h / 2;
         group.add(body);
@@ -725,6 +728,10 @@ function createDetailedFurniture(item) {
             const pull = new THREE.Mesh(new THREE.SphereGeometry(0.022, 6, 5), Materials.goldMetal);
             pull.position.set(0, drawerY, l / 2 + 0.025);
             group.add(pull);
+
+            const drawerSeam = new THREE.Mesh(new THREE.BoxGeometry(w * 0.86, 0.012, 0.01), Materials.darkNogal);
+            drawerSeam.position.set(0, drawerY - h * 0.1, l / 2 + 0.021);
+            group.add(drawerSeam);
         }
 
         [-1, 1].forEach(xSide => [-1, 1].forEach(zSide => {
@@ -750,6 +757,10 @@ function createDetailedFurniture(item) {
             const shelf = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.035, l * 0.98), Materials.oakWood);
             shelf.position.set(0, shelfY, 0);
             group.add(shelf);
+
+            const shelfEdge = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.012, 0.018), Materials.cherryWood);
+            shelfEdge.position.set(0, shelfY + 0.018, l / 2 - 0.018);
+            group.add(shelfEdge);
 
             if (shelfIndex < 4) {
                 for (let bookIndex = 0; bookIndex < 3; bookIndex++) {
