@@ -67,7 +67,8 @@ const FURNITURE_CATALOG = [
         category: { es: "Organizaci\u00f3n y Confort", en: "Storage & Comfort" },
         items: [
             { id: "comoda", name: { es: "C\u00f3moda", en: "Dresser" }, w: 1.2, l: 0.45, h: 0.9, color: 0x92400e, icon: "fa-box-archive" },
-            { id: "librero", name: { es: "Librero", en: "Bookcase" }, w: 0.8, l: 0.3, h: 1.8, color: 0x78350f, icon: "fa-book" }
+            { id: "librero", name: { es: "Librero", en: "Bookcase" }, w: 0.8, l: 0.3, h: 1.8, color: 0x78350f, icon: "fa-book" },
+            { id: "lampara_pie", name: { es: "L\u00e1mpara de Pie", en: "Floor Lamp" }, w: 0.35, l: 0.35, h: 1.6, color: 0xf59e0b, icon: "fa-lightbulb" }
         ]
     }
 ];

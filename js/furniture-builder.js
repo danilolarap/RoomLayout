@@ -765,6 +765,23 @@ function createDetailedFurniture(item) {
             }
         }
     }
+    if (id === "lampara_pie") {
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.16, 0.045, 6), Materials.blackMetal);
+        base.position.y = 0.0225;
+        group.add(base);
+
+        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.024, h * 0.78, 6), Materials.goldMetal);
+        stem.position.y = 0.045 + h * 0.39;
+        group.add(stem);
+
+        const shade = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.18, h * 0.14, 6), Materials.amberFabric);
+        shade.position.y = h * 0.88;
+        group.add(shade);
+
+        const diffuser = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, 0.018, 6), Materials.whiteSheet);
+        diffuser.position.y = h * 0.81;
+        group.add(diffuser);
+    }
     group.traverse(child => {
         if (child.isMesh) {
             child.castShadow = !child.userData?.noShadow;
