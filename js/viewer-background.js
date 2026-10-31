@@ -163,4 +163,30 @@
         document.addEventListener("visibilitychange", () => { lastFrame = 0; });
     }
 
+    function render(webgl, roomCamera) {
+        if (!skyScene) return false;
+        const now = performance.now();
+        const delta = lastFrame ? Math.min((now - lastFrame) / 1000, .1) : 0;
+        lastFrame = now;
+        if (!motion.matches && !document.hidden) elapsed += delta;
+        if (motion.matches) blend = night;
+        else blend += Math.sign(night - blend) * Math.min(Math.abs(night - blend), delta / 1.8);
+        if (dirty || (now - lastPaint > 125 && (!motion.matches || Math.abs(blend - night) > .001))) {
+            window.ViewerEnvironment.update(current, palette(current, blend), blend, elapsed, motion.matches);
+            paint(surface, current, blend, elapsed); texture.needsUpdate = true; dirty = false; lastPaint = now;
+        }
+        // Only orientation/projection are shared; the panorama has no translation.
+        skyCamera.quaternion.copy(roomCamera.quaternion);
+        skyCamera.projectionMatrix.copy(roomCamera.projectionMatrix);
+        skyCamera.projectionMatrixInverse.copy(roomCamera.projectionMatrixInverse);
+        webgl.render(skyScene, skyCamera); webgl.clearDepth();
+        return true;
+    }
+
+    function resizeRoom(width, length) {
+        window.ViewerEnvironment.resizeRoom(width, length);
+        dirty = true;
+    }
+
+    window.ViewerBackground = { init, render, setLanguage, resizeRoom };
 })();
