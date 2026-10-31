@@ -133,4 +133,34 @@
         if (dialog.open) renderGallery();
     }
 
+    function init({ scene }) {
+        if (skyScene) return;
+        window.ViewerEnvironment.init(scene);
+        window.ViewerEnvironment.resizeRoom(
+            Number(document.getElementById("room-width").value) || 4,
+            Number(document.getElementById("room-length").value) || 3.5
+        );
+        surface = document.createElement("canvas"); surface.width = 2048; surface.height = 1024;
+        texture = new THREE.CanvasTexture(surface);
+        texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter; texture.magFilter = THREE.LinearFilter;
+        texture.wrapS = THREE.RepeatWrapping;
+        skyScene = new THREE.Scene(); skyCamera = new THREE.PerspectiveCamera(45, 1, .1, 100);
+        skyScene.add(new THREE.Mesh(new THREE.SphereGeometry(50, 64, 32), new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide, depthWrite: false, toneMapped: false })));
+        try { const stored = localStorage.getItem(storageKey); if (Object.hasOwn(themes, stored)) current = stored; } catch { /* Use calm. */ }
+        dialog = document.getElementById("background-gallery"); launcher = document.getElementById("viewer-background-open");
+        setTheme(current); setLanguage(window.currentLang);
+        launcher.addEventListener("click", () => {
+            pending = current; previewNight = document.documentElement.classList.contains("dark");
+            renderGallery(); dialog.showModal();
+        });
+        for (const id of ["background-cancel", "background-gallery-close"]) document.getElementById(id).addEventListener("click", () => dialog.close());
+        document.getElementById("background-apply").addEventListener("click", () => { setTheme(pending); dialog.close(); });
+        for (const [id, isNight] of [["background-preview-day", false], ["background-preview-night", true]]) document.getElementById(id).addEventListener("click", () => { previewNight = isNight; renderGallery(); });
+        dialog.addEventListener("close", () => launcher.focus());
+        dialog.addEventListener("click", event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
+        new MutationObserver(() => { night = document.documentElement.classList.contains("dark") ? 1 : 0; dirty = true; window.updateCelestialMode?.(Boolean(night)); }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+        motion.addEventListener("change", () => { dirty = true; });
+        document.addEventListener("visibilitychange", () => { lastFrame = 0; });
+    }
+
 })();
