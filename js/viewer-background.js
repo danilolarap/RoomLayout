@@ -32,4 +32,12 @@
 
     const palette = (theme, darkness) => themes[theme].day.map((value, i) => color(value, themes[theme].night[i], darkness));
 
+    // All terrain frequencies are integers: longitude 0 and 360 meet seamlessly.
+    function paint(canvas, theme, darkness, time = 0) {
+        const ctx = canvas.getContext("2d"), w = canvas.width, h = canvas.height;
+        const p = palette(theme, darkness);
+        const sky = ctx.createLinearGradient(0, 0, 0, h);
+        sky.addColorStop(0, p[0]); sky.addColorStop(.5, p[1]); sky.addColorStop(1, p[2]);
+        ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+    }
 })();
