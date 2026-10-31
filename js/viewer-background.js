@@ -39,5 +39,15 @@
         const sky = ctx.createLinearGradient(0, 0, 0, h);
         sky.addColorStop(0, p[0]); sky.addColorStop(.5, p[1]); sky.addColorStop(1, p[2]);
         ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+        // Small, slow moving clouds wrap across the panorama's seam.
+        ctx.fillStyle = darkness > .5 ? "#afbecd" : "#fffdf3";
+        ctx.globalAlpha = .23 - darkness * .13;
+        for (let i = 0; i < 12; i++) {
+            const x = ((i * .173 + time * .0007) % 1) * w, y = (.45 + (i % 4) * .04) * h;
+            for (const offset of [-w, 0, w]) {
+                ctx.beginPath(); ctx.ellipse(x + offset, y, w * .025, h * .009, 0, 0, TAU);
+                ctx.ellipse(x + offset - w * .006, y - h * .005, w * .014, h * .014, 0, 0, TAU); ctx.fill();
+            }
+        }
     }
 })();
