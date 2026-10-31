@@ -123,6 +123,10 @@
                         part("trunk", "path", .7 + j * .24, .13, -.4, .035, .26, .035);
                         part("ball", "petal", .7 + j * .24, .27, -.4, .15, .07, .15);
                     }
+                } else if (theme === "sakura") {
+                    broadleaf(size, true); boulder(.9, .6, .45);
+                    if (i % 4 === 0) lantern(-1.1, .2);
+                    for (let j = 0; j < 6; j++) part("ball", "petalLight", Math.sin(j * 2) * .8, .01, Math.cos(j * 2) * .8, .04, .009, .025);
                 }
             });
         }
