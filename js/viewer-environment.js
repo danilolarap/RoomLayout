@@ -42,5 +42,18 @@
                 : new THREE.MeshStandardMaterial({ roughness: key === "water" ? .38 : 1, metalness: 0, flatShading: true }));
             return materials.get(key);
         };
+        const transform = new THREE.Object3D(), origin = new THREE.Vector3();
+        let angle = 0;
+        const at = (x, z, rotation, draw) => {
+            origin.set(x, 0, z); angle = rotation; draw(); origin.set(0, 0, 0); angle = 0;
+        };
+        function part(shape, tint, x, y, z, sx, sy, sz, rx = 0, ry = 0, rz = 0) {
+            const key = `${shape}:${tint}`;
+            if (!buckets.has(key)) buckets.set(key, { geometry: geometries[shape], material: material(tint), matrices: [] });
+            transform.position.set(origin.x + x * Math.cos(angle) + z * Math.sin(angle), y, origin.z - x * Math.sin(angle) + z * Math.cos(angle));
+            transform.rotation.set(rx, ry + angle, rz);
+            transform.scale.set(sx, sy, sz); transform.updateMatrix();
+            buckets.get(key).matrices.push(transform.matrix.clone());
+        }
     }
 })();
