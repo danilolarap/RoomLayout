@@ -214,5 +214,29 @@
             mesh.receiveShadow = true;
             root.add(mesh);
         }
+        const drifting = ["christmas", "aurora", "halloween", "sakura"].includes(theme);
+        const glowing = ["forest", "fantasy"].includes(theme);
+        let particles, particleGeometry, particleMaterial, particleTexture, lastTime, darkAmount = 0;
+        const seeds = [];
+        if (drifting || glowing) {
+            const count = theme === "christmas" ? 40 : 24;
+            particleGeometry = new THREE.BufferGeometry();
+            particleGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+            const sprite = document.createElement("canvas"); sprite.width = sprite.height = 32;
+            const ctx = sprite.getContext("2d");
+            const glow = ctx.createRadialGradient(16, 16, 1, 16, 16, 15);
+            glow.addColorStop(0, "#ffffffff"); glow.addColorStop(.4, "#ffffffb0"); glow.addColorStop(1, "#ffffff00");
+            ctx.fillStyle = glow; ctx.fillRect(0, 0, 32, 32);
+            particleTexture = new THREE.CanvasTexture(sprite);
+            particleMaterial = new THREE.PointsMaterial({ map: particleTexture, size: glowing ? .07 : .055, transparent: true, opacity: .5, depthWrite: false, toneMapped: false });
+            particles = new THREE.Points(particleGeometry, particleMaterial);
+            particles.name = "environment-particles";
+            particles.frustumCulled = false;
+            root.add(particles);
+            for (let i = 0; i < count; i++) {
+                const a = i * 2.39996, radius = clearing + 1 + (i * .873) % 5;
+                seeds.push({ x: Math.sin(a) * radius, z: Math.cos(a) * radius, phase: (i * .793) % 4 });
+            }
+        }
     }
 })();
