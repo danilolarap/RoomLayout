@@ -115,6 +115,14 @@
                     if (i % 3 === 0) broadleaf(size);
                     else if (i % 3 === 1) { fence(.8); boulder(1.2, .5, .45); }
                     else { for (let j = 0; j < 9; j++) flower(Math.sin(j * 2.4) * 1.2, Math.cos(j * 2.4) * .7, .4, j % 2); }
+                } else if (theme === "forest") {
+                    pine(size * 1.15); broadleaf(size * .8);
+                    boulder(1.3, .3, .65);
+                    part("trunk", "bark", -.8, .17, .6, .2, 1.4, .2, 0, .3, Math.PI / 2);
+                    for (let j = 0; j < 3; j++) {
+                        part("trunk", "path", .7 + j * .24, .13, -.4, .035, .26, .035);
+                        part("ball", "petal", .7 + j * .24, .27, -.4, .15, .07, .15);
+                    }
                 }
             });
         }
