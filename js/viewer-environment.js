@@ -132,6 +132,17 @@
                     else pine(size, true);
                     if (i % 4 === 0) lantern(.8, .3);
                     part("ball", "snow", .9, .12, -.4, .8, .19, .55);
+                } else if (theme === "halloween") {
+                    part("trunk", "bark", 0, 1.12, 0, .1, 2.24, .1, 0, 0, -.08);
+                    for (const sign of [-1, 1]) part("trunk", "bark", sign * .35, 1.52, 0, .055, 1.1, .055, 0, 0, sign * -.75);
+                    for (let j = 0; j < 3; j++) {
+                        const x = .5 + j * .38, s = .22 + j % 2 * .08;
+                        part("ball", "pumpkin", x, s * .7, .4, s, s * .8, s);
+                        part("trunk", "bark", x, s * 1.54, .4, .025, .12, .025);
+                        part("box", "light", x - .045, s * .8, .4 + s * .91, .025, .028, .018);
+                        part("box", "light", x + .045, s * .8, .4 + s * .91, .025, .028, .018);
+                    }
+                    if (i % 3 === 1) { fence(.75, true); lantern(-1, -.4); }
                 }
             });
         }
