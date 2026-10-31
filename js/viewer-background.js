@@ -10,5 +10,6 @@
         forest: { es: "Bosque", en: "Forest", day: ["#bbd4ca", "#e4ead4", "#91ad8d", "#b4c7a3", "#97b598", "#7ea48a", "#507b68", "#c5b79a"], night: ["#142c30", "#45605a", "#283e35", "#3c5d50", "#314f43", "#294539", "#1c352b", "#c4c09c"] },
         coast: { es: "Costa", en: "Coast", day: ["#afd9df", "#e7eee5", "#c7d5bf", "#a7d0ce", "#8cbfc1", "#a3cacc", "#699c8d", "#e4d4b4"], night: ["#1b304b", "#567b8d", "#526b72", "#3d677c", "#345b70", "#426c7c", "#304c59", "#a6b6ad"] },
         desert: { es: "Desierto", en: "Desert", day: ["#ccd5dd", "#f1dfc4", "#d8bd99", "#ddc6ad", "#d4b59c", "#cda98a", "#8e997b", "#b98d72"], night: ["#292b48", "#877083", "#665363", "#84637a", "#745a70", "#685367", "#404e4e", "#c59d8b"] },
+        sakura: { es: "Sakura", en: "Cherry blossom", day: ["#c6dce0", "#f4e5e5", "#b9c7ad", "#c5cfb9", "#b2c0aa", "#a3b89f", "#8a8878", "#e5b8cc"], night: ["#292b48", "#76677f", "#424c50", "#61616c", "#51595f", "#465158", "#3c3d48", "#a683a0"] },
     };
 })();
