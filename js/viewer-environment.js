@@ -238,5 +238,18 @@
                 seeds.push({ x: Math.sin(a) * radius, z: Math.cos(a) * radius, phase: (i * .793) % 4 });
             }
         }
+        function animate(time, reducedMotion) {
+            if (!particles || (lastTime === time && !reducedMotion)) return;
+            if (reducedMotion && lastTime !== undefined) return;
+            lastTime = time;
+            const values = particleGeometry.attributes.position.array;
+            seeds.forEach((seed, i) => {
+                values[i * 3] = seed.x + Math.sin(time * .18 + i) * .12;
+                values[i * 3 + 1] = glowing ? .5 + seed.phase * .3 + Math.sin(time * .3 + i) * .08 : .06 + 4 - (seed.phase + time * .12) % 4;
+                values[i * 3 + 2] = seed.z + Math.cos(time * .15 + i) * .09;
+            });
+            particleGeometry.attributes.position.needsUpdate = true;
+            if (glowing) particleMaterial.opacity = darkAmount * (.35 + Math.sin(time * .4) * .12);
+        }
     }
 })();
