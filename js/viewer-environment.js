@@ -106,5 +106,17 @@
             const z = roomLength / 2 + .45 + i * .56;
             part("disk", "path", roomWidth / 2 - .55 + Math.sin(i * .55) * .32, baseY, z, .26, .006, .2, 0, i * .47);
         }
+        for (let i = 0; i < 20; i++) {
+            const a = i / 20 * Math.PI * 2 + .17;
+            const radius = clearing + compactness * (4.5 + i % 3 * 2.5);
+            at(Math.sin(a) * radius, Math.cos(a) * radius, a + Math.PI, () => {
+                const size = .82 + i % 3 * .13;
+                if (theme === "calm") {
+                    if (i % 3 === 0) broadleaf(size);
+                    else if (i % 3 === 1) { fence(.8); boulder(1.2, .5, .45); }
+                    else { for (let j = 0; j < 9; j++) flower(Math.sin(j * 2.4) * 1.2, Math.cos(j * 2.4) * .7, .4, j % 2); }
+                }
+            });
+        }
     }
 })();
