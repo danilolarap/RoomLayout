@@ -207,5 +207,12 @@
                 part("box", "roof", 0, 2.65, 0, 3.1, .16, .32);
             });
         }
+        for (const bucket of buckets.values()) {
+            const mesh = new THREE.InstancedMesh(bucket.geometry, bucket.material, bucket.matrices.length);
+            bucket.matrices.forEach((matrix, i) => mesh.setMatrixAt(i, matrix));
+            mesh.instanceMatrix.needsUpdate = true;
+            mesh.receiveShadow = true;
+            root.add(mesh);
+        }
     }
 })();
