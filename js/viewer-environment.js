@@ -143,6 +143,19 @@
                         part("box", "light", x + .045, s * .8, .4 + s * .91, .025, .028, .018);
                     }
                     if (i % 3 === 1) { fence(.75, true); lantern(-1, -.4); }
+                } else if (theme === "desert") {
+                    if (i % 3 === 0) {
+                        part("rock", "mesa", 0, .7, 0, 1.2, 1, .85, 0, .4);
+                        boulder(1.1, .1, .5);
+                    } else {
+                        part("trunk", "leaf", 0, .8, 0, .13, 1.6, .13);
+                        for (const sign of [-1, 1]) {
+                            part("trunk", "leaf", sign * .22, .65, 0, .09, .43, .09, 0, 0, Math.PI / 2);
+                            part("trunk", "leaf", sign * .43, .88, 0, .09, .5, .09);
+                            part("ball", "leaf", sign * .43, 1.15, 0, .07, .09, .07);
+                        }
+                    }
+                    for (let j = 0; j < 3; j++) boulder(Math.sin(j * 3) + .4, Math.cos(j * 3), .18);
                 }
             });
         }
