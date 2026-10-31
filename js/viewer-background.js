@@ -98,4 +98,29 @@
         try { localStorage.setItem(storageKey, current); } catch { /* Optional visual preference. */ }
     }
 
+    function renderGallery() {
+        const grid = document.getElementById("background-theme-grid");
+        grid.replaceChildren();
+        for (const [id, theme] of Object.entries(themes)) {
+            const card = document.createElement("button");
+            card.type = "button"; card.className = "landscape-card"; card.dataset.theme = id;
+            card.setAttribute("aria-pressed", String(id === pending));
+            const canvas = document.createElement("canvas"); canvas.width = 640; canvas.height = 320;
+            window.ViewerEnvironment.drawPreview(canvas, id, palette(id, previewNight ? 1 : 0), previewNight ? 1 : 0);
+            canvas.setAttribute("aria-hidden", "true");
+            const name = document.createElement("span"); name.className = "landscape-card-name"; name.textContent = theme[language];
+            const check = document.createElement("span"); check.className = "landscape-card-check"; check.textContent = "✓"; check.setAttribute("aria-hidden", "true");
+            card.append(canvas, name, check);
+            card.addEventListener("click", () => {
+                pending = id;
+                for (const item of grid.children) item.setAttribute("aria-pressed", String(item === card));
+                document.getElementById("background-preview-name").textContent = theme[language];
+            });
+            grid.appendChild(card);
+        }
+        document.getElementById("background-preview-name").textContent = themes[pending][language];
+        document.getElementById("background-preview-day").setAttribute("aria-pressed", String(!previewNight));
+        document.getElementById("background-preview-night").setAttribute("aria-pressed", String(previewNight));
+    }
+
 })();
