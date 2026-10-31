@@ -13,4 +13,15 @@
         sakura: { es: "Sakura", en: "Cherry blossom", day: ["#c6dce0", "#f4e5e5", "#b9c7ad", "#c5cfb9", "#b2c0aa", "#a3b89f", "#8a8878", "#e5b8cc"], night: ["#292b48", "#76677f", "#424c50", "#61616c", "#51595f", "#465158", "#3c3d48", "#a683a0"] },
         aurora: { es: "Aurora", en: "Aurora", day: ["#b6d5db", "#e1e9e3", "#b7cfcb", "#b1c9d2", "#a6c1ca", "#b3cccf", "#658a8b", "#a9cdca"], night: ["#142c41", "#426975", "#45636e", "#3c596b", "#345464", "#436674", "#294b56", "#74bca9"] }
     };
+    const text = {
+        es: { title: "Elige tu paisaje", subtitle: "Un entorno animado de 360° que acompaña la perspectiva de tu habitación.", open: "Temas 360°", day: "Día", night: "Noche", cancel: "Cancelar", apply: "Usar tema", close: "Cerrar galería", preview: "Vista previa", hint: "Previsualiza el día o la noche. El visor seguirá tu modo claro u oscuro." },
+        en: { title: "Choose your landscape", subtitle: "An animated 360° environment that follows your room’s perspective.", open: "360° themes", day: "Day", night: "Night", cancel: "Cancel", apply: "Use theme", close: "Close gallery", preview: "Preview", hint: "Preview day or night. The viewer follows your light or dark mode." }
+    };
+    const TAU = Math.PI * 2;
+    let current = "calm", pending = current, language = "es", previewNight = false;
+    let dialog, launcher, texture, skyScene, skyCamera, surface;
+    let night = document.documentElement.classList.contains("dark") ? 1 : 0;
+    let blend = night, lastFrame = 0, lastPaint = -Infinity, elapsed = 0, dirty = true;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
 })();
