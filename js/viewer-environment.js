@@ -184,5 +184,13 @@
                 }
             });
         }
+        // Near-field details are low enough to leave the room easy to inspect.
+        for (let i = 0; i < 32; i++) {
+            const a = i * 2.39996, r = clearing + .6 + i % 4 * .28;
+            at(Math.sin(a) * r, Math.cos(a) * r, a, () => {
+                if (["calm", "forest", "sakura", "fantasy"].includes(theme)) flower(0, 0, .18 + i % 3 * .07, i % 2);
+                else boulder(0, 0, .13 + i % 3 * .08);
+            });
+        }
     }
 })();
