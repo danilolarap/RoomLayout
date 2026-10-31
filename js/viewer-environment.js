@@ -177,6 +177,10 @@
                         part("box", "stone", 0, 1.75, 0, 1.95, .28, .45);
                     }
                     for (let j = 0; j < 3; j++) flower(-.9 + j * .3, .8, .55, j % 2);
+                } else {
+                    pine(size, true); boulder(1.2, .3, .7);
+                    if (i === 6) cottage(.65, true);
+                    part("rock", "ice", -.7, .22, .3, .5, .38, .6, 0, i);
                 }
             });
         }
