@@ -156,6 +156,17 @@
                         }
                     }
                     for (let j = 0; j < 3; j++) boulder(Math.sin(j * 3) + .4, Math.cos(j * 3), .18);
+                } else if (theme === "coast") {
+                    part("trunk", "bark", 0, 1.2, 0, .1, 2.4, .1, 0, 0, -.12);
+                    for (let j = 0; j < 6; j++) {
+                        const b = j / 6 * Math.PI * 2;
+                        part("ball", "leaf", Math.sin(b) * .55, 2.35, Math.cos(b) * .55, .19, .11, .9, .12, b);
+                    }
+                    boulder(1.1, -.3, .55);
+                    if (i % 4 === 0) {
+                        part("box", "wood", -.8, .16, .4, 1.1, .11, .4, 0, .2);
+                        part("box", "petalLight", -.8, .27, .4, .9, .05, .3, 0, .2);
+                    }
                 }
             });
         }
