@@ -251,5 +251,36 @@
             particleGeometry.attributes.position.needsUpdate = true;
             if (glowing) particleMaterial.opacity = darkAmount * (.35 + Math.sin(time * .4) * .12);
         }
+        let lastColors = "";
+        function setPalette(colors, darkness) {
+            const key = colors.join() + darkness.toFixed(3);
+            if (key === lastColors) return;
+            lastColors = key;
+            darkAmount = darkness;
+            const c = (hex, other, amount) => new THREE.Color(hex).lerp(new THREE.Color(other), amount);
+            const groundColor = theme === "coast" ? c(colors[7], colors[2], .3) : new THREE.Color(colors[2]);
+            const palette = {
+                ground: groundColor, leaf: new THREE.Color(colors[6]), leafLight: c(colors[6], colors[3], .32),
+                bark: c("#80674f", "#3a3d4b", darkness), wood: c("#beab88", "#657080", darkness),
+                stone: c(colors[3], colors[6], .35), path: c(colors[1], colors[2], .55),
+                snow: c("#f0f2ee", "#a6bdcc", darkness), house: new THREE.Color(colors[7]),
+                roof: c(colors[6], "#504459", .25), petal: theme === "sakura" ? c("#e9afc8", "#a889b6", darkness) : c("#dab872", "#a99ec4", darkness),
+                petalLight: theme === "sakura" ? c("#f6d0df", "#bda6d0", darkness) : c("#f2e8cb", "#c1bdcf", darkness),
+                flowerCenter: c("#d7ad5c", "#b3a8c4", darkness), pumpkin: c("#c7894a", "#a26b42", darkness),
+                crystal: c("#a99bd6", "#8c99cf", darkness), crystalLight: c("#aed4d5", "#86bebd", darkness),
+                mesa: c("#bb9b80", "#83647a", darkness), ice: c("#b5d7dc", "#7eafbb", darkness),
+                shore: c(colors[7], colors[2], .18), water: c("#82b9be", "#4e839d", darkness),
+                gate: c("#b86f68", "#865e76", darkness), light: c("#c5b38d", "#ffcf83", darkness)
+            };
+            // Existing room lights are strong; keep the outdoor palette below clipping.
+            for (const [id, mat] of materials) {
+                mat.color.copy(palette[id]);
+                if (id !== "light") mat.color.multiplyScalar(.55 + darkness * .2);
+            }
+            if (particleMaterial) {
+                particleMaterial.color.set(theme === "sakura" ? "#efc5da" : theme === "halloween" ? "#cca16e" : glowing ? "#f8daa4" : "#e8f3fa");
+                particleMaterial.opacity = glowing ? darkness * .4 : .5;
+            }
+        }
     }
 })();
