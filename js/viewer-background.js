@@ -8,5 +8,6 @@
         christmas: { es: "Navidad", en: "Christmas", day: ["#b8d4e5", "#eef1f1", "#e4eced", "#c1d4e1", "#cfdee6", "#e4ecef", "#779b98", "#c6a79c"], night: ["#1b2a46", "#6d819a", "#9cabbc", "#586b86", "#71859e", "#98acbe", "#355665", "#617087"] },
         fantasy: { es: "Fantasía", en: "Fantasy", day: ["#c0c4e2", "#ebe0e7", "#a2accb", "#b3b3d2", "#9eabc7", "#8d9cbb", "#657b9c", "#b3d0db"], night: ["#1d203d", "#605b8d", "#333f60", "#535275", "#444b6e", "#394563", "#293958", "#90accb"] },
         forest: { es: "Bosque", en: "Forest", day: ["#bbd4ca", "#e4ead4", "#91ad8d", "#b4c7a3", "#97b598", "#7ea48a", "#507b68", "#c5b79a"], night: ["#142c30", "#45605a", "#283e35", "#3c5d50", "#314f43", "#294539", "#1c352b", "#c4c09c"] },
+        coast: { es: "Costa", en: "Coast", day: ["#afd9df", "#e7eee5", "#c7d5bf", "#a7d0ce", "#8cbfc1", "#a3cacc", "#699c8d", "#e4d4b4"], night: ["#1b304b", "#567b8d", "#526b72", "#3d677c", "#345b70", "#426c7c", "#304c59", "#a6b6ad"] },
     };
 })();
