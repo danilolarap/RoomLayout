@@ -36,5 +36,11 @@
         const groundTexture = new THREE.CanvasTexture(groundTile);
         groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
         groundTexture.repeat.set(100, 100);
+        const material = key => {
+            if (!materials.has(key)) materials.set(key, key === "light"
+                ? new THREE.MeshBasicMaterial({ color: 0xffdb9c, toneMapped: false })
+                : new THREE.MeshStandardMaterial({ roughness: key === "water" ? .38 : 1, metalness: 0, flatShading: true }));
+            return materials.get(key);
+        };
     }
 })();
