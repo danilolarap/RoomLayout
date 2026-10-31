@@ -127,6 +127,11 @@
                     broadleaf(size, true); boulder(.9, .6, .45);
                     if (i % 4 === 0) lantern(-1.1, .2);
                     for (let j = 0; j < 6; j++) part("ball", "petalLight", Math.sin(j * 2) * .8, .01, Math.cos(j * 2) * .8, .04, .009, .025);
+                } else if (theme === "christmas") {
+                    if (i % 5 === 1) { cottage(.8, true); fence(.7); }
+                    else pine(size, true);
+                    if (i % 4 === 0) lantern(.8, .3);
+                    part("ball", "snow", .9, .12, -.4, .8, .19, .55);
                 }
             });
         }
