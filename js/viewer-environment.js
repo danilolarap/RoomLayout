@@ -293,4 +293,23 @@
         return { root, setPalette, animate, dispose, clearing };
     }
 
+    function init(scene) { roomScene = scene; }
+    function setTheme(theme, colors, darkness) {
+        if (!roomScene) return;
+        if (environment) { roomScene.remove(environment.root); environment.dispose(); }
+        activeTheme = theme;
+        environment = build(theme, width, length);
+        environment.setPalette(colors, darkness);
+        roomScene.add(environment.root);
+    }
+    function resizeRoom(w, l) {
+        width = w; length = l;
+        // The background module rebuilds the surroundings on the next render.
+        activeTheme = null;
+    }
+    function update(theme, colors, darkness, time, reducedMotion) {
+        if (!environment || activeTheme !== theme) setTheme(theme, colors, darkness);
+        else environment.setPalette(colors, darkness);
+        environment?.animate(time, reducedMotion);
+    }
 })();
