@@ -108,6 +108,18 @@ No se requiere instalación de paquetes ni un paso de compilación. Para despleg
 
 Las cuentas y los proyectos se guardan en el almacenamiento local del navegador y no se sincronizan entre dispositivos. Usa la exportación JSON para guardar una copia o trasladar un diseño.
 
+### Paisajes del visor
+
+El botón **Temas 360°**, junto a **ISO 3D** y **PLANTA (TOP)**, abre una galería con nueve paisajes: **Calma**, **Halloween**, **Navidad**, **Fantasía**, **Bosque**, **Costa**, **Desierto**, **Sakura** y **Aurora**. Selecciona una miniatura, previsualiza **Día / Noche** y pulsa **Usar tema**. **Cancelar**, cerrar la galería o pulsar Escape conserva el paisaje actual; las vistas previas no cambian el modo de la aplicación.
+
+El cielo panorámico usa Canvas 2D sobre una esfera independiente. El exterior tiene suelo real a `y = -0.008 m`, inmediatamente bajo el piso de la habitación (`y = 0`), y recibe sus sombras. Jardines, senderos, árboles, faroles, casas, lagunas y cristales son geometrías originales de Three.js; los elementos repetidos se agrupan con `InstancedMesh`. Las miniaturas muestran estos mismos entornos en 3D.
+
+La vista inicial y los botones ISO/PLANTA acercan la cámara un 20 % respecto al encuadre anterior, sin cambiar las medidas de la habitación ni los muebles. La separación adicional de la decoración también usa un factor de `0.8` para que el entorno resulte más recogido. Al orbitar, suelo y decoración comparten las coordenadas reales de la habitación; el cuarto permanece apoyado en el terreno. El exterior se adapta al cambiar las dimensiones y queda fuera de la selección, las métricas y los datos guardados de los proyectos. La preferencia visual se guarda por separado en `localStorage` (`roomlayout_viewer_background`), sin imágenes externas ni dependencias adicionales.
+
+**Modo Claro / Modo Oscuro** sincroniza el paisaje con el día y la noche. El único astro es el de la simulación: sol cálido en modo claro y luna con cráteres y luz fría en modo oscuro. Conserva el recorrido, el horario y las sombras sin modificar muebles, selección ni cámara.
+
+Las nubes, estrellas, copos, pétalos y luciérnagas usan el bucle de render existente y se actualizan como máximo ocho veces por segundo; se pausan al ocultar la pestaña y se desactivan con **reducir movimiento**. El render PNG incluye el entorno y el único astro de la simulación, sin los controles de la interfaz.
+
 ---
 
 ## Autor
