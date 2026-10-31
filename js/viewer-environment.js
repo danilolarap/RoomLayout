@@ -282,5 +282,15 @@
                 particleMaterial.opacity = glowing ? darkness * .4 : .5;
             }
         }
+        function dispose() {
+            root.traverse(node => { if (node.isInstancedMesh) node.dispose?.(); });
+            Object.values(geometries).forEach(geometry => geometry.dispose());
+            ground.geometry.dispose();
+            groundTexture.dispose();
+            materials.forEach(mat => mat.dispose());
+            particleGeometry?.dispose(); particleMaterial?.dispose(); particleTexture?.dispose();
+        }
+        return { root, setPalette, animate, dispose, clearing };
     }
+
 })();
