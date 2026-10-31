@@ -91,4 +91,11 @@
         ctx.globalAlpha = 1;
     }
 
+    function setTheme(theme) {
+        if (!Object.hasOwn(themes, theme)) return;
+        current = theme; dirty = true;
+        document.getElementById("viewer-current-theme").textContent = themes[current][language];
+        try { localStorage.setItem(storageKey, current); } catch { /* Optional visual preference. */ }
+    }
+
 })();
