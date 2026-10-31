@@ -69,5 +69,16 @@
                 ctx.closePath(); ctx.fill();
             }
         }
+        ctx.globalAlpha = 1;
+        for (let layer = 0; layer < 3; layer++) {
+            ctx.fillStyle = p[3 + layer]; ctx.beginPath(); ctx.moveTo(0, h);
+            for (let x = 0; x <= w; x += 4) {
+                const a = x / w * TAU;
+                const mountain = ["christmas", "fantasy", "aurora"].includes(theme) && layer === 0;
+                const wave = mountain ? -Math.abs(Math.sin(a * 5 + .4)) * .035 : Math.sin(a * (3 + layer) + layer) * .008 + Math.cos(a * 5) * .004;
+                ctx.lineTo(x, (.5 + layer * .02 + wave) * h);
+            }
+            ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
+        }
     }
 })();
