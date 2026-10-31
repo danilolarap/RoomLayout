@@ -167,6 +167,16 @@
                         part("box", "wood", -.8, .16, .4, 1.1, .11, .4, 0, .2);
                         part("box", "petalLight", -.8, .27, .4, .9, .05, .3, 0, .2);
                     }
+                } else if (theme === "fantasy") {
+                    for (let j = 0; j < 4; j++) {
+                        const y = .55 + j % 3 * .28;
+                        part("crystal", j % 2 ? "crystal" : "crystalLight", Math.sin(j * 2.4) * .5, y * .5, Math.cos(j * 2.4) * .5, .2, y, .22, -.13 + j * .08, j, j % 2 * .2);
+                    }
+                    if (i % 3 === 0) {
+                        for (const x of [-.8, .8]) part("box", "stone", x, .85, 0, .3, 1.7, .4);
+                        part("box", "stone", 0, 1.75, 0, 1.95, .28, .45);
+                    }
+                    for (let j = 0; j < 3; j++) flower(-.9 + j * .3, .8, .55, j % 2);
                 }
             });
         }
