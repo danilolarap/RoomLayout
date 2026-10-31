@@ -82,5 +82,10 @@
             for (const x of [-.61, .61]) part("box", "light", x * size, .84 * size, .734 * size, .33 * size, .38 * size, .025);
             part("box", "stone", .56 * size, 1.78 * size, -.25 * size, .22 * size, .74 * size, .24 * size);
         };
+        const lantern = (x = 0, z = 0) => {
+            part("trunk", "wood", x, .58, z, .045, 1.16, .045);
+            part("box", "light", x, 1.16, z, .18, .25, .18);
+            part("cone", "roof", x, 1.34, z, .19, .13, .19);
+        };
     }
 })();
