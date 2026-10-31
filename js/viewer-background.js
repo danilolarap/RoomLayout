@@ -49,5 +49,12 @@
                 ctx.ellipse(x + offset - w * .006, y - h * .005, w * .014, h * .014, 0, 0, TAU); ctx.fill();
             }
         }
+        if (darkness > 0) {
+            ctx.fillStyle = "#fff2cf";
+            for (let i = 0; i < 70; i++) {
+                ctx.globalAlpha = darkness * (.3 + .15 * Math.sin(time * .35 + i));
+                ctx.beginPath(); ctx.arc(((i * .618034) % 1) * w, (.13 + ((i * .37) % .46)) * h, i % 5 ? .7 : 1.2, 0, TAU); ctx.fill();
+            }
+        }
     }
 })();
