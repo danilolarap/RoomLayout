@@ -36,3 +36,12 @@
 .landscape-card-name { display: block; padding: 8px 12px; font-weight: 650; font-size: 12px; }
 .landscape-card-check { display: none; position: absolute; right: 10px; bottom: 9px; width: 19px; height: 19px; border-radius: 50%; text-align: center; font-weight: 700; line-height: 19px; background: #d89120; color: #fff; }
 .landscape-card[aria-pressed="true"] .landscape-card-check { display: block; }
+.landscape-gallery-footer { position: sticky; bottom: 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 26px; border-top: 1px solid #e6dece; background: #fffcf6f5; }
+.dark .landscape-gallery-footer { background: #111c2df5; border-color: #35435a; }
+#background-gallery-hint { font-size: 11px; max-width: 410px; }
+.landscape-gallery-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.landscape-gallery-actions button { padding: 8px 16px; border-radius: 8px; font: 650 12px/1.5 system-ui, sans-serif; cursor: pointer; }
+#background-cancel { border: 1px solid #c9bdab; color: inherit; background: transparent; }
+#background-apply { border: 1px solid #b86e0e; color: white; background: #bd7b15; }
+#background-apply:hover { background: #a86a0b; }
+#background-gallery button:focus-visible, #viewer-background-open:focus-visible { outline: 3px solid #d89b2b; outline-offset: 3px; }
