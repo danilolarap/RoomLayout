@@ -200,5 +200,12 @@
                 for (let j = 0; j < 5; j++) boulder(Math.sin(j * 1.5) * 3, Math.cos(j * 1.5) * 2, .3);
             });
         }
+        if (theme === "sakura") {
+            at(clearing + 4, -2.5, -.4, () => {
+                for (const x of [-1, 1]) part("trunk", "gate", x, 1.25, 0, .12, 2.5, .12);
+                part("box", "gate", 0, 2.3, 0, 2.7, .14, .23);
+                part("box", "roof", 0, 2.65, 0, 3.1, .16, .32);
+            });
+        }
     }
 })();
