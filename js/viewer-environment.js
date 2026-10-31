@@ -92,5 +92,13 @@
             part("ball", variant ? "petalLight" : "petal", x, size * .52, z, size * .18, size * .08, size * .18);
             part("ball", "flowerCenter", x, size * .55, z, size * .055, size * .045, size * .055);
         };
+        const clearing = Math.hypot(roomWidth, roomLength) / 2 + 2;
+
+        // The outdoor surface is only 8 mm below the editable floor at y=0.
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), material("ground"));
+        ground.material.map = groundTexture;
+        ground.name = "environment-ground";
+        ground.rotation.x = -Math.PI / 2; ground.position.y = -.008; ground.receiveShadow = true;
+        root.add(ground);
     }
 })();
