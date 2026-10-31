@@ -24,4 +24,12 @@
     let blend = night, lastFrame = 0, lastPaint = -Infinity, elapsed = 0, dirty = true;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+    function color(a, b, amount) {
+        const n = parseInt(a.slice(1), 16), m = parseInt(b.slice(1), 16);
+        const c = shift => Math.round(((n >> shift) & 255) * (1 - amount) + ((m >> shift) & 255) * amount);
+        return `rgb(${c(16)}, ${c(8)}, ${c(0)})`;
+    }
+
+    const palette = (theme, darkness) => themes[theme].day.map((value, i) => color(value, themes[theme].night[i], darkness));
+
 })();
