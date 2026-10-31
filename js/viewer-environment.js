@@ -63,5 +63,12 @@
                 if (snow) part("cone", "snow", 0, y + .24 * size, 0, r * .69, .77 * size, r * .69);
             }
         };
+        const broadleaf = (size = 1, blossom = false) => {
+            part("trunk", "bark", 0, size * .9, 0, .12 * size, 1.8 * size, .12 * size, 0, 0, -.05);
+            for (let j = 0; j < 5; j++) {
+                const a = j * 2.4;
+                part("ball", blossom ? (j % 2 ? "petal" : "petalLight") : (j % 2 ? "leaf" : "leafLight"), Math.sin(a) * .45 * size, (1.75 + j % 2 * .24) * size, Math.cos(a) * .45 * size, .68 * size, .56 * size, .64 * size, 0, a);
+            }
+        };
     }
 })();
