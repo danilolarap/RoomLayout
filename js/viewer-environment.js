@@ -87,5 +87,10 @@
             part("box", "light", x, 1.16, z, .18, .25, .18);
             part("cone", "roof", x, 1.34, z, .19, .13, .19);
         };
+        const flower = (x, z, size, variant = 0) => {
+            part("trunk", "leaf", x, size * .25, z, size * .035, size * .5, size * .035);
+            part("ball", variant ? "petalLight" : "petal", x, size * .52, z, size * .18, size * .08, size * .18);
+            part("ball", "flowerCenter", x, size * .55, z, size * .055, size * .045, size * .055);
+        };
     }
 })();
