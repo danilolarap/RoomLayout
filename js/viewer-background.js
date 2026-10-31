@@ -80,5 +80,15 @@
             }
             ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
         }
+        if (["christmas", "halloween", "sakura"].includes(theme)) {
+            ctx.fillStyle = theme === "christmas" ? "#fffaf2" : p[7]; ctx.globalAlpha = .45;
+            for (let i = 0; i < 32; i++) {
+                const x = (((i * .618) + Math.sin(time * .1 + i) * .004) % 1 + 1) % 1 * w;
+                const y = (.43 + ((i * .137 + time * .007) % .34)) * h;
+                ctx.beginPath(); ctx.ellipse(x, y, theme === "christmas" ? 1.1 : 2.2, 1.1, .5, 0, TAU); ctx.fill();
+            }
+        }
+        ctx.globalAlpha = 1;
     }
+
 })();
