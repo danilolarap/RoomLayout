@@ -192,5 +192,13 @@
                 else boulder(0, 0, .13 + i % 3 * .08);
             });
         }
+        if (["coast", "aurora"].includes(theme)) {
+            // A pond/lagoon beside the clearing, never below the room itself.
+            at(-clearing - 4.5, -2, .35, () => {
+                part("disk", "shore", 0, -.004, 0, 3.2, .004, 2.2);
+                part("disk", theme === "aurora" ? "ice" : "water", 0, -.001, 0, 2.85, .004, 1.87);
+                for (let j = 0; j < 5; j++) boulder(Math.sin(j * 1.5) * 3, Math.cos(j * 1.5) * 2, .3);
+            });
+        }
     }
 })();
