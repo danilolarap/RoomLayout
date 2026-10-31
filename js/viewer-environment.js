@@ -70,5 +70,10 @@
                 part("ball", blossom ? (j % 2 ? "petal" : "petalLight") : (j % 2 ? "leaf" : "leafLight"), Math.sin(a) * .45 * size, (1.75 + j % 2 * .24) * size, Math.cos(a) * .45 * size, .68 * size, .56 * size, .64 * size, 0, a);
             }
         };
+        const boulder = (x, z, scale = .5) => part("rock", "stone", x, scale * .27, z, scale, scale * .4, scale * .7, .15, x + z);
+        const fence = (size = 1, crooked = false) => {
+            for (const x of [-1.4, 0, 1.4]) part("box", "wood", x * size, .47 * size, 0, .1 * size, .94 * size, .12 * size, 0, 0, crooked ? x * .06 : 0);
+            for (const y of [.36, .73]) part("box", "wood", 0, y * size, 0, 3 * size, .1 * size, .08 * size, 0, 0, crooked ? -.06 : 0);
+        };
     }
 })();
