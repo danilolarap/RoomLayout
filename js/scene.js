@@ -26,13 +26,14 @@ function initScene() {
     const height = container.clientHeight || 600;
 
     scene = new THREE.Scene();
-    const isDark = document.documentElement.classList.contains("dark");
-    scene.background = new THREE.Color(isDark ? 0x0f172a : 0xfef3c7);
+    // The panoramic environment is rendered separately from editable room objects.
+    scene.background = null;
 
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(6, 6, 8);
+    camera.position.set(4.8, 4.8, 6.4);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
@@ -58,7 +59,7 @@ function initScene() {
 
     sunVisual = new THREE.Group();
     const sunHalo = new THREE.Mesh(
-        new THREE.SphereGeometry(0.52, 16, 12),
+        new THREE.SphereGeometry(0.52, 32, 24),
         new THREE.MeshBasicMaterial({
             color: 0xffb52e,
             transparent: true,
@@ -69,12 +70,14 @@ function initScene() {
         })
     );
     const sunCore = new THREE.Mesh(
-        new THREE.SphereGeometry(0.32, 16, 12),
+        new THREE.SphereGeometry(0.32, 32, 24),
         new THREE.MeshBasicMaterial({ color: 0xffe58a, toneMapped: false })
     );
     sunVisual.add(sunHalo, sunCore);
+    sunCore.userData.moonTexture = createMoonTexture();
     sunVisual.renderOrder = 1;
     scene.add(sunVisual);
+    updateCelestialMode(document.documentElement.classList.contains("dark"));
 
     updateRoomDimensions(4.0, 3.5);
     updateSunPosition(15.5);
@@ -89,6 +92,48 @@ function initScene() {
     window.addEventListener("resize", onWindowResize);
 
     animate();
+}
+
+function createMoonTexture() {
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#e6edf3";
+    ctx.fillRect(0, 0, 512, 256);
+    for (let i = 0; i < 38; i++) {
+        const x = (i * 137.51) % 512;
+        const y = 25 + (i * 73.3) % 206;
+        const radius = 5 + i % 15;
+        const gradient = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, radius);
+        gradient.addColorStop(0, "#aabac960");
+        gradient.addColorStop(.75, "#bcc9d650");
+        gradient.addColorStop(1, "#d8e2eb00");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    return new THREE.CanvasTexture(canvas);
+}
+
+function updateCelestialMode(isDark) {
+    if (!sunVisual || !sunLight) return;
+    const [halo, core] = sunVisual.children;
+    core.material.color.setHex(isDark ? 0xd4ddea : 0xffe58a);
+    core.material.map = isDark ? core.userData.moonTexture : null;
+    core.material.needsUpdate = true;
+    halo.material.color.setHex(isDark ? 0xc5dcff : 0xffb52e);
+    halo.material.opacity = isDark ? 0.08 : 0.2;
+    sunVisual.userData.celestialMode = isDark ? "moon" : "sun";
+    sunLight.color.setHex(isDark ? 0xd6e5ff : 0xfffbde);
+    sunLight.intensity = isDark ? 1.05 : 1.4;
+    const icon = document.getElementById("simulation-light-icon");
+    if (icon) icon.className = `fa-solid ${isDark ? "fa-moon text-slate-400" : "fa-sun text-amber-500"} text-sm`;
+    const legend = document.getElementById("leg-sun");
+    if (legend) legend.textContent = window.currentLang === "en"
+        ? (isDark ? "Direct Moonlight" : "Direct Sunlight")
+        : (isDark ? "Luz Lunar Directa" : "Luz Solar Directa");
 }
 
 function updateRoomDimensions(width, length) {
@@ -157,6 +202,7 @@ function updateRoomDimensions(width, length) {
 
     roomMesh = group;
     scene.add(roomMesh);
+    window.ViewerBackground?.resizeRoom(width, length);
     if (selectedMesh) updateFurnitureFootprint(selectedMesh);
 }
 
@@ -292,10 +338,10 @@ window.setCameraView = function(viewType) {
     if (!camera || !controls) return;
 
     if (viewType === "top") {
-        camera.position.set(0, 10, 0.001);
+        camera.position.set(0, 8, 0.001);
         controls.target.set(0, 0, 0);
     } else {
-        camera.position.set(6, 6, 8);
+        camera.position.set(4.8, 4.8, 6.4);
         controls.target.set(0, 0, 0);
     }
     controls.update();
@@ -569,7 +615,18 @@ function animate() {
 
     animationFrameId = requestAnimationFrame(animate);
     if (controls) controls.update();
-    if (renderer && scene && camera) renderer.render(scene, camera);
+    renderViewer();
+}
+
+function renderViewer() {
+    if (!renderer || !scene || !camera) return;
+    const autoClear = renderer.autoClear;
+    try {
+        if (window.ViewerBackground?.render(renderer, camera)) renderer.autoClear = false;
+        renderer.render(scene, camera);
+    } finally {
+        renderer.autoClear = autoClear;
+    }
 }
 
 document.addEventListener("visibilitychange", () => {
