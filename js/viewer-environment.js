@@ -55,5 +55,13 @@
             transform.scale.set(sx, sy, sz); transform.updateMatrix();
             buckets.get(key).matrices.push(transform.matrix.clone());
         }
+        const pine = (size = 1, snow = false) => {
+            part("trunk", "bark", 0, .45 * size, 0, .12 * size, .9 * size, .12 * size);
+            for (let j = 0; j < 3; j++) {
+                const y = (.85 + j * .52) * size, r = (.72 - j * .15) * size;
+                part("cone", j % 2 ? "leafLight" : "leaf", 0, y, 0, r, 1.22 * size, r);
+                if (snow) part("cone", "snow", 0, y + .24 * size, 0, r * .69, .77 * size, r * .69);
+            }
+        };
     }
 })();
