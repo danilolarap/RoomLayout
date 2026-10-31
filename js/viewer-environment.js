@@ -312,4 +312,28 @@
         else environment.setPalette(colors, darkness);
         environment?.animate(time, reducedMotion);
     }
+    function drawPreview(canvas, theme, colors, darkness) {
+        if (!previewRenderer) {
+            previewRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            previewRenderer.setSize(640, 320); previewRenderer.setPixelRatio(1);
+        }
+        const preview = build(theme, 4, 3.5);
+        preview.setPalette(colors, darkness);
+        preview.animate(0, true);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, 2, .1, 700);
+        camera.position.set(12, 9, 15); camera.lookAt(0, 0, 0);
+        scene.add(new THREE.AmbientLight(0xffffff, .9));
+        const light = new THREE.DirectionalLight(darkness > .5 ? 0xd6e5ff : 0xfffbde, 1);
+        light.position.set(-4, 8, 5); scene.add(light, preview.root);
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(4, 3.5), new THREE.MeshStandardMaterial({ color: 0xf5f0e6, roughness: 1 }));
+        floor.rotation.x = -Math.PI / 2; scene.add(floor);
+        previewRenderer.render(scene, camera);
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = colors[0]; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(previewRenderer.domElement, 0, 0, canvas.width, canvas.height);
+        preview.dispose(); floor.geometry.dispose(); floor.material.dispose();
+        previewRenderer.renderLists.dispose();
+    }
+    window.ViewerEnvironment = { init, update, resizeRoom, drawPreview };
 })();
