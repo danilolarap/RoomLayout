@@ -100,5 +100,11 @@
         ground.name = "environment-ground";
         ground.rotation.x = -Math.PI / 2; ground.position.y = -.008; ground.receiveShadow = true;
         root.add(ground);
+        const baseY = -.004;
+        // A flush garden path joins the floor to its surroundings; never a raised plinth.
+        for (let i = 0; i < 9; i++) {
+            const z = roomLength / 2 + .45 + i * .56;
+            part("disk", "path", roomWidth / 2 - .55 + Math.sin(i * .55) * .32, baseY, z, .26, .006, .2, 0, i * .47);
+        }
     }
 })();
