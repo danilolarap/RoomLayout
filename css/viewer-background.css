@@ -45,3 +45,18 @@
 #background-apply { border: 1px solid #b86e0e; color: white; background: #bd7b15; }
 #background-apply:hover { background: #a86a0b; }
 #background-gallery button:focus-visible, #viewer-background-open:focus-visible { outline: 3px solid #d89b2b; outline-offset: 3px; }
+@container (max-width: 700px) {
+    #viewer .viewer-legend { bottom: 58px; right: 12px; width: fit-content; flex-wrap: wrap; gap: 4px 12px; }
+    #viewer .viewer-cursor { left: 12px; width: fit-content; max-width: calc(100% - 24px); font-size: 9px; }
+    #viewer-current-theme { display: none; }
+}
+@media (max-width: 650px) {
+    #background-theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0 16px 16px; }
+    .landscape-gallery-header { padding: 20px 16px 12px; }
+    #background-gallery-title { font-size: 21px; }
+    .landscape-preview-toolbar { padding: 0 16px 12px; }
+    .landscape-gallery-footer { padding: 12px 16px; flex-wrap: wrap; }
+    .landscape-gallery-actions { margin-left: auto; }
+    .landscape-card canvas { height: 95px; }
+}
+@media (prefers-reduced-motion: reduce) { .landscape-card { transition: none; } }
