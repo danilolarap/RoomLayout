@@ -103,7 +103,7 @@ function initExportPNG() {
         btnExportPng.onclick = () => {
             if (typeof renderer === "undefined" || !renderer) return;
 
-            renderer.render(scene, camera);
+            renderViewer();
             const dataURL = renderer.domElement.toDataURL("image/png");
 
             const link = document.createElement("a");
@@ -191,10 +191,6 @@ function initUI() {
             
             if (themeLabel) themeLabel.innerText = isDark ? i18n[window.currentLang].themeDark : i18n[window.currentLang].themeLight;
             if (themeIcon) themeIcon.className = isDark ? "fa-solid fa-moon" : "fa-solid fa-sun";
-
-            if (typeof scene !== "undefined" && scene) {
-                scene.background = new THREE.Color(isDark ? 0x0f172a : 0xfef3c7);
-            }
         });
     }
 
@@ -272,6 +268,7 @@ function initUI() {
 
 function updateLanguageTexts() {
     const t = i18n[window.currentLang];
+    window.ViewerBackground?.setLanguage(window.currentLang);
     const setTxt = (id, txt) => {
         const el = document.getElementById(id);
         if (el) el.innerText = txt;
@@ -312,7 +309,7 @@ function updateLanguageTexts() {
     setTxt("diag-ok", t.diagOk);
     setTxt("leg-free", t.freeFlow);
     setTxt("leg-collision", t.collision);
-    setTxt("leg-sun", t.sunLight);
+    setTxt("leg-sun", isDark ? (window.currentLang === "en" ? "Direct Moonlight" : "Luz Lunar Directa") : t.sunLight);
 
     const searchInput = document.getElementById("search-catalog");
     if (searchInput) searchInput.placeholder = t.searchPlaceholder;
