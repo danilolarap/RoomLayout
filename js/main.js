@@ -2,6 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     if (typeof initScene === "function") initScene();
+    window.ViewerBackground?.init({ scene });
     if (typeof renderCatalog === "function") renderCatalog();
     if (typeof initUI === "function") initUI();
 
@@ -11,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Atajos de Teclado para Elevar/Bajar Objetos (+0.20m / -0.20m)
     document.addEventListener("keydown", (e) => {
+        if (document.getElementById("background-gallery")?.open) return;
         if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) return;
 
         if (typeof selectedMesh !== "undefined" && selectedMesh) {
