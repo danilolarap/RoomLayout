@@ -123,4 +123,14 @@
         document.getElementById("background-preview-night").setAttribute("aria-pressed", String(previewNight));
     }
 
+    function setLanguage(lang) {
+        language = lang === "en" ? "en" : "es";
+        if (!dialog) return;
+        const t = text[language];
+        for (const [id, key] of Object.entries({ "background-gallery-title": "title", "background-gallery-subtitle": "subtitle", "background-launcher-label": "open", "background-preview-day": "day", "background-preview-night": "night", "background-cancel": "cancel", "background-apply": "apply", "background-preview-label": "preview", "background-gallery-hint": "hint" })) document.getElementById(id).textContent = t[key];
+        document.getElementById("background-gallery-close").setAttribute("aria-label", t.close);
+        document.getElementById("viewer-current-theme").textContent = themes[current][language];
+        if (dialog.open) renderGallery();
+    }
+
 })();
