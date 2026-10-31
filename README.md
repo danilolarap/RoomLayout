@@ -72,6 +72,8 @@ RoomLayout/
     furniture-builder.js       Modelos base de los objetos
     inspector.js               Edicion de objetos seleccionados
     main.js                    Inicializacion de la aplicacion
+    viewer-background.js       Entorno panoramico 360 y galeria de paisajes
+    viewer-environment.js      Suelo exterior, decoracion 3D y vistas previas
     materials.js               Materiales y texturas procedurales
     scene.js                   Escena, camara, luz y controles 3D
     ui.js                      Interfaz, diagnosticos e idiomas
