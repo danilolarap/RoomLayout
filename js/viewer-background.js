@@ -56,5 +56,18 @@
                 ctx.beginPath(); ctx.arc(((i * .618034) % 1) * w, (.13 + ((i * .37) % .46)) * h, i % 5 ? .7 : 1.2, 0, TAU); ctx.fill();
             }
         }
+        if (theme === "aurora") {
+            for (let band = 0; band < 3; band++) {
+                ctx.globalAlpha = (.025 + darkness * .13) * (1 - band * .2);
+                ctx.fillStyle = band === 1 ? "#b2a8d7" : "#83d8bc";
+                ctx.beginPath();
+                for (let x = 0; x <= w; x += 8) {
+                    const y = (.49 + Math.sin(x / w * TAU * 2 + time * .025 + band) * .04 + band * .018) * h;
+                    x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+                }
+                for (let x = w; x >= 0; x -= 8) ctx.lineTo(x, (.54 + Math.sin(x / w * TAU * 2 + time * .025 + band) * .04 + band * .018) * h);
+                ctx.closePath(); ctx.fill();
+            }
+        }
     }
 })();
