@@ -75,5 +75,12 @@
             for (const x of [-1.4, 0, 1.4]) part("box", "wood", x * size, .47 * size, 0, .1 * size, .94 * size, .12 * size, 0, 0, crooked ? x * .06 : 0);
             for (const y of [.36, .73]) part("box", "wood", 0, y * size, 0, 3 * size, .1 * size, .08 * size, 0, 0, crooked ? -.06 : 0);
         };
+        const cottage = (size = 1, snowy = false) => {
+            part("box", "house", 0, .7 * size, 0, 1.9 * size, 1.4 * size, 1.45 * size);
+            for (const sign of [-1, 1]) part("box", snowy ? "snow" : "roof", sign * .52 * size, 1.57 * size, 0, 1.26 * size, .17 * size, 1.85 * size, 0, 0, sign * .58);
+            part("box", "bark", 0, .44 * size, .733 * size, .4 * size, .88 * size, .025);
+            for (const x of [-.61, .61]) part("box", "light", x * size, .84 * size, .734 * size, .33 * size, .38 * size, .025);
+            part("box", "stone", .56 * size, 1.78 * size, -.25 * size, .22 * size, .74 * size, .24 * size);
+        };
     }
 })();
