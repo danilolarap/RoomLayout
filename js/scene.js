@@ -156,6 +156,7 @@ function updateRoomDimensions(width, length) {
         side: THREE.FrontSide
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.name = "room-floor";
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     group.add(floor);
@@ -166,6 +167,7 @@ function updateRoomDimensions(width, length) {
         new THREE.MeshBasicMaterial({ color: floorColor, side: THREE.BackSide })
     );
     floorUnderside.rotation.x = -Math.PI / 2;
+    floorUnderside.name = "room-underside";
     floorUnderside.position.y = -0.002;
     floorUnderside.receiveShadow = false;
     floorUnderside.castShadow = false;
