@@ -182,6 +182,7 @@ window.rotateSelected = function(angle) {
     selectedMesh.rotation.y += angle;
     if (!selectedMesh.userData) selectedMesh.userData = {};
     selectedMesh.userData.rotationY = selectedMesh.rotation.y;
+    if (selectedMesh.userData.isDoor) updateDoorOpening(selectedMesh);
 
     if (typeof window.refreshFurnitureFootprint === "function") window.refreshFurnitureFootprint(selectedMesh);
 

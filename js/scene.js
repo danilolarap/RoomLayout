@@ -633,6 +633,7 @@ function onPointerMove(event) {
 
             draggedObject.position.x = snapX;
             draggedObject.position.z = snapZ;
+            if (draggedObject.userData.isDoor) updateDoorOpening(draggedObject);
             updateFurnitureFootprint(draggedObject);
 
             if (typeof selectFurniture === "function") selectFurniture(draggedObject);
