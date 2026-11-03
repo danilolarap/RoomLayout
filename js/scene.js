@@ -492,6 +492,7 @@ window.getSceneData = function() {
             color: d.color,
             icon: d.icon,
             isDoor: d.isDoor || false,
+            ...(d.isDoor ? { doorHinge: d.doorHinge, doorOpening: d.doorOpening } : {}),
             customColor: d.customColor || null,
             position: { 
                 x: group.position.x, 
@@ -539,6 +540,15 @@ window.loadSceneData = function(data) {
                 const doorGroup = activeItems[activeItems.length - 1];
                 if (doorGroup && itemData.position) {
                     doorGroup.position.set(itemData.position.x, itemData.position.y || 0, itemData.position.z);
+                }
+                doorGroup.rotation.y = itemData.rotationY || 0;
+                doorGroup.userData.rotationY = doorGroup.rotation.y;
+                doorGroup.userData.doorHinge = itemData.doorHinge === "right" ? "right" : "left";
+                doorGroup.userData.doorOpening = itemData.doorOpening === "outward" ? "outward" : "inward";
+                updateDoorOpening(doorGroup);
+                if (itemData.customColor && typeof window.changeSelectedColor === "function") {
+                    selectFurniture(doorGroup);
+                    window.changeSelectedColor(itemData.customColor);
                 }
             } else {
                 const furnitureGroup = createDetailedFurniture(itemData);
