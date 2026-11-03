@@ -615,7 +615,10 @@ function onPointerMove(event) {
             const rw = (parseFloat(document.getElementById("room-width").value) || 4) / 2;
             const rl = (parseFloat(document.getElementById("room-length").value) || 3.5) / 2;
 
-            const bbox = new THREE.Box3().setFromObject(draggedObject);
+            // El barrido puede salir del cuarto; solo la hoja limita el arrastre de la puerta.
+            draggedObject.updateWorldMatrix(true, true);
+            const bbox = new THREE.Box3().setFromObject(draggedObject.userData.isDoor
+                ? draggedObject.getObjectByName("door-leaf") : draggedObject);
 
             const minAllowedX = -rw + (draggedObject.position.x - bbox.min.x);
             const maxAllowedX = rw - (bbox.max.x - draggedObject.position.x);
