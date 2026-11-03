@@ -175,6 +175,8 @@ function updateRoomDimensions(width, length) {
 
     const gridSize = Math.ceil(Math.max(width, length) / 0.25) * 0.25;
     const grid = new THREE.GridHelper(gridSize, Math.round(gridSize / 0.25), 0xd97706, 0xd6c7a1);
+    grid.name = "room-grid";
+    grid.userData.divisions = Math.round(gridSize / 0.25);
     grid.position.y = 0.012;
     grid.material.transparent = true;
     grid.material.opacity = 0.42;
