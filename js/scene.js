@@ -136,6 +136,25 @@ function updateCelestialMode(isDark) {
         : (isDark ? "Luz Lunar Directa" : "Luz Solar Directa");
 }
 
+function updateRoomTheme(isDark = document.documentElement.classList.contains("dark")) {
+    if (!roomMesh) return;
+    roomMesh.children.forEach(child => {
+        if (child.name === "room-floor" || child.name === "room-underside") {
+            child.material.color.setHex(isDark ? 0x1e293b : 0xfffbeb);
+        } else if (child.name === "room-grid") {
+            const colors = child.geometry.getAttribute("color");
+            const center = new THREE.Color(isDark ? 0xf59e0b : 0xd97706);
+            const lines = new THREE.Color(isDark ? 0x64748b : 0xd6c7a1);
+            const divisions = child.userData.divisions;
+            for (let i = 0; i <= divisions; i++) {
+                const color = i === divisions / 2 ? center : lines;
+                for (let j = 0; j < 4; j++) colors.setXYZ(i * 4 + j, color.r, color.g, color.b);
+            }
+            colors.needsUpdate = true;
+        }
+    });
+}
+
 function updateRoomDimensions(width, length) {
     if (roomMesh) {
         roomMesh.traverse(child => {
@@ -205,6 +224,7 @@ function updateRoomDimensions(width, length) {
     group.add(leftWall);
 
     roomMesh = group;
+    updateRoomTheme();
     scene.add(roomMesh);
     window.ViewerBackground?.resizeRoom(width, length);
     if (selectedMesh) updateFurnitureFootprint(selectedMesh);
