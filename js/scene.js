@@ -326,26 +326,42 @@ function addDefaultDoor(rw, rl) {
 
     const group = new THREE.Group();
 
+    const assembly = new THREE.Group();
+    assembly.name = "door-assembly";
+    group.add(assembly);
     const doorLeaf = new THREE.Mesh(new THREE.BoxGeometry(0.88, 2.0, 0.08), Materials.oakWood);
+    doorLeaf.name = "door-leaf";
     doorLeaf.position.y = 1.0;
-    group.add(doorLeaf);
+    assembly.add(doorLeaf);
 
     const handle = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), Materials.goldMetal);
     handle.position.set(0.35, 1.0, 0.06);
-    group.add(handle);
+    assembly.add(handle);
 
     const doorSweepGeo = new THREE.RingGeometry(0.05, 0.88, 16, 1, 0, Math.PI / 2);
     const doorSweepMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
     const doorSweep = new THREE.Mesh(doorSweepGeo, doorSweepMat);
     doorSweep.rotation.x = -Math.PI / 2;
     doorSweep.position.set(-0.44, 0.02, 0);
-    group.add(doorSweep);
+    assembly.add(doorSweep);
 
-    group.position.set(rw / 2 - 0.45, 0, rl / 2 - 0.45);
-    group.userData = { ...doorItem, isDoor: true, rotationY: 0 };
+    group.position.set(rw / 2 - 0.44, 0, rl / 2 - 0.04);
+    group.userData = { ...doorItem, isDoor: true, rotationY: 0, doorHinge: "left", doorOpening: "inward" };
+    updateDoorOpening(group);
 
     scene.add(group);
     activeItems.push(group);
+}
+
+function updateDoorOpening(door) {
+    if (!door?.userData.isDoor) return;
+    const assembly = door.getObjectByName("door-assembly");
+    if (!assembly) return;
+    // El lado interior apunta hacia el centro del cuarto, incluso tras girar la puerta.
+    const towardCenter = -door.position.x * Math.sin(door.rotation.y) - door.position.z * Math.cos(door.rotation.y);
+    const inwardSign = towardCenter > 0 ? 1 : -1;
+    assembly.scale.x = inwardSign * (door.userData.doorHinge === "right" ? -1 : 1);
+    assembly.scale.z = -inwardSign * (door.userData.doorOpening === "outward" ? -1 : 1);
 }
 
 function updateSunPosition(hour) {
