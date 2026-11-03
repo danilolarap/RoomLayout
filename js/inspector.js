@@ -55,6 +55,21 @@ function selectFurniture(meshGroup) {
                 <div><span class="text-slate-400">${lblLength}</span> <strong>${d.l || 1} m</strong></div>
             </div>
 
+            ${d.isDoor ? `
+                <div class="space-y-2">
+                    <label class="block text-[10px] text-slate-400 font-bold uppercase" for="door-hinge">${isEn ? "HINGE SIDE (SEEN FROM INSIDE)" : "BISAGRAS (VISTAS DESDE DENTRO)"}</label>
+                    <select id="door-hinge" onchange="window.changeDoorOption('doorHinge', this.value)" class="w-full bg-amber-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-200 dark:border-slate-700 rounded-lg p-2 text-xs">
+                        <option value="left" ${d.doorHinge !== 'right' ? 'selected' : ''}>${isEn ? "Left" : "Izquierda"}</option>
+                        <option value="right" ${d.doorHinge === 'right' ? 'selected' : ''}>${isEn ? "Right" : "Derecha"}</option>
+                    </select>
+                    <label class="block text-[10px] text-slate-400 font-bold uppercase" for="door-opening">${isEn ? "OPENING DIRECTION" : "SENTIDO DE APERTURA"}</label>
+                    <select id="door-opening" onchange="window.changeDoorOption('doorOpening', this.value)" class="w-full bg-amber-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-amber-200 dark:border-slate-700 rounded-lg p-2 text-xs">
+                        <option value="inward" ${d.doorOpening !== 'outward' ? 'selected' : ''}>${isEn ? "Inward" : "Hacia adentro"}</option>
+                        <option value="outward" ${d.doorOpening === 'outward' ? 'selected' : ''}>${isEn ? "Outward" : "Hacia afuera"}</option>
+                    </select>
+                </div>
+            ` : ''}
+
             <!-- Personalización de Color / Material -->
             <div>
                 <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">${lblColor}</label>
