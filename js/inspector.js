@@ -105,6 +105,16 @@ function selectFurniture(meshGroup) {
     `;
 }
 
+window.changeDoorOption = function(option, value) {
+    if (!selectedMesh?.userData.isDoor) return;
+    const choices = { doorHinge: ["left", "right"], doorOpening: ["inward", "outward"] };
+    if (!choices[option]?.includes(value)) return;
+    selectedMesh.userData[option] = value;
+    updateDoorOpening(selectedMesh);
+    selectFurniture(selectedMesh);
+    window.updateMetrics?.();
+};
+
 window.changeSelectedColor = function(hexColor) {
     if (!selectedMesh) return;
 
