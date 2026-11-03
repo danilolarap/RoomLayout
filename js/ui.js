@@ -186,6 +186,7 @@ function initUI() {
     if (themeBtn) {
         themeBtn.addEventListener("click", () => {
             const isDark = document.documentElement.classList.toggle("dark");
+            window.updateRoomTheme?.(isDark);
             const themeLabel = document.getElementById("theme-label");
             const themeIcon = document.getElementById("theme-icon");
             
