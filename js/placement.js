@@ -45,3 +45,15 @@ function wallInteriorSide(wall) {
     return wall.position.x * f.nx + wall.position.z * f.nz > 0 ? -1 : 1;
 }
 
+function itemIntersectsWall(item, wall) {
+    const p = itemPlan(item), f = wallFrame(wall);
+    if (p.bottom >= wall.userData.height || p.top <= 0) return false;
+    const dx = p.x - wall.position.x, dz = p.z - wall.position.z;
+    // Cuatro ejes separadores: funciona también con muebles y tabiques diagonales.
+    return [[p.tx, p.tz], [p.nx, p.nz], [f.tx, f.tz], [f.nx, f.nz]].every(([x, z]) => {
+        const wallRadius = wall.userData.length / 2 * Math.abs(f.tx * x + f.tz * z)
+            + (wallThickness / 2 + wallContactGap) * Math.abs(f.nx * x + f.nz * z);
+        return Math.abs(dx * x + dz * z) < planRadius(p, x, z) + wallRadius - 1e-6;
+    });
+}
+
