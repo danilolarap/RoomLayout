@@ -479,6 +479,7 @@ window.getSceneData = function() {
             icon: d.icon,
             isDoor: d.isDoor || false,
             ...(d.isDoor ? { doorHinge: d.doorHinge, doorOpening: d.doorOpening } : {}),
+            ...(d.wallAttachment ? { wallAttachment: { ...d.wallAttachment } } : {}),
             customColor: d.customColor || null,
             position: { 
                 x: group.position.x, 
@@ -532,6 +533,7 @@ window.loadSceneData = function(data) {
                 doorGroup.userData.rotationY = doorGroup.rotation.y;
                 doorGroup.userData.doorHinge = itemData.doorHinge === "right" ? "right" : "left";
                 doorGroup.userData.doorOpening = itemData.doorOpening === "outward" ? "outward" : "inward";
+                doorGroup.userData.wallAttachment = readWallAttachment(itemData.wallAttachment);
                 updateDoorOpening(doorGroup);
                 if (itemData.customColor && typeof window.changeSelectedColor === "function") {
                     selectFurniture(doorGroup);
@@ -543,6 +545,7 @@ window.loadSceneData = function(data) {
                     furnitureGroup.position.set(itemData.position.x, itemData.position.y || 0, itemData.position.z);
                 }
                 furnitureGroup.userData = { ...itemData, rotationY: itemData.rotationY || 0 };
+                furnitureGroup.userData.wallAttachment = readWallAttachment(itemData.wallAttachment);
                 furnitureGroup.rotation.y = itemData.rotationY || 0;
 
                 if (itemData.customColor && typeof window.changeSelectedColor === "function") {
@@ -556,6 +559,7 @@ window.loadSceneData = function(data) {
         });
     }
 
+    syncWallAttachedItems();
     if (typeof window.updateMetrics === "function") window.updateMetrics();
 };
 
