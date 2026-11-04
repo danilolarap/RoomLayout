@@ -182,10 +182,7 @@ window.stepElevation = function(deltaY) {
     newY = Math.round(newY * 100) / 100;
     newY = Math.max(0, Math.min(3.0, newY));
 
-    selectedMesh.position.y = newY;
-
-    if (!selectedMesh.userData) selectedMesh.userData = {};
-    selectedMesh.userData.positionY = newY;
+    changeItemPlacement(selectedMesh, () => { selectedMesh.position.y = newY; });
 
     selectFurniture(selectedMesh);
 
@@ -196,9 +193,7 @@ window.stepElevation = function(deltaY) {
 
 window.resetElevation = function() {
     if (!selectedMesh || selectedMesh.userData.isWall) return;
-    selectedMesh.position.y = 0;
-    if (!selectedMesh.userData) selectedMesh.userData = {};
-    selectedMesh.userData.positionY = 0;
+    changeItemPlacement(selectedMesh, () => { selectedMesh.position.y = 0; });
 
     selectFurniture(selectedMesh);
 
@@ -213,10 +208,7 @@ window.rotateSelected = function(angle) {
         updateSelectedWall("angle", THREE.MathUtils.radToDeg(selectedMesh.rotation.y + angle));
         return;
     }
-    selectedMesh.rotation.y += angle;
-    if (!selectedMesh.userData) selectedMesh.userData = {};
-    selectedMesh.userData.rotationY = selectedMesh.rotation.y;
-    if (selectedMesh.userData.isDoor) updateDoorOpening(selectedMesh);
+    changeItemPlacement(selectedMesh, () => { selectedMesh.rotation.y += angle; });
 
     if (typeof window.refreshFurnitureFootprint === "function") window.refreshFurnitureFootprint(selectedMesh);
 
@@ -230,6 +222,7 @@ window.deleteSelected = function() {
     if (selectedMesh.userData.isWall) {
         roomWalls = roomWalls.filter(wall => wall !== selectedMesh);
         disposeRoomWall(selectedMesh);
+        syncWallAttachedItems();
         selectFurniture(null);
         return;
     }
