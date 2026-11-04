@@ -50,10 +50,17 @@ function createRoomWall(data = {}) {
     const wall = new THREE.Group();
     wall.userData = {
         isWall: true,
+        wallId: typeof data.wallId === "string" ? data.wallId : THREE.MathUtils.generateUUID(),
+        edgeStart: THREE.MathUtils.clamp(finite(data.edgeStart, -0.5), -0.5, 0.49),
+        edgeEnd: THREE.MathUtils.clamp(finite(data.edgeEnd, 0.5), -0.49, 0.5),
         placement: ["back", "front", "left", "right"].includes(data.placement) ? data.placement : "free",
         length: Math.max(0.25, finite(data.length, Math.min(2, size.width))),
         height: THREE.MathUtils.clamp(finite(data.height, 2.2), 0.25, 4)
     };
+    if (wall.userData.edgeEnd <= wall.userData.edgeStart) {
+        wall.userData.edgeStart = -0.5;
+        wall.userData.edgeEnd = 0.5;
+    }
     wall.position.set(finite(data.x, 0), 0, finite(data.z, 0));
     wall.rotation.y = finite(data.rotationY, 0);
     const surface = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({
@@ -96,6 +103,7 @@ function updateWallOpacity() {
 
 function getRoomWallsData() {
     return roomWalls.map(wall => ({
+        wallId: wall.userData.wallId, edgeStart: wall.userData.edgeStart, edgeEnd: wall.userData.edgeEnd,
         placement: wall.userData.placement, length: wall.userData.length, height: wall.userData.height,
         x: wall.position.x, z: wall.position.z, rotationY: wall.rotation.y
     }));
