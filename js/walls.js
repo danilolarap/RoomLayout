@@ -2,6 +2,7 @@
 let roomWalls = [];
 let wallsInitialized = false;
 let wallEditing = false;
+let previousWallRoomSize = null;
 const wallThickness = 0.04;
 const wallControlClass = "w-full bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 rounded-lg p-1.5 text-xs text-slate-700 dark:text-slate-200";
 
@@ -85,9 +86,32 @@ function syncRoomWalls(width, length) {
         createRoomWall({ placement: "back" });
         createRoomWall({ placement: "left" });
     }
-    roomWalls.forEach(wall => applyWallLayout(wall, width, length));
+    roomWalls.forEach(wall => {
+        if (previousWallRoomSize) detectWallEdge(wall, previousWallRoomSize.width, previousWallRoomSize.length);
+        applyWallLayout(wall, width, length);
+    });
+    previousWallRoomSize = { width, length };
+    if (typeof syncWallAttachedItems === "function") syncWallAttachedItems();
     renderWallTools();
     if (selectedMesh?.userData.isWall) selectFurniture(selectedMesh);
+}
+
+function detectWallEdge(wall, width, length) {
+    if (wall.userData.placement !== "free") return false;
+    const alongX = Math.abs(Math.sin(wall.rotation.y)) < 0.025;
+    const alongZ = Math.abs(Math.cos(wall.rotation.y)) < 0.025;
+    if (!alongX && !alongZ) return false;
+    const normalAxis = alongX ? "z" : "x";
+    const span = alongX ? width : length;
+    const normalSize = alongX ? length : width;
+    const position = wall.position[normalAxis];
+    if (Math.abs(Math.abs(position) - (normalSize / 2 - wallThickness / 2)) > 0.08) return false;
+    const center = wall.position[alongX ? "x" : "z"];
+    const d = wall.userData;
+    d.placement = alongX ? (position < 0 ? "back" : "front") : (position < 0 ? "left" : "right");
+    d.edgeStart = THREE.MathUtils.clamp((center - d.length / 2) / span, -0.5, 0.5);
+    d.edgeEnd = THREE.MathUtils.clamp((center + d.length / 2) / span, -0.5, 0.5);
+    return true;
 }
 
 function updateWallOpacity() {
