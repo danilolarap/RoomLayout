@@ -204,6 +204,7 @@ function updateRoomDimensions(width, length) {
     group.add(grid);
 
     footprintGroup = new THREE.Group();
+    footprintSource = null;
     footprintGroup.position.y = 0.018;
     footprintGroup.visible = false;
     group.add(footprintGroup);
