@@ -3,6 +3,11 @@ const wallContactGap = 0.008;
 const wallSnapDistance = 0.12;
 const placementBounds = new WeakMap();
 
+function readWallAttachment(value) {
+    if (!value || typeof value.wallId !== "string" || !Number.isFinite(value.offset) || ![1, -1].includes(value.side)) return undefined;
+    return { wallId: value.wallId, offset: THREE.MathUtils.clamp(value.offset, -0.5, 0.5), side: value.side };
+}
+
 function itemLocalBounds(item) {
     if (item.userData.isDoor) return new THREE.Box3(new THREE.Vector3(-0.44, 0, -0.04), new THREE.Vector3(0.44, 2, 0.04));
     if (placementBounds.has(item)) return placementBounds.get(item);
@@ -193,3 +198,22 @@ function syncWallAttachedItems() {
     });
 }
 
+function placeNewItem(item) {
+    moveItemWithWalls(item, item.position.clone());
+    if (!roomWalls.some(wall => itemIntersectsWall(item, wall))) return true;
+    // Si el centro está ocupado por varios tabiques, buscar el punto libre más cercano.
+    const origin = item.position.clone(), size = wallRoomSize();
+    const candidates = [];
+    for (let x = -size.width / 2; x <= size.width / 2; x += 0.25) {
+        for (let z = -size.length / 2; z <= size.length / 2; z += 0.25) candidates.push({ x, z });
+    }
+    candidates.sort((a, b) => Math.hypot(a.x - origin.x, a.z - origin.z) - Math.hypot(b.x - origin.x, b.z - origin.z));
+    for (const candidate of candidates) {
+        item.position.x = candidate.x;
+        item.position.z = candidate.z;
+        clampItemToRoom(item);
+        if (!roomWalls.some(wall => itemIntersectsWall(item, wall))) { trySnapItemToWall(item); return true; }
+    }
+    item.position.copy(origin);
+    return false;
+}
