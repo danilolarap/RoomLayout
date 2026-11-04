@@ -338,7 +338,10 @@ function updateDoorOpening(door) {
     if (!assembly) return;
     // El lado interior apunta hacia el centro del cuarto, incluso tras girar la puerta.
     const towardCenter = -door.position.x * Math.sin(door.rotation.y) - door.position.z * Math.cos(door.rotation.y);
-    const inwardSign = towardCenter > 0 ? 1 : -1;
+    const attachment = door.userData.wallAttachment;
+    const wall = attachment && roomWalls.find(candidate => candidate.userData.wallId === attachment.wallId);
+    const inwardProjection = wall ? attachment.side * Math.cos(door.rotation.y - wall.rotation.y) : 0;
+    const inwardSign = Math.abs(inwardProjection) > 1e-6 ? Math.sign(inwardProjection) : towardCenter > 0 ? 1 : -1;
     assembly.scale.x = inwardSign * (door.userData.doorHinge === "right" ? -1 : 1);
     assembly.scale.z = -inwardSign * (door.userData.doorOpening === "outward" ? -1 : 1);
 }
