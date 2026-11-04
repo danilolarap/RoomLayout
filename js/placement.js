@@ -66,3 +66,56 @@ function clampItemToRoom(item) {
     item.position.z += cz - p.z;
 }
 
+function shouldAlignItemToWall(item) {
+    const id = item.userData.id || "";
+    // La puerta conserva su orientación manual; el contacto solo ajusta su posición.
+    return !item.userData.isDoor && (id.includes("ventana") || ["reloj_pared", "barra_pared", "cortinas"].includes(id));
+}
+
+function trySnapItemToWall(item, preferredWallId) {
+    const p = itemPlan(item);
+    const candidates = roomWalls.map(wall => {
+        const f = wallFrame(wall);
+        const dx = p.x - wall.position.x, dz = p.z - wall.position.z;
+        const normal = dx * f.nx + dz * f.nz;
+        const tangent = dx * f.tx + dz * f.tz;
+        const gap = Math.abs(normal) - planRadius(p, f.nx, f.nz) - wallThickness / 2;
+        return { wall, f, normal, tangent, gap };
+    }).filter(({ wall, f, tangent, gap }) => p.bottom < wall.userData.height && p.top > 0
+        && Math.abs(tangent) < wall.userData.length / 2 + planRadius(p, f.tx, f.tz)
+        && gap >= -0.001 && gap <= wallSnapDistance).sort((a, b) =>
+            Number(b.wall.userData.wallId === preferredWallId) - Number(a.wall.userData.wallId === preferredWallId) || a.gap - b.gap);
+    for (const candidate of candidates) {
+        const { wall, f, normal } = candidate;
+        const previous = item.position.clone(), rotation = item.rotation.y;
+        const side = Math.abs(normal) > 1e-6 ? Math.sign(normal) : wallInteriorSide(wall);
+        if (shouldAlignItemToWall(item)) {
+            item.rotation.y = wall.rotation.y + (side < 0 ? Math.PI : 0);
+            item.userData.rotationY = item.rotation.y;
+        }
+        const shape = itemPlan(item);
+        const tangent = (shape.x - wall.position.x) * f.tx + (shape.z - wall.position.z) * f.tz;
+        const tangentRadius = planRadius(shape, f.tx, f.tz);
+        if (item.userData.isDoor && tangentRadius * 2 > wall.userData.length) {
+            item.rotation.y = rotation;
+            item.userData.rotationY = rotation;
+            continue;
+        }
+        const maxTangent = Math.max(0, wall.userData.length / 2 - tangentRadius);
+        const offset = THREE.MathUtils.clamp(tangent, -maxTangent, maxTangent);
+        const distance = side * (wallThickness / 2 + wallContactGap + planRadius(shape, f.nx, f.nz));
+        item.position.x += wall.position.x + f.tx * offset + f.nx * distance - shape.x;
+        item.position.z += wall.position.z + f.tz * offset + f.nz * distance - shape.z;
+        clampItemToRoom(item);
+        if (!roomWalls.some(other => itemIntersectsWall(item, other))) {
+            item.userData.wallAttachment = { wallId: wall.userData.wallId, offset: offset / wall.userData.length, side };
+            if (item.userData.isDoor) updateDoorOpening(item);
+            return true;
+        }
+        item.position.copy(previous);
+        item.rotation.y = rotation;
+        item.userData.rotationY = rotation;
+    }
+    return false;
+}
+
