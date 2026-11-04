@@ -155,3 +155,18 @@ function moveItemWithWalls(item, target, snap = true) {
     if (item.userData.isDoor) updateDoorOpening(item);
 }
 
+function changeItemPlacement(item, change) {
+    const position = item.position.clone(), rotation = item.rotation.y;
+    const attachment = item.userData.wallAttachment;
+    change();
+    moveItemWithWalls(item, item.position.clone());
+    if (roomWalls.some(wall => itemIntersectsWall(item, wall))) {
+        item.position.copy(position);
+        item.rotation.y = rotation;
+        item.userData.wallAttachment = attachment;
+        if (item.userData.isDoor) updateDoorOpening(item);
+    }
+    item.userData.rotationY = item.rotation.y;
+    item.userData.positionY = item.position.y;
+}
+
