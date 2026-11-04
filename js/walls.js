@@ -114,6 +114,15 @@ function detectWallEdge(wall, width, length) {
     return true;
 }
 
+function finishWallMove(wall) {
+    const size = wallRoomSize();
+    detectWallEdge(wall, size.width, size.length);
+    applyWallLayout(wall, size.width, size.length);
+    syncWallAttachedItems();
+    selectFurniture(wall);
+    window.updateMetrics?.();
+}
+
 function updateWallOpacity() {
     if (!camera) return;
     roomWalls.forEach(wall => {
@@ -225,6 +234,8 @@ function updateSelectedWall(key, value) {
     if (key === "placement") {
         if (!["free", "back", "front", "left", "right"].includes(value)) return;
         d.placement = value;
+        d.edgeStart = -0.5;
+        d.edgeEnd = 0.5;
     } else {
         const number = Number(value);
         if (!Number.isFinite(number) || !["length", "height", "x", "z", "angle"].includes(key)) return;
@@ -236,5 +247,10 @@ function updateSelectedWall(key, value) {
     }
     const size = wallRoomSize();
     applyWallLayout(wall, size.width, size.length);
+    if (key !== "placement" || value !== "free") {
+        detectWallEdge(wall, size.width, size.length);
+        applyWallLayout(wall, size.width, size.length);
+    }
+    syncWallAttachedItems();
     selectFurniture(wall);
 }

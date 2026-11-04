@@ -640,9 +640,11 @@ function onPointerMove(event) {
 
 function onPointerUp() {
     if (isDragging) {
+        const item = draggedObject;
         isDragging = false;
         draggedObject = null;
         controls.enabled = true;
+        if (item?.userData.isWall) finishWallMove(item);
         if (selectedMesh) updateFurnitureFootprint(selectedMesh);
     }
 }
