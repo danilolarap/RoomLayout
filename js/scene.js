@@ -308,9 +308,13 @@ function addDefaultDoor(rw, rl) {
     doorLeaf.position.y = 1.0;
     assembly.add(doorLeaf);
 
-    const handle = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), Materials.goldMetal);
-    handle.position.set(0.35, 1.0, 0.06);
-    assembly.add(handle);
+    const handleGeometry = new THREE.SphereGeometry(0.04, 16, 16);
+    [-1, 1].forEach(side => {
+        const handle = new THREE.Mesh(handleGeometry, Materials.goldMetal);
+        handle.name = side > 0 ? "door-handle-front" : "door-handle-back";
+        handle.position.set(0.35, 1.0, side * 0.07);
+        assembly.add(handle);
+    });
 
     const doorSweepGeo = new THREE.RingGeometry(0.05, 0.88, 16, 1, 0, Math.PI / 2);
     const doorSweepMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
