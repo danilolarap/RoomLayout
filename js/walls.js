@@ -29,10 +29,12 @@ function applyWallLayout(wall, width, length) {
     const d = wall.userData;
     if (d.placement !== "free") {
         const alongX = d.placement === "back" || d.placement === "front";
-        d.length = alongX ? width : length;
+        const span = alongX ? width : length;
+        d.length = span * (d.edgeEnd - d.edgeStart);
         wall.rotation.y = alongX ? 0 : Math.PI / 2;
         wall.position.set(alongX ? 0 : (d.placement === "left" ? -1 : 1) * (width / 2 - wallThickness / 2), 0,
             alongX ? (d.placement === "back" ? -1 : 1) * (length / 2 - wallThickness / 2) : 0);
+        wall.position[alongX ? "x" : "z"] = span * (d.edgeStart + d.edgeEnd) / 2;
     }
     constrainWall(wall, width, length);
     const surface = wall.children[0];
