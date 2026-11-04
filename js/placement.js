@@ -57,3 +57,12 @@ function itemIntersectsWall(item, wall) {
     });
 }
 
+function clampItemToRoom(item) {
+    const size = wallRoomSize(), p = itemPlan(item);
+    const rx = planRadius(p, 1, 0), rz = planRadius(p, 0, 1);
+    const cx = rx <= size.width / 2 ? THREE.MathUtils.clamp(p.x, -size.width / 2 + rx, size.width / 2 - rx) : 0;
+    const cz = rz <= size.length / 2 ? THREE.MathUtils.clamp(p.z, -size.length / 2 + rz, size.length / 2 - rz) : 0;
+    item.position.x += cx - p.x;
+    item.position.z += cz - p.z;
+}
+
