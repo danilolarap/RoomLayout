@@ -131,7 +131,11 @@
             </div>
 
             <div class="space-y-2 border-b border-amber-200 dark:border-slate-800 pb-2">
-                <button id="edit-walls" type="button" aria-pressed="false" aria-controls="wall-tools" onclick="window.setWallEditing(!wallEditing)" class="w-full bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-300 font-bold p-2 rounded-lg text-xs">Editar paredes</button>
+                <button id="edit-walls" type="button" aria-pressed="false" aria-controls="wall-tools" onclick="window.setWallEditing(!wallEditing)" class="wall-editor-launcher">
+                    <span class="wall-editor-icon" aria-hidden="true"><i class="fa-solid fa-draw-polygon"></i></span>
+                    <span class="wall-editor-copy"><strong id="edit-walls-label">Editar paredes</strong><span id="edit-walls-hint">Construye y distribuye tu sala</span></span>
+                    <i class="fa-solid fa-chevron-right wall-editor-arrow" aria-hidden="true"></i>
+                </button>
                 <div id="wall-tools" class="space-y-2" hidden>
                     <p id="wall-help" class="text-[10px] text-slate-500 dark:text-slate-400">Elige una pared aquí o en la escena. Arrástrala y ajústala en el inspector.</p>
                     <button id="add-wall" type="button" onclick="window.addRoomWall()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold p-2 rounded-lg text-xs">+ Agregar pared</button>

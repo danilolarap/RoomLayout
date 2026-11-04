@@ -177,7 +177,8 @@ function renderWallTools() {
     const isEn = window.currentLang === "en";
     const toggle = document.getElementById("edit-walls");
     if (!toggle) return;
-    toggle.textContent = wallEditing ? (isEn ? "Finish editing walls" : "Terminar edición de paredes") : (isEn ? "Edit walls" : "Editar paredes");
+    document.getElementById("edit-walls-label").textContent = wallEditing ? (isEn ? "Finish editing walls" : "Terminar edición de paredes") : (isEn ? "Edit walls" : "Editar paredes");
+    document.getElementById("edit-walls-hint").textContent = wallEditing ? (isEn ? "Return to furniture" : "Volver a los muebles") : (isEn ? "Build and arrange your room" : "Construye y distribuye tu sala");
     toggle.setAttribute("aria-pressed", String(wallEditing));
     document.getElementById("add-wall").textContent = isEn ? "+ Add wall" : "+ Agregar pared";
     document.getElementById("wall-help").textContent = isEn ? "Choose a wall here or in the scene. Drag it and adjust it in the inspector." : "Elige una pared aquí o en la escena. Arrástrala y ajústala en el inspector.";
