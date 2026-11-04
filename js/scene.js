@@ -599,37 +599,15 @@ function onPointerMove(event) {
                 draggedObject.position.x = Math.round(targetPos.x / 0.05) * 0.05;
                 draggedObject.position.z = Math.round(targetPos.z / 0.05) * 0.05;
                 constrainWall(draggedObject, size.width, size.length);
+                syncWallAttachedItems();
                 updateSmartWallOpacity();
                 selectFurniture(draggedObject);
                 return;
             }
 
-            const gridSize = 0.05;
-            let snapX = Math.round(targetPos.x / gridSize) * gridSize;
-            let snapZ = Math.round(targetPos.z / gridSize) * gridSize;
-
-            const rw = (parseFloat(document.getElementById("room-width").value) || 4) / 2;
-            const rl = (parseFloat(document.getElementById("room-length").value) || 3.5) / 2;
-
-            // El barrido puede salir del cuarto; solo la hoja limita el arrastre de la puerta.
-            draggedObject.updateWorldMatrix(true, true);
-            const bbox = new THREE.Box3().setFromObject(draggedObject.userData.isDoor
-                ? draggedObject.getObjectByName("door-leaf") : draggedObject);
-
-            const minAllowedX = -rw + (draggedObject.position.x - bbox.min.x);
-            const maxAllowedX = rw - (bbox.max.x - draggedObject.position.x);
-
-            const minAllowedZ = -rl + (draggedObject.position.z - bbox.min.z);
-            const maxAllowedZ = rl - (bbox.max.z - draggedObject.position.z);
-
-            snapX = Math.max(minAllowedX, Math.min(maxAllowedX, snapX));
-            snapZ = Math.max(minAllowedZ, Math.min(maxAllowedZ, snapZ));
-
-            if (snapX === draggedObject.position.x && snapZ === draggedObject.position.z) return;
-
-            draggedObject.position.x = snapX;
-            draggedObject.position.z = snapZ;
-            if (draggedObject.userData.isDoor) updateDoorOpening(draggedObject);
+            targetPos.x = Math.round(targetPos.x / 0.05) * 0.05;
+            targetPos.z = Math.round(targetPos.z / 0.05) * 0.05;
+            moveItemWithWalls(draggedObject, targetPos);
             updateFurnitureFootprint(draggedObject);
 
             if (typeof selectFurniture === "function") selectFurniture(draggedObject);
