@@ -199,7 +199,28 @@ function renderWallTools() {
 
 function addRoomWall() {
     if (!wallEditing) setWallEditing(true);
-    selectFurniture(createRoomWall());
+    const previous = activeItems.map(item => ({ item, position: item.position.clone(), rotation: item.rotation.y, attachment: item.userData.wallAttachment }));
+    const wall = createRoomWall();
+    syncWallAttachedItems();
+    if (activeItems.some(item => roomWalls.some(candidate => itemIntersectsWall(item, candidate)))) {
+        roomWalls = roomWalls.filter(candidate => candidate !== wall);
+        disposeRoomWall(wall);
+        previous.forEach(({ item, position, rotation, attachment }) => {
+            item.position.copy(position);
+            item.rotation.y = rotation;
+            item.userData.rotationY = rotation;
+            item.userData.wallAttachment = attachment;
+            if (item.userData.isDoor) updateDoorOpening(item);
+        });
+        selectFurniture(null);
+        const content = document.getElementById("inspector-content");
+        if (content) content.textContent = window.currentLang === "en"
+            ? "There is no room for this wall without crossing existing objects. Move an object or enlarge the room."
+            : "No hay espacio para esta pared sin atravesar los objetos existentes. Mueve un objeto o amplía la sala.";
+        return;
+    }
+    selectFurniture(wall);
+    window.updateMetrics?.();
 }
 
 function renderWallInspector(wall, content) {

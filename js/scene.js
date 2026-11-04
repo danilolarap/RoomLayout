@@ -324,6 +324,7 @@ function addDefaultDoor(rw, rl) {
 
     scene.add(group);
     activeItems.push(group);
+    placeNewItem(group);
 }
 
 function updateDoorOpening(door) {
@@ -418,6 +419,17 @@ window.addFurnitureToScene = function(item) {
 
     scene.add(furnitureGroup);
     activeItems.push(furnitureGroup);
+    if (!placeNewItem(furnitureGroup)) {
+        scene.remove(furnitureGroup);
+        activeItems.pop();
+        furnitureGroup.traverse(child => child.geometry?.dispose());
+        selectFurniture(null);
+        const content = document.getElementById("inspector-content");
+        if (content) content.textContent = window.currentLang === "en"
+            ? "This object does not fit between the walls. Move a wall or enlarge the room."
+            : "Este objeto no cabe entre las paredes. Mueve una pared o amplía la sala.";
+        return;
+    }
     if (typeof selectFurniture === "function") selectFurniture(furnitureGroup);
     updateFurnitureFootprint(furnitureGroup);
     if (typeof window.updateMetrics === "function") window.updateMetrics();
