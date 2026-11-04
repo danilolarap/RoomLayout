@@ -119,3 +119,39 @@ function trySnapItemToWall(item, preferredWallId) {
     return false;
 }
 
+function moveItemWithWalls(item, target, snap = true) {
+    const attachment = item.userData.wallAttachment;
+    delete item.userData.wallAttachment;
+    const start = item.position.clone();
+    const steps = Math.max(1, Math.ceil(Math.hypot(target.x - start.x, target.z - start.z) / 0.04));
+    for (let step = 1; step <= steps; step++) {
+        const previous = item.position.clone(), before = itemPlan(item);
+        item.position.x = previous.x + (target.x - start.x) / steps;
+        item.position.z = previous.z + (target.z - start.z) / steps;
+        clampItemToRoom(item);
+        for (let pass = 0; pass < 6; pass++) {
+            let corrected = false;
+            roomWalls.forEach(wall => {
+                if (!itemIntersectsWall(item, wall)) return;
+                const f = wallFrame(wall), p = itemPlan(item);
+                const oldDistance = (before.x - wall.position.x) * f.nx + (before.z - wall.position.z) * f.nz;
+                const side = attachment?.wallId === wall.userData.wallId ? attachment.side
+                    : Math.abs(oldDistance) > 1e-6 ? Math.sign(oldDistance) : wallInteriorSide(wall);
+                const distance = (p.x - wall.position.x) * f.nx + (p.z - wall.position.z) * f.nz;
+                const correction = side * (planRadius(p, f.nx, f.nz) + wallThickness / 2 + wallContactGap) - distance;
+                item.position.x += f.nx * correction;
+                item.position.z += f.nz * correction;
+                clampItemToRoom(item);
+                corrected = true;
+            });
+            if (!corrected) break;
+        }
+        if (roomWalls.some(wall => itemIntersectsWall(item, wall))) {
+            item.position.copy(previous);
+            break;
+        }
+    }
+    if (snap) trySnapItemToWall(item, attachment?.wallId);
+    if (item.userData.isDoor) updateDoorOpening(item);
+}
+
