@@ -108,6 +108,12 @@ No se requiere instalación de paquetes ni un paso de compilación. Para despleg
 
 Las cuentas y los proyectos se guardan en el almacenamiento local del navegador y no se sincronizan entre dispositivos. Usa la exportación JSON para guardar una copia o trasladar un diseño.
 
+### Edición de paredes
+
+Pulsa **Editar paredes** sobre el catálogo. Selecciona una pared desde la lista o directamente en la escena y arrástrala sobre la cuadrícula. El inspector permite cambiar su longitud, altura, posición X/Z y ángulo, colocarla en cualquiera de los cuatro bordes o eliminarla. **Agregar pared** crea una división adicional; **Terminar edición de paredes** vuelve a la selección de muebles.
+
+Todas las paredes conservan el acabado translúcido y la opacidad dinámica según la cámara. Las paredes asignadas a un borde se ajustan al cambiar las dimensiones del cuarto; las de posición libre conservan su disposición dentro de los nuevos límites. La distribución se incluye al guardar, cargar, importar y exportar proyectos. Los diseños anteriores mantienen las dos paredes originales.
+
 ### Paisajes del visor
 
 El botón **Temas 360°**, junto a **ISO 3D** y **PLANTA (TOP)**, abre una galería con nueve paisajes: **Calma**, **Halloween**, **Navidad**, **Fantasía**, **Bosque**, **Costa**, **Desierto**, **Sakura** y **Aurora**. Selecciona una miniatura, previsualiza **Día / Noche** y pulsa **Usar tema**. **Cancelar**, cerrar la galería o pulsar Escape conserva el paisaje actual; las vistas previas no cambian el modo de la aplicación.
