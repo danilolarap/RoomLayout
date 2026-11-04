@@ -270,6 +270,7 @@ function initUI() {
 function updateLanguageTexts() {
     const t = i18n[window.currentLang];
     window.ViewerBackground?.setLanguage(window.currentLang);
+    renderWallTools();
     const setTxt = (id, txt) => {
         const el = document.getElementById(id);
         if (el) el.innerText = txt;

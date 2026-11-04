@@ -130,6 +130,15 @@
                 <span id="catalog-count" class="text-[10px] bg-amber-100 dark:bg-slate-800 text-amber-800 dark:text-amber-300 font-bold px-1.5 py-0.5 rounded-full">18 items</span>
             </div>
 
+            <div class="space-y-2 border-b border-amber-200 dark:border-slate-800 pb-2">
+                <button id="edit-walls" type="button" aria-pressed="false" aria-controls="wall-tools" onclick="window.setWallEditing(!wallEditing)" class="w-full bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-300 font-bold p-2 rounded-lg text-xs">Editar paredes</button>
+                <div id="wall-tools" class="space-y-2" hidden>
+                    <p id="wall-help" class="text-[10px] text-slate-500 dark:text-slate-400">Elige una pared aquí o en la escena. Arrástrala y ajústala en el inspector.</p>
+                    <button id="add-wall" type="button" onclick="window.addRoomWall()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold p-2 rounded-lg text-xs">+ Agregar pared</button>
+                    <div id="wall-list" class="space-y-1 max-h-32 overflow-y-auto custom-scrollbar"></div>
+                </div>
+            </div>
+
             <div class="relative">
                 <input id="search-catalog" type="text" placeholder="Buscar muebles..." class="w-full bg-amber-50/50 dark:bg-slate-950 border border-amber-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs pl-8 focus:outline-none focus:border-amber-500">
                 <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
@@ -287,6 +296,7 @@
     <script src="js/furniture/details/decor.js"></script>
     <script src="js/furniture-builder.js"></script>
     <script src="js/scene.js"></script>
+    <script src="js/walls.js"></script>
     <script src="js/ai-engine.js"></script>
     <script src="js/inspector.js"></script>
     <script src="js/viewer-environment.js"></script>

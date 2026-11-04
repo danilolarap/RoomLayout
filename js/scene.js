@@ -88,6 +88,8 @@ function initScene() {
     dom.addEventListener("pointerdown", onPointerDown);
     dom.addEventListener("pointermove", onPointerMove);
     dom.addEventListener("pointerup", onPointerUp);
+    dom.addEventListener("pointercancel", onPointerUp);
+    window.addEventListener("pointerup", onPointerUp);
 
     window.addEventListener("resize", onWindowResize);
 
@@ -206,32 +208,16 @@ function updateRoomDimensions(width, length) {
     footprintGroup.visible = false;
     group.add(footprintGroup);
 
-    const wallHeight = 2.2;
-    const wallClearance = 0.005;
-
-    // Paredes inteligentes con transparencia dinámica
-    const backWallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
-    const backWall = new THREE.Mesh(new THREE.PlaneGeometry(width + wallClearance * 2, wallHeight), backWallMat);
-    backWall.position.set(0, wallHeight / 2, -length / 2 - wallClearance);
-    backWall.userData = { isWall: true, axis: "z", dir: -1 };
-    group.add(backWall);
-
-    const leftWallMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
-    const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(length + wallClearance * 2, wallHeight), leftWallMat);
-    leftWall.rotation.y = Math.PI / 2;
-    leftWall.position.set(-width / 2 - wallClearance, wallHeight / 2, 0);
-    leftWall.userData = { isWall: true, axis: "x", dir: -1 };
-    group.add(leftWall);
-
     roomMesh = group;
     updateRoomTheme();
     scene.add(roomMesh);
+    syncRoomWalls(width, length);
     window.ViewerBackground?.resizeRoom(width, length);
     if (selectedMesh) updateFurnitureFootprint(selectedMesh);
 }
 
 function updateFurnitureFootprint(item) {
-    if (!footprintGroup || !item || item.userData?.isDoor) {
+    if (!footprintGroup || !item || item.userData?.isDoor || item.userData?.isWall) {
         if (footprintGroup) footprintGroup.visible = false;
         footprintSource = null;
         return;
@@ -297,20 +283,7 @@ function updateFurnitureFootprint(item) {
 }
 
 function updateSmartWallOpacity() {
-    if (!roomMesh || !camera) return;
-
-    roomMesh.children.forEach(child => {
-        if (child.userData && child.userData.isWall) {
-            const axis = child.userData.axis;
-            const camPosOnAxis = camera.position[axis];
-            // Si la cámara está en el lado opuesto de la pared, la hace casi invisible
-            if ((child.userData.dir < 0 && camPosOnAxis > 0) || (child.userData.dir > 0 && camPosOnAxis < 0)) {
-                child.material.opacity = 0.15;
-            } else {
-                child.material.opacity = 0.6;
-            }
-        }
-    });
+    updateWallOpacity();
 }
 
 function addDefaultDoor(rw, rl) {
@@ -427,6 +400,7 @@ window.startSunSimulation = function() {
 };
 
 window.addFurnitureToScene = function(item) {
+    if (wallEditing) setWallEditing(false);
     const furnitureGroup = createDetailedFurniture(item);
     
     let initialY = 0;
@@ -504,7 +478,7 @@ window.getSceneData = function() {
     });
 
     return {
-        room: { width: roomW, length: roomL, sunTime: sunTime },
+        room: { width: roomW, length: roomL, sunTime: sunTime, walls: getRoomWallsData() },
         items: itemsData
     };
 };
@@ -531,6 +505,7 @@ window.loadSceneData = function(data) {
     document.getElementById("time-display").innerText = `${formattedHours}:${formattedMins}`;
 
     updateRoomDimensions(roomW, roomL);
+    loadRoomWalls(data.room.walls);
     updateSunPosition(sunTime);
 
     if (Array.isArray(data.items)) {
@@ -582,7 +557,7 @@ function onPointerDown(event) {
     updateMousePosition(event);
     raycaster.setFromCamera(mouse, camera);
 
-    const intersects = raycaster.intersectObjects(activeItems, true);
+    const intersects = raycaster.intersectObjects(wallEditing ? roomWalls.map(wall => wall.children[0]) : activeItems, true);
 
     if (intersects.length > 0) {
         let rootGroup = intersects[0].object;
@@ -617,6 +592,17 @@ function onPointerMove(event) {
     if (isDragging && draggedObject) {
         if (raycaster.ray.intersectPlane(dragPlane, planeIntersection)) {
             const targetPos = planeIntersection.clone().add(dragOffset);
+
+            if (draggedObject.userData.isWall) {
+                const size = wallRoomSize();
+                draggedObject.userData.placement = "free";
+                draggedObject.position.x = Math.round(targetPos.x / 0.05) * 0.05;
+                draggedObject.position.z = Math.round(targetPos.z / 0.05) * 0.05;
+                constrainWall(draggedObject, size.width, size.length);
+                updateSmartWallOpacity();
+                selectFurniture(draggedObject);
+                return;
+            }
 
             const gridSize = 0.05;
             let snapX = Math.round(targetPos.x / gridSize) * gridSize;

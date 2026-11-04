@@ -7,6 +7,11 @@ function selectFurniture(meshGroup) {
     }
     const content = document.getElementById("inspector-content");
     if (!content) return;
+    renderWallTools();
+    if (meshGroup?.userData.isWall) {
+        renderWallInspector(meshGroup, content);
+        return;
+    }
 
     const lang = window.currentLang || "es";
     const isEn = lang === "en";
@@ -171,7 +176,7 @@ window.changeSelectedColor = function(hexColor) {
 };
 
 window.stepElevation = function(deltaY) {
-    if (!selectedMesh) return;
+    if (!selectedMesh || selectedMesh.userData.isWall) return;
 
     let newY = selectedMesh.position.y + deltaY;
     newY = Math.round(newY * 100) / 100;
@@ -190,7 +195,7 @@ window.stepElevation = function(deltaY) {
 };
 
 window.resetElevation = function() {
-    if (!selectedMesh) return;
+    if (!selectedMesh || selectedMesh.userData.isWall) return;
     selectedMesh.position.y = 0;
     if (!selectedMesh.userData) selectedMesh.userData = {};
     selectedMesh.userData.positionY = 0;
@@ -204,6 +209,10 @@ window.resetElevation = function() {
 
 window.rotateSelected = function(angle) {
     if (!selectedMesh) return;
+    if (selectedMesh.userData.isWall) {
+        updateSelectedWall("angle", THREE.MathUtils.radToDeg(selectedMesh.rotation.y + angle));
+        return;
+    }
     selectedMesh.rotation.y += angle;
     if (!selectedMesh.userData) selectedMesh.userData = {};
     selectedMesh.userData.rotationY = selectedMesh.rotation.y;
@@ -218,6 +227,12 @@ window.rotateSelected = function(angle) {
 
 window.deleteSelected = function() {
     if (!selectedMesh || selectedMesh.userData?.isDoor) return;
+    if (selectedMesh.userData.isWall) {
+        roomWalls = roomWalls.filter(wall => wall !== selectedMesh);
+        disposeRoomWall(selectedMesh);
+        selectFurniture(null);
+        return;
+    }
 
     if (typeof scene !== "undefined" && scene) {
         scene.remove(selectedMesh);
