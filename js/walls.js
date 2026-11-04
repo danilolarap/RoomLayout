@@ -148,6 +148,12 @@ function loadRoomWalls(data) {
     // Los proyectos anteriores conservan sus dos paredes originales; [] permite un cuarto sin paredes.
     const walls = Array.isArray(data) ? data : [{ placement: "back" }, { placement: "left" }];
     walls.forEach(createRoomWall);
+    const size = wallRoomSize();
+    previousWallRoomSize = size;
+    roomWalls.forEach(wall => {
+        detectWallEdge(wall, size.width, size.length);
+        applyWallLayout(wall, size.width, size.length);
+    });
     renderWallTools();
 }
 
