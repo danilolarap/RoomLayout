@@ -170,3 +170,26 @@ function changeItemPlacement(item, change) {
     item.userData.positionY = item.position.y;
 }
 
+function syncWallAttachedItems() {
+    activeItems.forEach(item => {
+        const attachment = item.userData.wallAttachment;
+        const wall = attachment && roomWalls.find(w => w.userData.wallId === attachment.wallId);
+        if (wall) {
+            const f = wallFrame(wall);
+            if (shouldAlignItemToWall(item)) {
+                item.rotation.y = wall.rotation.y + (attachment.side < 0 ? Math.PI : 0);
+                item.userData.rotationY = item.rotation.y;
+            }
+            const p = itemPlan(item);
+            const limit = Math.max(0, wall.userData.length / 2 - planRadius(p, f.tx, f.tz));
+            const tangent = THREE.MathUtils.clamp(attachment.offset * wall.userData.length, -limit, limit);
+            const distance = attachment.side * (wallThickness / 2 + wallContactGap + planRadius(p, f.nx, f.nz));
+            item.position.x += wall.position.x + tangent * f.tx + distance * f.nx - p.x;
+            item.position.z += wall.position.z + tangent * f.tz + distance * f.nz - p.z;
+        }
+        moveItemWithWalls(item, item.position.clone());
+        if (roomWalls.some(candidate => itemIntersectsWall(item, candidate))) placeNewItem(item);
+        updateFurnitureFootprint(selectedMesh);
+    });
+}
+
