@@ -244,7 +244,7 @@ function renderWallInspector(wall, content) {
             ${field("z", "Z (m)", wall.position.z.toFixed(2), -size.length / 2, size.length / 2, 0.05)}
         </div>
         ${field("angle", isEn ? "Angle (°)" : "Ángulo (°)", (THREE.MathUtils.radToDeg(wall.rotation.y) % 360).toFixed(1), -360, 360, 15)}
-        <p class="text-[10px] text-slate-500 dark:text-slate-400">${isEn ? "Edge walls follow the room size. Changing length, position or angle switches to free placement. Transparency follows the camera." : "Las paredes de borde se adaptan al tamaño del cuarto. Cambiar longitud, posición o ángulo activa la posición libre. La transparencia se adapta a la cámara."}</p>
+        <p class="text-[10px] text-slate-500 dark:text-slate-400">${isEn ? "Walls placed along an edge automatically follow the room size, including partial sections. Objects snap to wall faces. Transparency follows the camera." : "Las paredes colocadas junto a un borde se adaptan automáticamente al tamaño del cuarto, incluidos los tramos parciales. Los objetos se ajustan a la cara de la pared. La transparencia se adapta a la cámara."}</p>
         <button type="button" onclick="window.deleteSelected()" class="w-full text-xs font-bold text-red-600 dark:text-red-400 bg-red-500/10 rounded-lg p-2">${isEn ? "Delete wall" : "Eliminar pared"}</button>
     </div>`;
 }

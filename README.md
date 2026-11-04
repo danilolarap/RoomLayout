@@ -114,6 +114,10 @@ Pulsa **Editar paredes** sobre el catálogo. Selecciona una pared desde la lista
 
 Todas las paredes conservan el acabado translúcido y la opacidad dinámica según la cámara. Las paredes asignadas a un borde se ajustan al cambiar las dimensiones del cuarto; las de posición libre conservan su disposición dentro de los nuevos límites. La distribución se incluye al guardar, cargar, importar y exportar proyectos. Los diseños anteriores mantienen las dos paredes originales.
 
+Las paredes arrastradas o colocadas manualmente junto a un borde se detectan automáticamente: al ampliar o reducir la sala, siguen ese borde y ajustan su longitud. Los tramos parciales conservan su proporción y ubicación sobre el borde. También se reconocen las paredes de borde de proyectos ya guardados.
+
+Al acercar muebles, puertas o elementos de pared, se ajustan a la superficie con una separación de 8 mm para evitar caras superpuestas. La puerta conserva la orientación elegida manualmente al pegarla, mover su pared o redimensionar la sala. Las ventanas y otros elementos de pared se orientan al pegarlos; el arrastre comprueba el recorrido para impedir que atraviesen paredes, incluidos tabiques diagonales. Los objetos pegados siguen a su pared al moverla o redimensionar la sala, y esa unión se guarda en el proyecto. Si un objeto nuevo no cabe entre las paredes, se muestra un aviso en el inspector.
+
 ### Paisajes del visor
 
 El botón **Temas 360°**, junto a **ISO 3D** y **PLANTA (TOP)**, abre una galería con nueve paisajes: **Calma**, **Halloween**, **Navidad**, **Fantasía**, **Bosque**, **Costa**, **Desierto**, **Sakura** y **Aurora**. Selecciona una miniatura, previsualiza **Día / Noche** y pulsa **Usar tema**. **Cancelar**, cerrar la galería o pulsar Escape conserva el paisaje actual; las vistas previas no cambian el modo de la aplicación.
