@@ -236,8 +236,13 @@ function addRoomWall() {
 function renderWallInspector(wall, content) {
     const isEn = window.currentLang === "en";
     const d = wall.userData;
-    const field = (key, label, value, min, max, step) => `<label class="block text-xs text-slate-600 dark:text-slate-300">${label}
-        <input class="${wallControlClass} mt-1" type="number" value="${value}" min="${min}" max="${max}" step="${step}" onchange="window.updateSelectedWall('${key}', this.value)"></label>`;
+    const field = (key, label, value, min, max, step) => `<div class="min-w-0 text-xs text-slate-600 dark:text-slate-300">
+        <label for="wall-field-${key}">${label}</label>
+        <div class="flex items-center gap-1 bg-white dark:bg-slate-900 px-1.5 py-1 mt-1 rounded-lg border border-amber-300/80 dark:border-slate-600 shadow-xs">
+            <button type="button" aria-label="${isEn ? "Decrease" : "Disminuir"} ${label}" onclick="window.stepSelectedWall('${key}', -1)" class="w-5 h-5 shrink-0 bg-amber-100 hover:bg-amber-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-amber-800 dark:text-amber-300 rounded font-bold transition flex items-center justify-center text-xs">−</button>
+            <input id="wall-field-${key}" class="wall-number-input min-w-0 w-full text-center font-extrabold text-amber-900 dark:text-amber-300 bg-transparent focus:outline-none" type="number" value="${value}" min="${min}" max="${max}" step="${step}" onchange="window.updateSelectedWall('${key}', this.value)">
+            <button type="button" aria-label="${isEn ? "Increase" : "Aumentar"} ${label}" onclick="window.stepSelectedWall('${key}', 1)" class="w-5 h-5 shrink-0 bg-amber-500 hover:bg-amber-600 text-white rounded font-bold transition flex items-center justify-center text-xs">+</button>
+        </div></div>`;
     const size = wallRoomSize();
     const placements = isEn ? [["free", "Free position"], ["back", "Back edge"], ["front", "Front edge"], ["left", "Left edge"], ["right", "Right edge"]]
         : [["free", "Posición libre"], ["back", "Borde posterior"], ["front", "Borde frontal"], ["left", "Borde izquierdo"], ["right", "Borde derecho"]];
@@ -253,10 +258,19 @@ function renderWallInspector(wall, content) {
             ${field("z", "Z (m)", wall.position.z.toFixed(2), -size.length / 2, size.length / 2, 0.05)}
         </div>
         ${field("angle", isEn ? "Angle (°)" : "Ángulo (°)", (THREE.MathUtils.radToDeg(wall.rotation.y) % 360).toFixed(1), -360, 360, 15)}
-        <p class="text-[10px] text-slate-500 dark:text-slate-400">${isEn ? "Walls placed along an edge automatically follow the room size, including partial sections. Objects snap to wall faces. Transparency follows the camera." : "Las paredes colocadas junto a un borde se adaptan automáticamente al tamaño del cuarto, incluidos los tramos parciales. Los objetos se ajustan a la cara de la pared. La transparencia se adapta a la cámara."}</p>
+        <p class="text-[10px] text-slate-500 dark:text-slate-400">${isEn ? "Furniture stays in place while you edit walls. After finishing, you can move any objects that overlap a wall. Edge walls adapt to the room size." : "Los muebles conservan su lugar al editar paredes. Al terminar, puedes mover los objetos que coincidan con una pared. Las paredes de borde se adaptan al tamaño del cuarto."}</p>
         <button type="button" onclick="window.deleteSelected()" class="w-full text-xs font-bold text-red-600 dark:text-red-400 bg-red-500/10 rounded-lg p-2">${isEn ? "Delete wall" : "Eliminar pared"}</button>
     </div>`;
 }
+
+window.stepSelectedWall = function(key, direction) {
+    if (!selectedMesh?.userData.isWall || !["length", "height", "x", "z", "angle"].includes(key)
+        || ![-1, 1].includes(direction)) return;
+    const input = document.getElementById(`wall-field-${key}`);
+    if (!input) return;
+    input.stepUp(direction);
+    updateSelectedWall(key, input.value);
+};
 
 function updateSelectedWall(key, value) {
     const wall = selectedMesh;

@@ -27,6 +27,11 @@
 .wall-editor-arrow { font-size: 11px; }
 .dark .wall-editor-launcher[aria-pressed="false"]:not(:hover) { border-color: #fbbf24; box-shadow: 0 4px 16px #f59e0b26; }
 
+/* Los campos de pared usan botones −/+ en lugar de las flechas del navegador. */
+.wall-number-input { appearance: textfield; -moz-appearance: textfield; }
+.wall-number-input::-webkit-inner-spin-button,
+.wall-number-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
 /* Estilos de barra de desplazamiento */
 ::-webkit-scrollbar {
     width: 6px;
