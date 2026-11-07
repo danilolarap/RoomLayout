@@ -1,0 +1,6 @@
+{
+  "name": "roomlayout",
+  "private": true,
+  "scripts": { "test": "node --test tests/*.test.cjs" },
+  "devDependencies": { "three": "0.128.0" }
+}
