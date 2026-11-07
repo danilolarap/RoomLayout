@@ -25,7 +25,7 @@ El proyecto combina una escena creada con Three.js, un catálogo de objetos low-
 * **Luz solar y análisis del espacio:**
   * Simulación horaria con una esfera solar sincronizada con la luz direccional y sus sombras.
   * Métricas de área ocupada y libre.
-  * Análisis de colisiones, circulación y posibles problemas de distribución.
+  * Avisos solo por objetos que se atraviesan o sobrepasan los límites de la habitación.
 * **Proyectos e idioma:**
   * Guardado local de usuarios y diseños mediante IndexedDB.
   * Archivos portátiles de diseño con extensión `.roomlayout`, validados antes de abrirlos.
@@ -105,6 +105,14 @@ RoomLayout/
 
 No se requiere instalación de paquetes ni un paso de compilación. Para desplegar en Vercel, importa el repositorio y selecciona **Other** como preset; deja vacíos los comandos de build y el directorio de salida. La configuración estática se encuentra en `vercel.json`.
 
+### Diagnóstico del diseño
+
+El asistente usa comprobaciones geométricas locales. Revisa las piezas de cada modelo por separado, con sus posiciones, giros y escalas, en lugar de considerar todo el volumen que envuelve un mueble como sólido. Así, los huecos de un escritorio en L y el espacio libre bajo su tablero no generan avisos por sí solos. Los anillos y recipientes abiertos se separan en segmentos para conservar sus huecos. Se aplica una tolerancia de contacto de 3 mm y de 2 cm en los límites del cuarto.
+
+Solo muestra comentarios cuando dos objetos se atraviesan o un objeto queda fuera de los límites horizontales o bajo el piso. Incluye la puerta física y excluye su guía de apertura. No comenta sobre ocupación, ergonomía, objetos flotando ni proximidad a la puerta. Sin conflictos, el panel de comentarios permanece oculto. Mientras se editan paredes, se pausa el diagnóstico y se actualiza al terminar.
+
+Para ejecutar las pruebas de desarrollo con la misma versión de Three.js que usa el visor: `npm install` y `npm test` (en PowerShell con scripts deshabilitados, `npm.cmd install` y `npm.cmd test`). Esta dependencia se usa solo para las pruebas; el sitio sigue funcionando sin compilación.
+
 ### Almacenamiento
 
 Las cuentas y los proyectos se guardan en el almacenamiento local del navegador y no se sincronizan entre dispositivos. Pulsa **Guardar** para descargar un archivo `.roomlayout`. En otro equipo, abre RoomLayout, entra a **Mis diseños** y pulsa **Abrir archivo** para recuperar el diseño. También funciona en modo invitado. Con una cuenta activa se conserva además una copia local; los diseños locales anteriores siguen disponibles.
@@ -119,11 +127,13 @@ Esta validación detecta daños y formatos ajenos, pero no certifica el origen: 
 
 Pulsa **Editar paredes** sobre el catálogo. Selecciona una pared desde la lista o directamente en la escena y arrástrala sobre la cuadrícula. El inspector permite cambiar su longitud, altura, posición X/Z y ángulo, colocarla en cualquiera de los cuatro bordes o eliminarla. **Agregar pared** crea una división adicional; **Terminar edición de paredes** vuelve a la selección de muebles.
 
+Durante la edición, todos los muebles y la puerta se ocultan y conservan su posición y orientación. Cambiar de borde, arrastrar, agregar o eliminar paredes no los recoloca. Al terminar reaparecen en su lugar; los objetos unidos a una pared modificada quedan desligados de ella para evitar desplazamientos posteriores. Si una pared nueva coincide con un objeto, puedes moverlo después. Los campos del inspector usan botones **− / +**: pasos de 5 cm para medidas y posiciones, y de 15° para el ángulo; también permiten escribir valores directamente.
+
 Todas las paredes conservan el acabado translúcido y la opacidad dinámica según la cámara. Las paredes asignadas a un borde se ajustan al cambiar las dimensiones del cuarto; las de posición libre conservan su disposición dentro de los nuevos límites. La distribución se incluye al guardar, cargar, importar y exportar proyectos. Los diseños anteriores mantienen las dos paredes originales.
 
 Las paredes arrastradas o colocadas manualmente junto a un borde se detectan automáticamente: al ampliar o reducir la sala, siguen ese borde y ajustan su longitud. Los tramos parciales conservan su proporción y ubicación sobre el borde. También se reconocen las paredes de borde de proyectos ya guardados.
 
-Al acercar muebles, puertas o elementos de pared, se ajustan a la superficie con una separación de 8 mm para evitar caras superpuestas. La puerta conserva la orientación elegida manualmente al pegarla, mover su pared o redimensionar la sala. Las ventanas y otros elementos de pared se orientan al pegarlos; el arrastre comprueba el recorrido para impedir que atraviesen paredes, incluidos tabiques diagonales. Los objetos pegados siguen a su pared al moverla o redimensionar la sala, y esa unión se guarda en el proyecto. Si un objeto nuevo no cabe entre las paredes, se muestra un aviso en el inspector.
+Al acercar muebles, puertas o elementos de pared, se ajustan a la superficie con una separación de 8 mm para evitar caras superpuestas. La puerta conserva la orientación elegida manualmente al pegarla o redimensionar la sala. Las ventanas y otros elementos de pared se orientan al pegarlos; el arrastre comprueba el recorrido para impedir que atraviesen paredes, incluidos tabiques diagonales. Fuera del modo de edición de paredes, los objetos pegados siguen a su pared al redimensionar la sala, y esa unión se guarda en el proyecto. Si un objeto nuevo no cabe entre las paredes, se muestra un aviso en el inspector.
 
 ### Paisajes del visor
 
