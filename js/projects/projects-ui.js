@@ -105,7 +105,7 @@ async function renderProjectsList() {
 
             item.innerHTML = `
                 <div>
-                    <h4 class="font-bold text-amber-900 dark:text-amber-300 text-sm">${p.name}</h4>
+                    <h4 class="font-bold text-amber-900 dark:text-amber-300 text-sm"></h4>
                     <p class="text-[10px] text-slate-500">${p.room.width}m × ${p.room.length}m | ${p.items.length} ${window.currentLang === "en" ? "items" : "objetos"} | ${dateStr}</p>
                 </div>
                 <div class="flex gap-1">
@@ -117,6 +117,7 @@ async function renderProjectsList() {
                     </button>
                 </div>
             `;
+            item.querySelector("h4").textContent = p.name;
             container.appendChild(item);
         });
     } catch (err) {
