@@ -2,6 +2,8 @@
 let roomWalls = [];
 let wallsInitialized = false;
 let wallEditing = false;
+const wallEditItemVisibility = new Map();
+let wallEditLayouts = new Map();
 let previousWallRoomSize = null;
 const wallThickness = 0.04;
 const wallControlClass = "w-full bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 rounded-lg p-1.5 text-xs text-slate-700 dark:text-slate-200";
@@ -166,11 +168,37 @@ function loadRoomWalls(data) {
     renderWallTools();
 }
 
+function detachEditedWallAttachments() {
+    const layouts = new Map(getRoomWallsData().map(data => [data.wallId, JSON.stringify(data)]));
+    activeItems.forEach(item => {
+        const attachment = item.userData.wallAttachment;
+        // A moved/deleted wall must not pull this object on a later synchronization.
+        if (attachment && (!layouts.has(attachment.wallId)
+            || layouts.get(attachment.wallId) !== wallEditLayouts.get(attachment.wallId))) {
+            delete item.userData.wallAttachment;
+        }
+    });
+}
+
 function setWallEditing(enabled) {
     onPointerUp();
-    wallEditing = Boolean(enabled);
+    const next = Boolean(enabled);
+    if (next && !wallEditing) {
+        wallEditLayouts = new Map(getRoomWallsData().map(data => [data.wallId, JSON.stringify(data)]));
+        activeItems.forEach(item => {
+            wallEditItemVisibility.set(item, item.visible);
+            item.visible = false;
+        });
+    } else if (!next && wallEditing) {
+        detachEditedWallAttachments();
+        wallEditItemVisibility.forEach((visible, item) => { item.visible = visible; });
+        wallEditItemVisibility.clear();
+        wallEditLayouts.clear();
+    }
+    wallEditing = next;
     selectFurniture(null);
     renderWallTools();
+    window.runAIDiagnostic?.();
 }
 
 function renderWallTools() {
@@ -181,7 +209,7 @@ function renderWallTools() {
     document.getElementById("edit-walls-hint").textContent = wallEditing ? (isEn ? "Return to furniture" : "Volver a los muebles") : (isEn ? "Build and arrange your room" : "Construye y distribuye tu sala");
     toggle.setAttribute("aria-pressed", String(wallEditing));
     document.getElementById("add-wall").textContent = isEn ? "+ Add wall" : "+ Agregar pared";
-    document.getElementById("wall-help").textContent = isEn ? "Choose a wall here or in the scene. Drag it and adjust it in the inspector." : "Elige una pared aquí o en la escena. Arrástrala y ajústala en el inspector.";
+    document.getElementById("wall-help").textContent = isEn ? "Drag a wall or adjust it in the inspector. Furniture and the door stay hidden and keep their positions until you finish." : "Arrastra una pared o ajústala en el inspector. Los muebles y la puerta permanecen ocultos y conservan su posición hasta terminar.";
     const panel = document.getElementById("wall-tools");
     panel.hidden = !wallEditing;
     const list = document.getElementById("wall-list");
@@ -200,26 +228,7 @@ function renderWallTools() {
 
 function addRoomWall() {
     if (!wallEditing) setWallEditing(true);
-    const previous = activeItems.map(item => ({ item, position: item.position.clone(), rotation: item.rotation.y, attachment: item.userData.wallAttachment }));
     const wall = createRoomWall();
-    syncWallAttachedItems();
-    if (activeItems.some(item => roomWalls.some(candidate => itemIntersectsWall(item, candidate)))) {
-        roomWalls = roomWalls.filter(candidate => candidate !== wall);
-        disposeRoomWall(wall);
-        previous.forEach(({ item, position, rotation, attachment }) => {
-            item.position.copy(position);
-            item.rotation.y = rotation;
-            item.userData.rotationY = rotation;
-            item.userData.wallAttachment = attachment;
-            if (item.userData.isDoor) updateDoorOpening(item);
-        });
-        selectFurniture(null);
-        const content = document.getElementById("inspector-content");
-        if (content) content.textContent = window.currentLang === "en"
-            ? "There is no room for this wall without crossing existing objects. Move an object or enlarge the room."
-            : "No hay espacio para esta pared sin atravesar los objetos existentes. Mueve un objeto o amplía la sala.";
-        return;
-    }
     selectFurniture(wall);
     window.updateMetrics?.();
 }

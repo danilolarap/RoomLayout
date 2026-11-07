@@ -125,6 +125,7 @@ function trySnapItemToWall(item, preferredWallId) {
 }
 
 function moveItemWithWalls(item, target, snap = true) {
+    if (wallEditing) return;
     const attachment = item.userData.wallAttachment;
     delete item.userData.wallAttachment;
     const start = item.position.clone();
@@ -161,6 +162,7 @@ function moveItemWithWalls(item, target, snap = true) {
 }
 
 function changeItemPlacement(item, change) {
+    if (wallEditing) return;
     const position = item.position.clone(), rotation = item.rotation.y;
     const attachment = item.userData.wallAttachment;
     change();
@@ -176,6 +178,10 @@ function changeItemPlacement(item, change) {
 }
 
 function syncWallAttachedItems() {
+    if (wallEditing) {
+        detachEditedWallAttachments();
+        return;
+    }
     activeItems.forEach(item => {
         const attachment = item.userData.wallAttachment;
         const wall = attachment && roomWalls.find(w => w.userData.wallId === attachment.wallId);
