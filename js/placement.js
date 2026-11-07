@@ -128,6 +128,8 @@ function moveItemWithWalls(item, target, snap = true) {
     if (wallEditing) return;
     const attachment = item.userData.wallAttachment;
     delete item.userData.wallAttachment;
+    // Recover objects saved outside the room before keeping a rollback position.
+    clampItemToRoom(item);
     const start = item.position.clone();
     const steps = Math.max(1, Math.ceil(Math.hypot(target.x - start.x, target.z - start.z) / 0.04));
     for (let step = 1; step <= steps; step++) {
