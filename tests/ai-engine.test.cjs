@@ -24,6 +24,68 @@ function environment() {
     return { context, add, analyze: () => context.AIEngine.analyzeScene() };
 }
 
+test('the actual laundry basket at floor height inside the room produces no boundary warning', () => {
+    const { context: c, analyze } = environment();
+    const data = vm.runInContext('FURNITURE_CATALOG.flatMap(category => category.items).find(item => item.id === "cesto_ropa")', c);
+    const basket = c.createDetailedFurniture(data);
+    basket.userData = { ...data };
+    basket.position.set(0.2, 0, -1.5);
+    c.activeItems.push(basket);
+    const result = analyze();
+    assert.equal(result.conflicts.length, 0, result.conflicts.join('; '));
+    assert.equal(result.score, 100);
+});
+
+test('every actual catalog model fits at floor height and only warns after crossing a room edge', () => {
+    const { context: c, analyze } = environment();
+    const catalog = vm.runInContext('FURNITURE_CATALOG.flatMap(category => category.items)', c);
+    for (const data of catalog) {
+        const group = c.createDetailedFurniture(data);
+        group.userData = { ...data };
+        c.activeItems.splice(0, c.activeItems.length, group);
+        for (const angle of [0, Math.PI / 4, Math.PI / 2, Math.PI * 1.25]) {
+            group.rotation.y = angle;
+            group.position.set(0, 0, 0);
+            // Independent oracle from rendered vertices, not enclosing local bounding boxes.
+            group.updateWorldMatrix(true, true);
+            const bounds = new THREE.Box3();
+            group.traverse(node => {
+                if (!node.isMesh || node.userData.diagnosticIgnore) return;
+                const vertices = node.geometry.attributes.position;
+                for (let i = 0; i < vertices.count; i++) {
+                    bounds.expandByPoint(new THREE.Vector3().fromBufferAttribute(vertices, i).applyMatrix4(node.matrixWorld));
+                }
+            });
+            const positions = [[0, 0, 0, 0], [3 - bounds.max.x - 0.005, 0, 0.08, 0], [-3 - bounds.min.x + 0.005, 0, -0.08, 0],
+                [0, 3 - bounds.max.z - 0.005, 0, 0.08], [0, -3 - bounds.min.z + 0.005, 0, -0.08]];
+            for (const [x, z, crossX, crossZ] of positions) {
+                group.position.set(x, 0, z);
+                const result = analyze();
+                assert.equal(result.conflicts.length, 0, `${data.id}, angle ${angle}, at ${x}, ${z}: ${result.conflicts.join('; ')}`);
+                if (crossX || crossZ) {
+                    group.position.set(x + crossX, 0, z + crossZ);
+                    assert.equal(analyze().conflicts.length, 1, `${data.id} must warn when genuinely outside at angle ${angle}`);
+                }
+            }
+        }
+    }
+});
+
+test('horizontal bounds and floor penetration have distinct and accurate messages', () => {
+    const { context: c, add, analyze } = environment();
+    const item = add(new THREE.BoxGeometry(0.4, 0.4, 0.4), 'Test');
+    item.position.set(0, 0, 0);
+    assert.equal(analyze().conflicts.length, 1);
+    assert.match(analyze().conflicts[0], /piso/);
+    assert.ok(!analyze().conflicts[0].includes('límites'));
+    item.position.set(4, 0.2, 0);
+    assert.equal(analyze().conflicts.length, 1);
+    assert.match(analyze().conflicts[0], /límites/);
+    c.currentLang = 'en';
+    item.position.set(0, 0, 0);
+    assert.match(analyze().conflicts[0], /floor/);
+});
+
 test('the real office chair fits in the L desk opening; crossing the tabletop still warns', () => {
     const { context: c, analyze } = environment();
     const deskData = { id: 'escritorio_l', name: 'Escritorio', w: 1.6, h: 0.75, l: 1.4 };
