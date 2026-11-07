@@ -31,8 +31,7 @@ const i18n = {
         free: "LIBRE",
         diagTitle: "ASISTENTE IA",
         btnAnalyze: "ANALIZAR",
-        lblAiScore: "Puntaje Eficiencia:",
-        diagOk: "Distribución óptima sin conflictos.",
+        lblAiScore: "Estado del diseño:",
         freeFlow: "Flujo Libre",
         collision: "Colisión / Bloqueo",
         sunLight: "Luz Solar Directa"
@@ -64,8 +63,7 @@ const i18n = {
         free: "FREE",
         diagTitle: "AI ASSISTANT",
         btnAnalyze: "ANALYZE",
-        lblAiScore: "Efficiency Score:",
-        diagOk: "Optimal layout with no conflicts.",
+        lblAiScore: "Layout status:",
         freeFlow: "Free Flow",
         collision: "Collision / Block",
         sunLight: "Direct Sunlight"
@@ -135,27 +133,19 @@ window.runAIDiagnostic = function() {
     if (!diagBox) return;
     diagBox.innerHTML = "";
 
-    if (analysis.conflicts.length === 0 && analysis.suggestions.length === 0) {
-        diagBox.className = "flex-1 bg-emerald-50 dark:bg-slate-950 border border-emerald-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-emerald-800 dark:text-emerald-300 space-y-2";
-        diagBox.innerHTML = `<div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span>${i18n[window.currentLang].diagOk}</span></div>`;
-        return;
-    }
+    diagBox.hidden = analysis.conflicts.length === 0;
+    if (diagBox.hidden) return;
 
     diagBox.className = "flex-1 bg-amber-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-amber-900 dark:text-amber-200 space-y-2 max-h-48 overflow-y-auto custom-scrollbar";
 
     analysis.conflicts.forEach(msg => {
         const item = document.createElement("div");
         item.className = "flex items-start gap-1.5 text-red-600 dark:text-red-400 font-medium";
-        item.innerHTML = `<i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i> <span>${msg}</span>`;
+        item.innerHTML = `<i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i> <span></span>`;
+        item.querySelector("span").textContent = msg;
         diagBox.appendChild(item);
     });
 
-    analysis.suggestions.forEach(msg => {
-        const item = document.createElement("div");
-        item.className = "flex items-start gap-1.5 text-amber-700 dark:text-amber-300 font-medium";
-        item.innerHTML = `<i class="fa-solid fa-lightbulb mt-0.5 shrink-0"></i> <span>${msg}</span>`;
-        diagBox.appendChild(item);
-    });
 };
 
 function initUI() {
@@ -308,7 +298,6 @@ function updateLanguageTexts() {
     setTxt("title-diag", t.diagTitle);
     setTxt("txt-btn-analyze", t.btnAnalyze);
     setTxt("lbl-ai-score", t.lblAiScore);
-    setTxt("diag-ok", t.diagOk);
     setTxt("leg-free", t.freeFlow);
     setTxt("leg-collision", t.collision);
     setTxt("leg-sun", isDark ? (window.currentLang === "en" ? "Direct Moonlight" : "Luz Lunar Directa") : t.sunLight);

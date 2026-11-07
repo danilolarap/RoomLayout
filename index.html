@@ -220,13 +220,11 @@
                 </div>
 
                 <div class="bg-amber-100/40 dark:bg-slate-800/50 p-2.5 rounded-xl border border-amber-200/60 dark:border-slate-700/50 flex items-center justify-between">
-                    <span id="lbl-ai-score" class="text-[11px] font-bold text-slate-700 dark:text-slate-300">Puntaje Eficiencia:</span>
+                    <span id="lbl-ai-score" class="text-[11px] font-bold text-slate-700 dark:text-slate-300">Estado del diseño:</span>
                     <span id="ai-score-badge" class="text-xs font-black px-2 py-0.5 rounded-md bg-emerald-500 text-white shadow-xs">100 / 100</span>
                 </div>
 
-                <div id="diagnostic-box" class="flex-1 bg-emerald-50 dark:bg-slate-950 border border-emerald-200 dark:border-slate-800 p-2.5 rounded-xl text-[11px] text-emerald-800 dark:text-emerald-300 space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
-                    <div class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-circle-check"></i> <span id="diag-ok">Distribución óptima sin conflictos.</span></div>
-                </div>
+                <div id="diagnostic-box" hidden aria-live="polite"></div>
             </div>
         </aside>
     </div>
