@@ -507,6 +507,7 @@ window.getSceneData = function() {
 window.loadSceneData = function(data) {
     if (!data || !data.room) return;
 
+    setWallEditing(false);
     activeItems.forEach(group => scene.remove(group));
     activeItems = [];
     if (typeof selectFurniture === "function") selectFurniture(null);
