@@ -347,7 +347,8 @@ function createDetailedFurniture(item) {
         const frameThick = 0.05;
 
         if (id === "ventana_circular") {
-            const outerRing = new THREE.Mesh(new THREE.TorusGeometry(w / 2, 0.04, 16, 32), frameMat);
+            // The tube radius is part of the advertised outer diameter.
+            const outerRing = new THREE.Mesh(new THREE.TorusGeometry(w / 2 - 0.04, 0.04, 16, 32), frameMat);
             outerRing.position.y = h / 2;
             group.add(outerRing);
 
