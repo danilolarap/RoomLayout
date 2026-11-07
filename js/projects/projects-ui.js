@@ -1,79 +1,78 @@
 window.currentProjectId = null;
+window.currentProjectName = "";
+
+function projectFileError(error) {
+    const messages = {
+        extension: ["Selecciona un archivo .roomlayout descargado de RoomLayout.", "Select a .roomlayout file downloaded from RoomLayout."],
+        size: ["El archivo supera el límite de 10 MB.", "The file exceeds the 10 MB limit."],
+        version: ["Este archivo requiere una versión más reciente de RoomLayout.", "This file requires a newer version of RoomLayout."],
+        integrity: ["El archivo está dañado o fue modificado. Usa una copia original.", "The file is damaged or modified. Use an original copy."],
+        crypto: ["Abre RoomLayout mediante HTTPS o localhost para guardar y verificar archivos.", "Open RoomLayout over HTTPS or localhost to save and verify files."]
+    };
+    return (messages[error.message] || ["Archivo RoomLayout inválido o incompatible.", "Invalid or incompatible RoomLayout file."])[window.currentLang === "en" ? 1 : 0];
+}
 
 function initProjectsUI() {
     const btnSave = document.getElementById("btn-save-project");
     const btnMyProjects = document.getElementById("btn-my-projects");
     const modalProjects = document.getElementById("projects-modal");
     const btnCloseProjects = document.getElementById("btn-close-projects-modal");
-    const btnExportJson = document.getElementById("btn-export-json");
-    const fileImportJson = document.getElementById("file-import-json");
+    const btnExport = document.getElementById("btn-export-project");
+    const fileImport = document.getElementById("file-import-project");
 
-    if (btnSave) {
-        btnSave.onclick = async () => {
-            const promptMsg = window.currentLang === "en" ? "Name of your layout:" : "Nombre de tu diseño:";
-            const name = prompt(promptMsg, "My 3D Room");
-            if (!name) return;
-
-            try {
-                const sceneData = window.getSceneData();
-                if (typeof ProjectService !== "undefined") {
+    async function saveFile(button) {
+        const en = window.currentLang === "en";
+        const name = prompt(en ? "Name of your layout:" : "Nombre de tu diseño:", window.currentProjectName || (en ? "My 3D Room" : "Mi habitación 3D"))?.trim();
+        if (!name) return;
+        button.disabled = true;
+        try {
+            const sceneData = window.getSceneData();
+            const blob = await RoomLayoutFile.encode(name, sceneData);
+            RoomLayoutFile.download(blob, name);
+            window.currentProjectName = name;
+            // Guests can download too; local storage failure does not block the file.
+            if (typeof ProjectService !== "undefined" && typeof AuthService !== "undefined" && AuthService.getCurrentUser()) {
+                try {
                     window.currentProjectId = await ProjectService.saveProject(name, sceneData.room, sceneData.items, window.currentProjectId);
-                    alert(window.currentLang === "en" ? "Project saved successfully!" : "¡Proyecto guardado exitosamente en tu base de datos local!");
-                } else {
-                    alert(window.currentLang === "en" ? "Project prepared locally!" : "¡Proyecto preparado localmente!");
+                } catch (error) {
+                    alert(en ? "File download started. The local copy could not be saved." : "Descarga del archivo iniciada. No se pudo guardar la copia local.");
                 }
-            } catch (err) {
-                alert("Error: " + err.message);
             }
-        };
+        } catch (error) {
+            alert(projectFileError(error));
+        } finally {
+            button.disabled = false;
+        }
     }
 
+    if (btnSave) btnSave.onclick = () => saveFile(btnSave);
+    if (btnExport) btnExport.onclick = () => saveFile(btnExport);
     if (btnMyProjects) {
         btnMyProjects.onclick = async () => {
             await renderProjectsList();
             if (modalProjects) modalProjects.classList.remove("hidden");
         };
     }
-
-    if (btnCloseProjects) {
-        btnCloseProjects.onclick = () => {
-            if (modalProjects) modalProjects.classList.add("hidden");
-        };
-    }
-
-    if (btnExportJson) {
-        btnExportJson.onclick = () => {
-            if (typeof window.getSceneData !== "function") return;
-            const data = window.getSceneData();
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `room_layout_${Date.now()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        };
-    }
-
-    if (fileImportJson) {
-        fileImportJson.onchange = (e) => {
-            const file = e.target.files[0];
+    if (btnCloseProjects) btnCloseProjects.onclick = () => modalProjects?.classList.add("hidden");
+    if (fileImport) {
+        fileImport.onchange = async () => {
+            const file = fileImport.files[0];
             if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const parsedData = JSON.parse(event.target.result);
-                    if (typeof window.loadSceneData === "function") {
-                        window.loadSceneData(parsedData);
-                    }
-                    if (modalProjects) modalProjects.classList.add("hidden");
-                    alert(window.currentLang === "en" ? "Layout imported successfully!" : "¡Diseño importado correctamente!");
-                } catch (err) {
-                    alert(window.currentLang === "en" ? "Error reading JSON file." : "Error al leer el archivo JSON.");
-                }
-            };
-            reader.readAsText(file);
+            fileImport.disabled = true;
+            try {
+                const project = await RoomLayoutFile.decode(file);
+                // Validate the complete file before changing the current scene.
+                window.loadSceneData(project.scene);
+                window.currentProjectId = null;
+                window.currentProjectName = project.name;
+                modalProjects?.classList.add("hidden");
+                alert(window.currentLang === "en" ? "Layout opened successfully!" : "¡Diseño abierto correctamente!");
+            } catch (error) {
+                alert(projectFileError(error));
+            } finally {
+                fileImport.value = "";
+                fileImport.disabled = false;
+            }
         };
     }
 }
@@ -135,6 +134,7 @@ window.loadProject = async function(id) {
                 window.loadSceneData({ room: project.room, items: project.items });
             }
             window.currentProjectId = project.id;
+            window.currentProjectName = project.name;
             const modal = document.getElementById("projects-modal");
             if (modal) modal.classList.add("hidden");
         }
