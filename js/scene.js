@@ -319,6 +319,7 @@ function addDefaultDoor(rw, rl) {
     const doorSweepGeo = new THREE.RingGeometry(0.05, 0.88, 16, 1, 0, Math.PI / 2);
     const doorSweepMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
     const doorSweep = new THREE.Mesh(doorSweepGeo, doorSweepMat);
+    doorSweep.userData.diagnosticIgnore = true;
     doorSweep.rotation.x = -Math.PI / 2;
     doorSweep.position.set(-0.44, 0.02, 0);
     assembly.add(doorSweep);
