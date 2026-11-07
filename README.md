@@ -28,7 +28,7 @@ El proyecto combina una escena creada con Three.js, un catálogo de objetos low-
   * Análisis de colisiones, circulación y posibles problemas de distribución.
 * **Proyectos e idioma:**
   * Guardado local de usuarios y diseños mediante IndexedDB.
-  * Importación y exportación de diseños en formato JSON.
+  * Archivos portátiles de diseño con extensión `.roomlayout`, validados antes de abrirlos.
   * Interfaz traducible entre español e inglés y temas claro y oscuro.
 
 ---
@@ -63,6 +63,7 @@ RoomLayout/
       living-room.js           Detalles de muebles de sala
       workspace.js             Detalles de oficina y electronica
     projects/
+      project-file.js          Formato portatil .roomlayout y validacion
       projects-ui.js           Guardado, carga e importacion de proyectos
     legacy/
       app.js                   Punto de entrada anterior, no cargado
@@ -106,7 +107,13 @@ No se requiere instalación de paquetes ni un paso de compilación. Para despleg
 
 ### Almacenamiento
 
-Las cuentas y los proyectos se guardan en el almacenamiento local del navegador y no se sincronizan entre dispositivos. Usa la exportación JSON para guardar una copia o trasladar un diseño.
+Las cuentas y los proyectos se guardan en el almacenamiento local del navegador y no se sincronizan entre dispositivos. Pulsa **Guardar** para descargar un archivo `.roomlayout`. En otro equipo, abre RoomLayout, entra a **Mis diseños** y pulsa **Abrir archivo** para recuperar el diseño. También funciona en modo invitado. Con una cuenta activa se conserva además una copia local; los diseños locales anteriores siguen disponibles.
+
+El archivo conserva dimensiones, hora solar, paredes, muebles, colores, posiciones, rotaciones y uniones a paredes. El paisaje del visor sigue siendo una preferencia local independiente. **Descargar archivo** genera el mismo formato desde el panel de diseños. Los JSON antiguos no se aceptan como archivos portátiles; puedes abrir un proyecto ya guardado localmente y volver a guardarlo para obtener el formato nuevo.
+
+El contenedor binario v1 incluye una cabecera RoomLayout, versión, longitud y suma SHA-256 del contenido. Se comprueban su estructura, integridad y límites (10 MB, 2000 objetos y 500 paredes) antes de modificar la escena. Cambiar la extensión de un JSON no lo convierte en un archivo válido. Guardar y verificar archivos requiere HTTPS o localhost.
+
+Esta validación detecta daños y formatos ajenos, pero no certifica el origen: el archivo no está cifrado ni firmado por un servidor. No impide que otro programa lo inspeccione o reproduzca. Garantizar que solo se acepten archivos emitidos por RoomLayout requeriría un servicio de firma con una clave privada fuera del navegador. La aplicación web tampoco registra una asociación de archivos del sistema operativo; se abren desde **Abrir archivo** dentro de RoomLayout.
 
 ### Edición de paredes
 
