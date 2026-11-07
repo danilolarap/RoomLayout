@@ -79,6 +79,7 @@ window.RoomLayoutFurnitureDetails.decor = function({ group, w, h, l, id }) {
         });
 
         const potBand = new THREE.Mesh(new THREE.TorusGeometry(w * 0.32, 0.012, 4, 6), Materials.goldMetal);
+        potBand.rotation.x = Math.PI / 2;
         potBand.position.y = 0.25;
         group.add(potBand);
     }
@@ -115,6 +116,7 @@ window.RoomLayoutFurnitureDetails.decor = function({ group, w, h, l, id }) {
 
         for (let band = 0; band < 3; band++) {
             const weaveBand = new THREE.Mesh(new THREE.TorusGeometry(w * (0.34 + band * 0.025), 0.009, 4, 8), Materials.darkNogal);
+            weaveBand.rotation.x = Math.PI / 2;
             weaveBand.position.y = h * (0.2 + band * 0.2);
             group.add(weaveBand);
         }
@@ -128,6 +130,7 @@ window.RoomLayoutFurnitureDetails.decor = function({ group, w, h, l, id }) {
         }
 
         const rim = new THREE.Mesh(new THREE.TorusGeometry(w * 0.4, 0.018, 4, 8), Materials.darkNogal);
+        rim.rotation.x = Math.PI / 2;
         rim.position.y = h * 0.82;
         group.add(rim);
 
