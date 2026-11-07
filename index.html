@@ -268,12 +268,12 @@
                     <i class="fa-solid fa-folder-open"></i> <span id="txt-projects-modal-title">Mis Diseños Guardados</span>
                 </h3>
                 <div class="flex gap-2">
-                    <button id="btn-export-json" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1 border border-amber-300/60 dark:border-slate-700">
-                        <i class="fa-solid fa-download"></i> <span id="txt-export-json">Exportar JSON</span>
+                    <button id="btn-export-project" class="bg-amber-100 dark:bg-slate-800 hover:bg-amber-200 text-amber-900 dark:text-amber-300 font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1 border border-amber-300/60 dark:border-slate-700">
+                        <i class="fa-solid fa-download"></i> <span id="txt-export-project">Descargar archivo</span>
                     </button>
                     <label class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1 cursor-pointer">
-                        <i class="fa-solid fa-upload"></i> <span id="txt-import-json">Importar</span>
-                        <input id="file-import-json" type="file" accept=".json" class="hidden">
+                        <i class="fa-solid fa-upload"></i> <span id="txt-import-project">Abrir archivo</span>
+                        <input id="file-import-project" type="file" accept=".roomlayout" class="hidden">
                     </label>
                 </div>
             </div>
@@ -289,6 +289,7 @@
 
     <!-- SCRIPTS EN ORDEN STRICTO DE EJECUCIÓN -->
     <script src="js/auth/db.js"></script>
+    <script src="js/projects/project-file.js"></script>
     <script src="js/projects/projects-ui.js"></script>
     <script src="js/catalog.js"></script>
     <script src="js/materials.js"></script>

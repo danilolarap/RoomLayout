@@ -14,8 +14,8 @@ const i18n = {
         btnSave: "Guardar",
         btnProjects: "Mis Diseños",
         projectsModalTitle: "Mis Diseños Guardados",
-        exportJson: "Exportar JSON",
-        importJson: "Importar",
+        exportProject: "Descargar archivo",
+        importProject: "Abrir archivo",
         guestDemo: "Invitado Demo",
         themeLight: "Modo Claro",
         themeDark: "Modo Oscuro",
@@ -47,8 +47,8 @@ const i18n = {
         btnSave: "Save",
         btnProjects: "My Projects",
         projectsModalTitle: "My Saved Designs",
-        exportJson: "Export JSON",
-        importJson: "Import",
+        exportProject: "Download file",
+        importProject: "Open file",
         guestDemo: "Guest Demo",
         themeLight: "Light Mode",
         themeDark: "Dark Mode",
@@ -285,8 +285,8 @@ function updateLanguageTexts() {
     setTxt("txt-btn-save", t.btnSave);
     setTxt("txt-btn-projects", t.btnProjects);
     setTxt("txt-projects-modal-title", t.projectsModalTitle);
-    setTxt("txt-export-json", t.exportJson);
-    setTxt("txt-import-json", t.importJson);
+    setTxt("txt-export-project", t.exportProject);
+    setTxt("txt-import-project", t.importProject);
 
     const userDisplay = document.getElementById("user-display-name");
     if (userDisplay && (userDisplay.innerText === "Invitado Demo" || userDisplay.innerText === "Guest Demo")) {
