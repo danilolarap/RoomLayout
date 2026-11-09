@@ -5,6 +5,11 @@
 .app-header {
     flex-shrink: 0;
     overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.app-header::-webkit-scrollbar {
+    display: none;
 }
 
 .header-actions,
