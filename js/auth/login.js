@@ -1,4 +1,4 @@
-let currentLang = 'es';
+let currentLang = window.RoomLayoutPreferences.language;
 
         const dict = {
             es: {
@@ -82,6 +82,7 @@ let currentLang = 'es';
             document.getElementById('btn-txt-guest').innerText = t.btnGuest;
 
             const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('icon-theme').className = isDark ? "fa-solid fa-moon text-amber-400" : "fa-solid fa-sun text-amber-500";
             document.getElementById('lbl-theme').innerText = isDark ? t.themeDark : t.themeLight;
         }
 
@@ -96,11 +97,13 @@ let currentLang = 'es';
 
             btnLang.addEventListener('click', () => {
                 currentLang = currentLang === 'es' ? 'en' : 'es';
+                window.RoomLayoutPreferences.setLanguage(currentLang);
                 updateLang();
             });
 
             btnTheme.addEventListener('click', () => {
                 const isDark = document.documentElement.classList.toggle('dark');
+                window.RoomLayoutPreferences.setTheme(isDark ? 'dark' : 'light');
                 document.getElementById('icon-theme').className = isDark ? "fa-solid fa-moon text-amber-400" : "fa-solid fa-sun text-amber-500";
                 document.getElementById('lbl-theme').innerText = isDark ? dict[currentLang].themeDark : dict[currentLang].themeLight;
             });

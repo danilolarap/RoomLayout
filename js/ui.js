@@ -1,6 +1,6 @@
 // js/ui.js - Manejo de la Interfaz General, Idiomas, Exportación PNG y Proyectos
 
-window.currentLang = "es";
+window.currentLang = window.RoomLayoutPreferences.language;
 
 
 const i18n = {
@@ -151,6 +151,9 @@ window.runAIDiagnostic = function() {
 function initUI() {
     initProjectsUI();
     initExportPNG();
+    updateLanguageTexts();
+    const themeIcon = document.getElementById("theme-icon");
+    if (themeIcon) themeIcon.className = document.documentElement.classList.contains("dark") ? "fa-solid fa-moon" : "fa-solid fa-sun";
 
     const btnAi = document.getElementById("btn-analyze-ai");
     if (btnAi) {
@@ -163,6 +166,7 @@ function initUI() {
     if (langBtn) {
         langBtn.addEventListener("click", () => {
             window.currentLang = window.currentLang === "es" ? "en" : "es";
+            window.RoomLayoutPreferences.setLanguage(window.currentLang);
             const langLabel = document.getElementById("lang-label");
             if (langLabel) langLabel.innerText = window.currentLang.toUpperCase();
             updateLanguageTexts();
@@ -176,6 +180,7 @@ function initUI() {
     if (themeBtn) {
         themeBtn.addEventListener("click", () => {
             const isDark = document.documentElement.classList.toggle("dark");
+            window.RoomLayoutPreferences.setTheme(isDark ? "dark" : "light");
             window.updateRoomTheme?.(isDark);
             const themeLabel = document.getElementById("theme-label");
             const themeIcon = document.getElementById("theme-icon");
@@ -259,6 +264,8 @@ function initUI() {
 
 function updateLanguageTexts() {
     const t = i18n[window.currentLang];
+    const langLabel = document.getElementById("lang-label");
+    if (langLabel) langLabel.innerText = window.currentLang.toUpperCase();
     window.ViewerBackground?.setLanguage(window.currentLang);
     renderWallTools();
     const setTxt = (id, txt) => {

@@ -239,6 +239,7 @@ test('no-conflict UI stays silent and conflict comments clear after correction',
         getElementById: id => id === 'diagnostic-box' ? panel : id === 'ai-score-badge' ? badge : { value: '6' },
         createElement: () => new Element()
     };
+    c.RoomLayoutPreferences = { language: 'es' };
     vm.runInContext(fs.readFileSync('js/ui.js', 'utf8'), c);
     c.runAIDiagnostic();
     assert.equal(panel.hidden, true);
